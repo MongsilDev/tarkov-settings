@@ -102,10 +102,13 @@ namespace tarkov_settings
          */
         public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            Console.WriteLine("Running Tasks : {0}", GetWorkingThreads());
-            Console.WriteLine("Focused Process : {0}", NativeMethods.GetActiveWindowTitle());
+            // null when the focused process exited mid-switch
+            string pName = NativeMethods.GetActiveWindowTitle();
 
-            if (this.pTargets.Contains(NativeMethods.GetActiveWindowTitle().ToLower()) && Parent.IsEnabled)
+            Console.WriteLine("Running Tasks : {0}", GetWorkingThreads());
+            Console.WriteLine("Focused Process : {0}", pName);
+
+            if (pName != null && this.pTargets.Contains(pName.ToLower()) && Parent.IsEnabled)
             {
                 Console.WriteLine("[pMonitor] Target Process is focused");
 
