@@ -1,0 +1,27 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
+
+      - name: Restore packages
+        run: nuget restore tarkov-settings.sln
+
+      - name: Build
+        run: msbuild tarkov-settings.sln /p:Configuration=Release "/p:Platform=Any CPU" /m
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tarkov-settings
+          path: bin/Release/tarkov-settings.exe
+          if-no-files-found: error
