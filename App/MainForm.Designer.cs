@@ -36,6 +36,7 @@
             this.ColorButton = new System.Windows.Forms.ToolStripButton();
             this.ColorPanel = new System.Windows.Forms.Panel();
             this.minimizeStartCheckBox = new System.Windows.Forms.CheckBox();
+            this.autostartCheckBox = new System.Windows.Forms.CheckBox();
             this.DisplayCombo = new System.Windows.Forms.ComboBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
@@ -155,6 +156,7 @@
             // ColorPanel
             // 
             this.ColorPanel.Controls.Add(this.minimizeStartCheckBox);
+            this.ColorPanel.Controls.Add(this.autostartCheckBox);
             this.ColorPanel.Controls.Add(this.DisplayCombo);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
@@ -176,7 +178,20 @@
             this.minimizeStartCheckBox.Text = "Minimize to Tray on Start";
             this.minimizeStartCheckBox.UseVisualStyleBackColor = false;
             this.minimizeStartCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnMinimizeToTray);
-            // 
+            //
+            // autostartCheckBox
+            //
+            this.autostartCheckBox.AutoSize = true;
+            this.autostartCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.autostartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.autostartCheckBox.Location = new System.Drawing.Point(8, 332);
+            this.autostartCheckBox.Name = "autostartCheckBox";
+            this.autostartCheckBox.Size = new System.Drawing.Size(250, 26);
+            this.autostartCheckBox.TabIndex = 17;
+            this.autostartCheckBox.Text = "Run on Windows Startup";
+            this.autostartCheckBox.UseVisualStyleBackColor = false;
+            this.autostartCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnAutostart);
+            //
             // DisplayCombo
             // 
             this.DisplayCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -551,6 +566,7 @@
         private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.CheckBox minimizeStartCheckBox;
+        private System.Windows.Forms.CheckBox autostartCheckBox;
         private System.Windows.Forms.ToolTip dvlToolTip;
         private System.Windows.Forms.ToolTip brightnessToolTip;
         private System.Windows.Forms.ToolTip contrastToolTip;

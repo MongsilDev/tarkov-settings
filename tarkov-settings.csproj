@@ -234,6 +234,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App\Autostart.cs" />
     <Compile Include="App\ColorController.cs" />
     <Compile Include="App\UpdateNotifier.cs">
       <SubType>Form</SubType>

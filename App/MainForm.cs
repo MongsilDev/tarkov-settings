@@ -28,6 +28,9 @@ namespace tarkov_settings
             DVL = appSetting.saturation;
             minimizeOnStart = appSetting.minimizeOnStart;
             this.minimizeStartCheckBox.Checked = minimizeOnStart;
+
+            // setting Checked re-fires the handler, refreshing the registry path if the exe moved
+            this.autostartCheckBox.Checked = Autostart.Enabled;
             #endregion
             
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -226,6 +229,11 @@ namespace tarkov_settings
         private void CheckOnMinimizeToTray(object sender, EventArgs e)
         {
             this.minimizeOnStart = this.minimizeStartCheckBox.Checked;
+        }
+
+        private void CheckOnAutostart(object sender, EventArgs e)
+        {
+            Autostart.Enabled = this.autostartCheckBox.Checked;
         }
     }
 }
