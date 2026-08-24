@@ -168,6 +168,20 @@ namespace tarkov_settings
         }
         #endregion
 
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == Program.WM_ALREADY_RUNNING)
+            {
+                this.trayIcon.ShowBalloonTip(
+                    2500,
+                    "Tarkov Settings is already running!",
+                    "Check out tray to modify your color setting",
+                    ToolTipIcon.Info
+                    );
+            }
+            base.WndProc(ref m);
+        }
+
         private void ShowForm(object sender, EventArgs e)
         {
             this.Visible = true;

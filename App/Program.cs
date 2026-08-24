@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 using tarkov_settings.GPU;
@@ -9,8 +11,31 @@ namespace tarkov_settings
     {
         private static MainForm mForm;
 
+        // Broadcast to notify the running instance when a duplicate launch occurs
+        public static readonly int WM_ALREADY_RUNNING = RegisterWindowMessage("TARKOV_SETTINGS_ALREADY_RUNNING");
+        private static readonly IntPtr HWND_BROADCAST = new IntPtr(0xFFFF);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int RegisterWindowMessage(string message);
+
+        [DllImport("user32.dll")]
+        private static extern bool PostMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
         [STAThread]
         static void Main()
+        {
+            using (Mutex mutex = new Mutex(true, "tarkov-settings-instance", out bool createdNew))
+            {
+                if (!createdNew)
+                {
+                    PostMessage(HWND_BROADCAST, WM_ALREADY_RUNNING, IntPtr.Zero, IntPtr.Zero);
+                    return;
+                }
+                Run();
+            }
+        }
+
+        static void Run()
         {
             IGPU gpu = null;
             try
