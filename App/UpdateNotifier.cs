@@ -10,8 +10,8 @@ namespace tarkov_settings
 
         // Utilize repository's file as version notifier
         // I know it sounds very dangerous. but i am broke as hell.
-        private string downloadUrl = @"https://github.com/incheon-kim/tarkov-settings/releases/latest";
-        private string checkUrl = @"https://raw.githubusercontent.com/incheon-kim/tarkov-settings/main/version";
+        private string downloadUrl = @"https://github.com/MongsilDev/tarkov-settings/releases/latest";
+        private string checkUrl = @"https://raw.githubusercontent.com/MongsilDev/tarkov-settings/main/version";
         public UpdateNotifier(Version current)
         {
             InitializeComponent();
@@ -39,13 +39,7 @@ namespace tarkov_settings
                 }
                 catch (Exception)
                 {
-                    // when response returns error or invalid string
-                    this.Text = "Update Check Failure";
-                    UpdateNotifyLabel.Text = "Update Check Failure\nPlease Visit Github Repository";
-                    latestLabel.Visible = LatestVersionLabel.Visible = false;
-                    UpdateButton.Text = "Visit";
-                    downloadUrl = @"https://github.com/incheon-kim/tarkov-settings";
-                    this.ShowDialog();
+                    // offline or invalid version string - skip notification
                 }
             }
         }
