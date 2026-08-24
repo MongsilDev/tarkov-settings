@@ -190,6 +190,11 @@ namespace tarkov_settings
 
         private void ExitFormClicked(object sender, EventArgs e)
         {
+            Application.Exit();
+        }
+
+        private void SaveSettings()
+        {
             appSetting.brightness = Brightness;
             appSetting.contrast = Contrast;
             appSetting.gamma = Gamma;
@@ -197,8 +202,6 @@ namespace tarkov_settings
             appSetting.display = (string)DisplayCombo.SelectedItem;
             appSetting.minimizeOnStart = minimizeOnStart;
             appSetting.Save();
-
-            Application.Exit();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -210,6 +213,9 @@ namespace tarkov_settings
             }
             else
             {
+                // covers windows shutdown as well, not only the tray Exit menu
+                SaveSettings();
+
                 Console.WriteLine(e.CloseReason);
                 this.trayIcon.Dispose();
                 Console.WriteLine("[mainForm] Closing pMonitor");
