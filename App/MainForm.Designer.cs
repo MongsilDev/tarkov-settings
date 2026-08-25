@@ -37,6 +37,7 @@
             this.ColorPanel = new System.Windows.Forms.Panel();
             this.minimizeStartCheckBox = new System.Windows.Forms.CheckBox();
             this.autostartCheckBox = new System.Windows.Forms.CheckBox();
+            this.arenaCheckBox = new System.Windows.Forms.CheckBox();
             this.DisplayCombo = new System.Windows.Forms.ComboBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
@@ -157,6 +158,7 @@
             // 
             this.ColorPanel.Controls.Add(this.minimizeStartCheckBox);
             this.ColorPanel.Controls.Add(this.autostartCheckBox);
+            this.ColorPanel.Controls.Add(this.arenaCheckBox);
             this.ColorPanel.Controls.Add(this.DisplayCombo);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
@@ -191,6 +193,19 @@
             this.autostartCheckBox.Text = "Run on Windows Startup";
             this.autostartCheckBox.UseVisualStyleBackColor = false;
             this.autostartCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnAutostart);
+            //
+            // arenaCheckBox
+            //
+            this.arenaCheckBox.AutoSize = true;
+            this.arenaCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.arenaCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.arenaCheckBox.Location = new System.Drawing.Point(8, 364);
+            this.arenaCheckBox.Name = "arenaCheckBox";
+            this.arenaCheckBox.Size = new System.Drawing.Size(200, 26);
+            this.arenaCheckBox.TabIndex = 18;
+            this.arenaCheckBox.Text = "Apply to Arena";
+            this.arenaCheckBox.UseVisualStyleBackColor = false;
+            this.arenaCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnArena);
             //
             // DisplayCombo
             // 
@@ -497,7 +512,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(734, 372);
+            this.ClientSize = new System.Drawing.Size(734, 404);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -567,6 +582,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.CheckBox minimizeStartCheckBox;
         private System.Windows.Forms.CheckBox autostartCheckBox;
+        private System.Windows.Forms.CheckBox arenaCheckBox;
         private System.Windows.Forms.ToolTip dvlToolTip;
         private System.Windows.Forms.ToolTip brightnessToolTip;
         private System.Windows.Forms.ToolTip contrastToolTip;

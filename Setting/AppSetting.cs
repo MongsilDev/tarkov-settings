@@ -13,7 +13,8 @@ namespace tarkov_settings.Setting
         public double gamma = 2.0;
         public int saturation = 0;
         public HashSet<string> pTargets = new HashSet<string>{
-            "EscapeFromTarkov"
+            "EscapeFromTarkov",
+            "EscapeFromTarkovArena"
         };
         public string display = @"\\.\DISPLAY1";
         public bool minimizeOnStart = true;

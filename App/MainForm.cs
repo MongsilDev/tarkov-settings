@@ -8,6 +8,8 @@ namespace tarkov_settings
 {
     public partial class MainForm : Form
     {
+        private const string ARENA_PROCESS = "EscapeFromTarkovArena";
+
         private ProcessMonitor pMonitor = ProcessMonitor.Instance;
         private IGPU gpu = GPUDevice.Instance;
         private AppSetting appSetting;
@@ -62,6 +64,8 @@ namespace tarkov_settings
                 pMonitor.Add(pTarget.ToLower());
             }
             pMonitor.Init();
+
+            this.arenaCheckBox.Checked = appSetting.pTargets.Contains(ARENA_PROCESS);
         }
 
         #region BCGS Getter/Setter
@@ -207,6 +211,10 @@ namespace tarkov_settings
             appSetting.display = (string)DisplayCombo.SelectedItem;
             appSetting.minimizeOnStart = minimizeOnStart;
             appSetting.autostart = autostartCheckBox.Checked;
+            if (arenaCheckBox.Checked)
+                appSetting.pTargets.Add(ARENA_PROCESS);
+            else
+                appSetting.pTargets.Remove(ARENA_PROCESS);
             appSetting.Save();
         }
 
@@ -237,6 +245,15 @@ namespace tarkov_settings
         private void CheckOnAutostart(object sender, EventArgs e)
         {
             Autostart.Enabled = this.autostartCheckBox.Checked;
+        }
+
+        // applied at the next focus change, no restart needed
+        private void CheckOnArena(object sender, EventArgs e)
+        {
+            if (this.arenaCheckBox.Checked)
+                pMonitor.Add(ARENA_PROCESS.ToLower());
+            else
+                pMonitor.Remove(ARENA_PROCESS.ToLower());
         }
     }
 }
