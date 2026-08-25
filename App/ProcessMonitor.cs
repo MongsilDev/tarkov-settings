@@ -132,6 +132,11 @@ namespace tarkov_settings
             else
             {
                 Console.WriteLine("[pMonitor] Target Process is not focused");
+
+                // skip GDI/NVAPI calls when switching between non-target windows
+                if (!cController.IsApplied)
+                    return;
+
                 cController.ChangeColorRamp(reset: true);
                 cController.ResetDVL();
             }

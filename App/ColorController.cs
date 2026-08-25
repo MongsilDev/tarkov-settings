@@ -21,6 +21,9 @@ namespace tarkov_settings
          */
         private CancellationTokenSource _canceller;
 
+        // true while a custom ramp/DVL is applied; lets callers skip redundant resets
+        public bool IsApplied { get; private set; }
+
         #region Singleton Pattern implement
         private static readonly Lazy<ColorController> instance =
             new Lazy<ColorController>(() => new ColorController());
@@ -92,11 +95,13 @@ namespace tarkov_settings
                 catch (ObjectDisposedException) { }
 
                 if (reset)
-                {                    
+                {
+                   IsApplied = false;
                    SetDeviceGammaRamp(hdc, ref originalRamps);
                 }
                 else
                 {
+                    IsApplied = true;
                     ushort[] iArrayValue = CalculateLUT(brightness, contrast, gamma);
                     currentRamps.Red = currentRamps.Blue = currentRamps.Green = iArrayValue;
 
