@@ -50,8 +50,13 @@ namespace tarkov_settings.GPU
                 if (value < this.MinSaturation)
                     value = this.MinSaturation;
 
-                DisplayApi.SetDVCLevel(displayHandle, value);
-                this.currentSaturation = value;
+                // handle goes stale on RDP switch / monitor sleep; recovered by the next Load
+                try
+                {
+                    DisplayApi.SetDVCLevel(displayHandle, value);
+                    this.currentSaturation = value;
+                }
+                catch (NvAPIWrapper.Native.Exceptions.NVIDIAApiException) { }
             }
         }
 
@@ -74,11 +79,18 @@ namespace tarkov_settings.GPU
         }
 
         public void Load(string display) {
-            displayHandle = DisplayApi.GetAssociatedNvidiaDisplayHandle(display);
-            PrivateDisplayDVCInfo dvcInfo = DisplayApi.GetDVCInfo(displayHandle);
-            this._maxSaturation = dvcInfo.MaximumLevel;
-            this._minSaturation = dvcInfo.MinimumLevel;
-            this._initSaturation = this.currentSaturation = dvcInfo.CurrentLevel;
+            try
+            {
+                displayHandle = DisplayApi.GetAssociatedNvidiaDisplayHandle(display);
+                PrivateDisplayDVCInfo dvcInfo = DisplayApi.GetDVCInfo(displayHandle);
+                this._maxSaturation = dvcInfo.MaximumLevel;
+                this._minSaturation = dvcInfo.MinimumLevel;
+                this._initSaturation = this.currentSaturation = dvcInfo.CurrentLevel;
+            }
+            catch (NvAPIWrapper.Native.Exceptions.NVIDIAApiException)
+            {
+                // keep previous handle/levels; retried on the next display change
+            }
         }
 
         public void Close() {

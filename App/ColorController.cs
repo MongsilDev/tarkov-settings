@@ -169,7 +169,9 @@ namespace tarkov_settings
             {
                 gpu.ResetSaturation();
                 Console.WriteLine("[DVL] Reset to : {0}", gpu.InitSaturation);
-            }catch (NotImplementedException){ }
+            }
+            catch (NotImplementedException) { }
+            catch (NvAPIWrapper.Native.Exceptions.NVIDIAApiException) { }
         }
 
         internal void Close()
