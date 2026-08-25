@@ -173,8 +173,14 @@ namespace tarkov_settings
 
             this.arenaCheckBox.Checked = appSetting.pTargets.Contains(ARENA_PROCESS);
             this.hotkeyTextBox.Text = appSetting.volumeToggleHotkey;
-            this.volumeLowNum.Value = Math.Min(100, Math.Max(0, appSetting.volumeLow));
-            this.volumeHighNum.Value = Math.Min(100, Math.Max(0, appSetting.volumeHigh));
+            // capture both before assigning - the shared ValueChanged handler writes the
+            // sibling control's (not yet initialized) value back into appSetting
+            int volumeLow = Math.Min(100, Math.Max(0, appSetting.volumeLow));
+            int volumeHigh = Math.Min(100, Math.Max(0, appSetting.volumeHigh));
+            this.volumeLowNum.Value = volumeLow;
+            this.volumeHighNum.Value = volumeHigh;
+            appSetting.volumeLow = volumeLow;
+            appSetting.volumeHigh = volumeHigh;
         }
 
         #region BCGS Getter/Setter
