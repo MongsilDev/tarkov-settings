@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace tarkov_settings.Setting
 {
-    internal class Settings<T> where T : new()
+    internal class Settings<T> where T : class, new()
     {
         private const string DEFAULT_FILENAME = "settings.json";
 
