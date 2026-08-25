@@ -270,9 +270,6 @@
     </Compile>
     <Compile Include="Setting\AppSetting.cs" />
     <Compile Include="Setting\Setting.cs" />
-    <Compile Include="Setting\Resolution.cs" />
-    <Compile Include="Setting\TarkovSetting.cs" />
-    <Compile Include="Setting\GameSetting.cs" />
     <EmbeddedResource Include="App\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
