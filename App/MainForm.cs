@@ -260,6 +260,7 @@ namespace tarkov_settings
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
+                SaveSettings();
                 e.Cancel = true;
                 this.Hide();
             }
