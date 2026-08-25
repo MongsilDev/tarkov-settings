@@ -226,11 +226,11 @@
             this.hotkeyLabel.AutoSize = true;
             this.hotkeyLabel.BackColor = System.Drawing.Color.Transparent;
             this.hotkeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.hotkeyLabel.Location = new System.Drawing.Point(394, 366);
+            this.hotkeyLabel.Location = new System.Drawing.Point(455, 366);
             this.hotkeyLabel.Name = "hotkeyLabel";
-            this.hotkeyLabel.Size = new System.Drawing.Size(100, 22);
+            this.hotkeyLabel.Size = new System.Drawing.Size(50, 22);
             this.hotkeyLabel.TabIndex = 19;
-            this.hotkeyLabel.Text = "Volume Key";
+            this.hotkeyLabel.Text = "Key";
             //
             // hotkeyTextBox
             //
@@ -250,7 +250,7 @@
             this.volumeLevelLabel.AutoSize = true;
             this.volumeLevelLabel.BackColor = System.Drawing.Color.Transparent;
             this.volumeLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.volumeLevelLabel.Location = new System.Drawing.Point(410, 398);
+            this.volumeLevelLabel.Location = new System.Drawing.Point(185, 366);
             this.volumeLevelLabel.Name = "volumeLevelLabel";
             this.volumeLevelLabel.Size = new System.Drawing.Size(84, 22);
             this.volumeLevelLabel.TabIndex = 21;
@@ -258,7 +258,7 @@
             //
             // volumeLowNum
             //
-            this.volumeLowNum.Location = new System.Drawing.Point(502, 394);
+            this.volumeLowNum.Location = new System.Drawing.Point(280, 362);
             this.volumeLowNum.Name = "volumeLowNum";
             this.volumeLowNum.Size = new System.Drawing.Size(58, 30);
             this.volumeLowNum.TabIndex = 22;
@@ -270,7 +270,7 @@
             this.volumeSepLabel.AutoSize = true;
             this.volumeSepLabel.BackColor = System.Drawing.Color.Transparent;
             this.volumeSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.volumeSepLabel.Location = new System.Drawing.Point(564, 398);
+            this.volumeSepLabel.Location = new System.Drawing.Point(340, 366);
             this.volumeSepLabel.Name = "volumeSepLabel";
             this.volumeSepLabel.Size = new System.Drawing.Size(18, 22);
             this.volumeSepLabel.TabIndex = 23;
@@ -278,7 +278,7 @@
             //
             // volumeHighNum
             //
-            this.volumeHighNum.Location = new System.Drawing.Point(583, 394);
+            this.volumeHighNum.Location = new System.Drawing.Point(356, 362);
             this.volumeHighNum.Name = "volumeHighNum";
             this.volumeHighNum.Size = new System.Drawing.Size(58, 30);
             this.volumeHighNum.TabIndex = 24;
@@ -588,7 +588,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(734, 436);
+            this.ClientSize = new System.Drawing.Size(734, 404);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
