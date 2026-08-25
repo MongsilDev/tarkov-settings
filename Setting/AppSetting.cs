@@ -18,7 +18,7 @@ namespace tarkov_settings.Setting
         };
         public string display = @"\\.\DISPLAY1";
         public bool minimizeOnStart = true;
-        public bool autostart = true;
+        public bool autostart = false;
         public int volumeStep = 5;
     }
 }
