@@ -59,8 +59,8 @@ namespace tarkov_settings
                         System.Windows.Forms.MessageBoxButtons.OK,
                         System.Windows.Forms.MessageBoxIcon.Error
                     );
-                System.Threading.Thread.Sleep(1000);
-                Application.Exit();
+                // Application.Exit() is a no-op before the message loop starts
+                return;
             }
 
             // Open Main Form
