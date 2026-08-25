@@ -246,7 +246,9 @@ namespace tarkov_settings
             appSetting.contrast = Contrast;
             appSetting.gamma = Gamma;
             appSetting.saturation = DVL;
-            appSetting.display = (string)DisplayCombo.SelectedItem;
+            // keep the last saved display when nothing is selected (e.g. monitor unplugged)
+            if (DisplayCombo.SelectedItem != null)
+                appSetting.display = (string)DisplayCombo.SelectedItem;
             appSetting.minimizeOnStart = minimizeOnStart;
             appSetting.autostart = autostartCheckBox.Checked;
             if (arenaCheckBox.Checked)
