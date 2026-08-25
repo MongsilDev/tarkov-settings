@@ -316,7 +316,6 @@
             // 
             this.BrightnessBar.Location = new System.Drawing.Point(13, 27);
             this.BrightnessBar.Maximum = 100;
-            this.BrightnessBar.Minimum = -100;
             this.BrightnessBar.Name = "BrightnessBar";
             this.BrightnessBar.Size = new System.Drawing.Size(397, 69);
             this.BrightnessBar.TabIndex = 18;
@@ -362,7 +361,6 @@
             // 
             this.ContrastBar.Location = new System.Drawing.Point(13, 39);
             this.ContrastBar.Maximum = 100;
-            this.ContrastBar.Minimum = -100;
             this.ContrastBar.Name = "ContrastBar";
             this.ContrastBar.Size = new System.Drawing.Size(397, 69);
             this.ContrastBar.TabIndex = 19;

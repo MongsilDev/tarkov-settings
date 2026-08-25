@@ -99,28 +99,34 @@ namespace tarkov_settings
         }
 
         #region BCGS Getter/Setter
+        // out-of-range saved values (e.g. from older builds) must not crash the TrackBar setter
+        private static int ClampToBar(TrackBar bar, int value)
+        {
+            return Math.Min(Math.Max(value, bar.Minimum), bar.Maximum);
+        }
+
         public double Brightness
         {
             get => BrightnessBar.Value / 100.0;
-            set => BrightnessBar.Value = (int)(value * 100);
+            set => BrightnessBar.Value = ClampToBar(BrightnessBar, (int)(value * 100));
         }
 
         public double Contrast
         {
             get => ContrastBar.Value / 100.0;
-            set => ContrastBar.Value = (int)(value * 100);
+            set => ContrastBar.Value = ClampToBar(ContrastBar, (int)(value * 100));
         }
 
         public double Gamma
         {
             get => GammaBar.Value / 100.0;
-            set => GammaBar.Value = (int)(value * 100);
+            set => GammaBar.Value = ClampToBar(GammaBar, (int)(value * 100));
         }
 
         public int DVL
         {
             get => DVLBar.Value;
-            set => DVLBar.Value = value;
+            set => DVLBar.Value = ClampToBar(DVLBar, value);
         }
 
         public (double, double, double, int) GetColorValue()
