@@ -38,6 +38,8 @@
             this.minimizeStartCheckBox = new System.Windows.Forms.CheckBox();
             this.autostartCheckBox = new System.Windows.Forms.CheckBox();
             this.arenaCheckBox = new System.Windows.Forms.CheckBox();
+            this.hotkeyLabel = new System.Windows.Forms.Label();
+            this.hotkeyTextBox = new System.Windows.Forms.TextBox();
             this.DisplayCombo = new System.Windows.Forms.ComboBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
@@ -159,6 +161,8 @@
             this.ColorPanel.Controls.Add(this.minimizeStartCheckBox);
             this.ColorPanel.Controls.Add(this.autostartCheckBox);
             this.ColorPanel.Controls.Add(this.arenaCheckBox);
+            this.ColorPanel.Controls.Add(this.hotkeyLabel);
+            this.ColorPanel.Controls.Add(this.hotkeyTextBox);
             this.ColorPanel.Controls.Add(this.DisplayCombo);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
@@ -206,6 +210,30 @@
             this.arenaCheckBox.Text = "Apply to Arena";
             this.arenaCheckBox.UseVisualStyleBackColor = false;
             this.arenaCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnArena);
+            //
+            // hotkeyLabel
+            //
+            this.hotkeyLabel.AutoSize = true;
+            this.hotkeyLabel.BackColor = System.Drawing.Color.Transparent;
+            this.hotkeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.hotkeyLabel.Location = new System.Drawing.Point(394, 366);
+            this.hotkeyLabel.Name = "hotkeyLabel";
+            this.hotkeyLabel.Size = new System.Drawing.Size(100, 22);
+            this.hotkeyLabel.TabIndex = 19;
+            this.hotkeyLabel.Text = "Volume Key";
+            //
+            // hotkeyTextBox
+            //
+            this.hotkeyTextBox.Location = new System.Drawing.Point(502, 362);
+            this.hotkeyTextBox.Name = "hotkeyTextBox";
+            this.hotkeyTextBox.ReadOnly = true;
+            this.hotkeyTextBox.ShortcutsEnabled = false;
+            this.hotkeyTextBox.Size = new System.Drawing.Size(139, 30);
+            this.hotkeyTextBox.TabIndex = 20;
+            this.hotkeyTextBox.TabStop = false;
+            this.hotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.hotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
+            this.hotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
             //
             // DisplayCombo
             // 
@@ -581,6 +609,8 @@
         private System.Windows.Forms.CheckBox minimizeStartCheckBox;
         private System.Windows.Forms.CheckBox autostartCheckBox;
         private System.Windows.Forms.CheckBox arenaCheckBox;
+        private System.Windows.Forms.Label hotkeyLabel;
+        private System.Windows.Forms.TextBox hotkeyTextBox;
         private System.Windows.Forms.ToolTip dvlToolTip;
         private System.Windows.Forms.ToolTip brightnessToolTip;
         private System.Windows.Forms.ToolTip contrastToolTip;

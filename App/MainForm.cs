@@ -52,18 +52,66 @@ namespace tarkov_settings
             return vk != 0;
         }
 
+        private bool TryRegisterVolumeHotkey()
+        {
+            return TryParseHotkey(appSetting.volumeToggleHotkey, out uint modifiers, out uint vk)
+                && RegisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE, modifiers, vk);
+        }
+
         // ShowInTaskbar toggling recreates the handle, so (re)register here
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            if (appSetting != null && TryParseHotkey(appSetting.volumeToggleHotkey, out uint modifiers, out uint vk))
-                RegisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE, modifiers, vk);
+            if (appSetting != null)
+                TryRegisterVolumeHotkey();
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
         {
             UnregisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE);
             base.OnHandleDestroyed(e);
+        }
+
+        private static string BuildHotkeyString(Keys modifiers, Keys key)
+        {
+            string hotkey = "";
+            if ((modifiers & Keys.Control) != 0) hotkey += "Ctrl+";
+            if ((modifiers & Keys.Alt) != 0) hotkey += "Alt+";
+            if ((modifiers & Keys.Shift) != 0) hotkey += "Shift+";
+            return hotkey + key.ToString();
+        }
+
+        private void HotkeyTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            // let Tab/arrow keys reach KeyDown instead of moving focus
+            e.IsInputKey = true;
+        }
+
+        private void HotkeyTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.SuppressKeyPress = true;
+
+            Keys key = e.KeyCode;
+            if (key == Keys.ControlKey || key == Keys.Menu || key == Keys.ShiftKey
+                || key == Keys.LWin || key == Keys.RWin)
+                return;
+
+            string previous = appSetting.volumeToggleHotkey;
+            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE);
+            appSetting.volumeToggleHotkey = BuildHotkeyString(e.Modifiers, key);
+            if (!TryRegisterVolumeHotkey())
+            {
+                // taken by another app - restore the previous binding
+                appSetting.volumeToggleHotkey = previous;
+                TryRegisterVolumeHotkey();
+                this.trayIcon.ShowBalloonTip(
+                    2500,
+                    "Hotkey unavailable",
+                    "That key is used by another app",
+                    ToolTipIcon.Warning
+                    );
+            }
+            hotkeyTextBox.Text = appSetting.volumeToggleHotkey;
         }
         #endregion
 
@@ -123,6 +171,7 @@ namespace tarkov_settings
             pMonitor.Init();
 
             this.arenaCheckBox.Checked = appSetting.pTargets.Contains(ARENA_PROCESS);
+            this.hotkeyTextBox.Text = appSetting.volumeToggleHotkey;
         }
 
         #region BCGS Getter/Setter
