@@ -12,6 +12,16 @@ namespace tarkov_settings
          */
         public static void Toggle(float low, float high)
         {
+            // settings are hand-edited; clamp and reorder so the toggle can never lock up
+            low = Math.Max(0f, Math.Min(1f, low));
+            high = Math.Max(0f, Math.Min(1f, high));
+            if (low > high)
+            {
+                float swap = low;
+                low = high;
+                high = swap;
+            }
+
             try
             {
                 using (var enumerator = new MMDeviceEnumerator())
