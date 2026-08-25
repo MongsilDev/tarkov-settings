@@ -18,6 +18,7 @@ namespace tarkov_settings
         private const uint MOD_CONTROL = 0x0002;
         private const uint MOD_SHIFT = 0x0004;
         private const uint MOD_WIN = 0x0008;
+        private const uint MOD_NOREPEAT = 0x4000;
 
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
@@ -55,7 +56,7 @@ namespace tarkov_settings
         private bool TryRegisterVolumeHotkey()
         {
             return TryParseHotkey(appSetting.volumeToggleHotkey, out uint modifiers, out uint vk)
-                && RegisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE, modifiers, vk);
+                && RegisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE, modifiers | MOD_NOREPEAT, vk);
         }
 
         // ShowInTaskbar toggling recreates the handle, so (re)register here
@@ -311,6 +312,8 @@ namespace tarkov_settings
         {
             this.Visible = true;
             this.ShowInTaskbar = true;
+            this.WindowState = FormWindowState.Normal;
+            this.Activate();
         }
 
         private void ExitFormClicked(object sender, EventArgs e)
