@@ -1,9 +1,9 @@
 # tarkov-settings
 ![screenshot](./1.png)
 
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fincheon-kim%2Ftarkov-settings&count_bg=%238C8C8C&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=true)](https://hits.seeyoufarm.com)
+[![Hits](https://hits.sh/github.com/MongsilDev/tarkov-settings.svg?style=flat-square&label=hits&color=8c8c8c&labelColor=555555)](https://hits.sh)
 
-## [->**DOWNLOAD Latest**<-](https://github.com/incheon-kim/tarkov-settings/releases/latest)
+## [->**DOWNLOAD Latest**<-](https://github.com/MongsilDev/tarkov-settings/actions/workflows/build.yml)
 
 Automatically change color settings for [Escape from Tarkov](https://escapefromtarkov.com).
 
@@ -34,7 +34,7 @@ You can change any of the following color settings:
 3. Minimize and play EFT
 4. Close application if you want to deactivate
 
-**Exit the app from your taskbar to create a `settings.json` file that will remember your settings**
+**Settings are saved to `%LOCALAPPDATA%\tarkov-settings\settings.json` whenever the app closes**
 
 ## Warning
 1. It might blink couple times when you active EFT window but it works. Don't worry.
