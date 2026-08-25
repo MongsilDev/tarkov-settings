@@ -26,10 +26,17 @@ namespace tarkov_settings.Setting
             if (!File.Exists(path))
                 path = fileName ?? DEFAULT_FILENAME;
 
-            T t = new T();
-            if (File.Exists(path))
-                t = JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
-            return t;
+            T t = null;
+            try
+            {
+                if (File.Exists(path))
+                    t = JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            }
+            catch (Exception)
+            {
+                // corrupted settings file - fall back to defaults
+            }
+            return t ?? new T();
         }
 
         private static string GetPath(string fileName)
