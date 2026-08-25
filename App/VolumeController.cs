@@ -7,9 +7,10 @@ namespace tarkov_settings
     static class VolumeController
     {
         /**
-         * Adjust audio session volume of every target process (delta: -1.0 ~ 1.0)
+         * Toggle audio session volume of every target process between low and high (0.0 ~ 1.0).
+         * Direction follows the loudest target session: above low goes low, otherwise high.
          */
-        public static void Adjust(float delta)
+        public static void Toggle(float low, float high)
         {
             try
             {
@@ -17,6 +18,9 @@ namespace tarkov_settings
                 using (var device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia))
                 {
                     var sessions = device.AudioSessionManager.Sessions;
+                    var targets = new System.Collections.Generic.List<SimpleAudioVolume>();
+                    float loudest = -1f;
+
                     for (int i = 0; i < sessions.Count; i++)
                     {
                         var session = sessions[i];
@@ -24,10 +28,17 @@ namespace tarkov_settings
                         if (pName == null || !ProcessMonitor.Instance.IsTarget(pName))
                             continue;
 
-                        var volume = session.SimpleAudioVolume;
-                        volume.Volume = Math.Max(0f, Math.Min(1f, volume.Volume + delta));
-                        Console.WriteLine("[volume] {0} -> {1:P0}", pName, volume.Volume);
+                        targets.Add(session.SimpleAudioVolume);
+                        loudest = Math.Max(loudest, session.SimpleAudioVolume.Volume);
                     }
+
+                    if (targets.Count == 0)
+                        return;
+
+                    float level = loudest > low + 0.005f ? low : high;
+                    foreach (var volume in targets)
+                        volume.Volume = Math.Max(0f, Math.Min(1f, level));
+                    Console.WriteLine("[volume] -> {0:P0}", level);
                 }
             }
             catch (Exception e)

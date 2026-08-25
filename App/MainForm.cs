@@ -11,12 +11,13 @@ namespace tarkov_settings
     {
         private const string ARENA_PROCESS = "EscapeFromTarkovArena";
 
-        #region Volume Hotkey (Ctrl+Alt+PageUp / Ctrl+Alt+PageDown)
+        #region Volume Toggle Hotkey
         private const int WM_HOTKEY = 0x0312;
-        private const int HOTKEY_VOLUME_UP = 1;
-        private const int HOTKEY_VOLUME_DOWN = 2;
+        private const int HOTKEY_VOLUME_TOGGLE = 1;
         private const uint MOD_ALT = 0x0001;
         private const uint MOD_CONTROL = 0x0002;
+        private const uint MOD_SHIFT = 0x0004;
+        private const uint MOD_WIN = 0x0008;
 
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
@@ -24,18 +25,44 @@ namespace tarkov_settings
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+        // "Ctrl+Alt+PageDown" style, key names follow the WinForms Keys enum
+        private static bool TryParseHotkey(string hotkey, out uint modifiers, out uint vk)
+        {
+            modifiers = 0;
+            vk = 0;
+            if (string.IsNullOrEmpty(hotkey))
+                return false;
+
+            foreach (string part in hotkey.Split('+'))
+            {
+                switch (part.Trim().ToLower())
+                {
+                    case "ctrl":
+                    case "control": modifiers |= MOD_CONTROL; break;
+                    case "alt": modifiers |= MOD_ALT; break;
+                    case "shift": modifiers |= MOD_SHIFT; break;
+                    case "win": modifiers |= MOD_WIN; break;
+                    default:
+                        if (!Enum.TryParse(part.Trim(), true, out Keys key))
+                            return false;
+                        vk = (uint)key;
+                        break;
+                }
+            }
+            return vk != 0;
+        }
+
         // ShowInTaskbar toggling recreates the handle, so (re)register here
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            RegisterHotKey(this.Handle, HOTKEY_VOLUME_UP, MOD_CONTROL | MOD_ALT, (uint)Keys.PageUp);
-            RegisterHotKey(this.Handle, HOTKEY_VOLUME_DOWN, MOD_CONTROL | MOD_ALT, (uint)Keys.PageDown);
+            if (appSetting != null && TryParseHotkey(appSetting.volumeToggleHotkey, out uint modifiers, out uint vk))
+                RegisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE, modifiers, vk);
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
         {
-            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_UP);
-            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_DOWN);
+            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE);
             base.OnHandleDestroyed(e);
         }
         #endregion
@@ -224,13 +251,9 @@ namespace tarkov_settings
                     ToolTipIcon.Info
                     );
             }
-            else if (m.Msg == WM_HOTKEY)
+            else if (m.Msg == WM_HOTKEY && (int)m.WParam == HOTKEY_VOLUME_TOGGLE)
             {
-                float step = appSetting.volumeStep / 100f;
-                if ((int)m.WParam == HOTKEY_VOLUME_UP)
-                    VolumeController.Adjust(step);
-                else if ((int)m.WParam == HOTKEY_VOLUME_DOWN)
-                    VolumeController.Adjust(-step);
+                VolumeController.Toggle(appSetting.volumeLow / 100f, appSetting.volumeHigh / 100f);
             }
             base.WndProc(ref m);
         }
