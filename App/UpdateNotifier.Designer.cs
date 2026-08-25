@@ -169,7 +169,7 @@ namespace tarkov_settings
             // 
             this.AcceptButton = this.UpdateButton;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.CancelButton = this.UpdateButton;
+            this.CancelButton = this.UpdateCancelButton;
             this.ClientSize = new System.Drawing.Size(263, 155);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
