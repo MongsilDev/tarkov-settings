@@ -81,8 +81,11 @@ namespace tarkov_settings.GPU
         public void Load(string display) {
             try
             {
-                displayHandle = DisplayApi.GetAssociatedNvidiaDisplayHandle(display);
-                PrivateDisplayDVCInfo dvcInfo = DisplayApi.GetDVCInfo(displayHandle);
+                // commit fields only when every call succeeded, so handle and
+                // levels can never end up describing different displays
+                DisplayHandle handle = DisplayApi.GetAssociatedNvidiaDisplayHandle(display);
+                PrivateDisplayDVCInfo dvcInfo = DisplayApi.GetDVCInfo(handle);
+                this.displayHandle = handle;
                 this._maxSaturation = dvcInfo.MaximumLevel;
                 this._minSaturation = dvcInfo.MinimumLevel;
                 this._initSaturation = this.currentSaturation = dvcInfo.CurrentLevel;

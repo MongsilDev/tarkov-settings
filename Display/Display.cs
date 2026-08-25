@@ -36,20 +36,29 @@ namespace tarkov_settings
             get => _primary;
             set
             {
-                if (displays.Contains(value))
+                string target = displays.Contains(value) ? value : displays[0];
+                if (target == _primary)
+                    return;
+
+                var cController = ColorController.Instance;
+
+                // restore the outgoing display first, so its backup ramp is never
+                // written to the new display and DVC init levels stay uncontaminated
+                if (_primary != null && cController.IsApplied)
                 {
-                    _primary = value;
-                    
+                    cController.ChangeColorRamp(reset: true);
+                    cController.ResetDVL();
                 }
-                else
-                {
-                    _primary = displays[0];
-                }
+
+                _primary = target;
                 try
                 {
                     gpu.Load(_primary);
                 }
                 catch (NotImplementedException) { }
+
+                // re-backup the gamma ramp of the newly selected display
+                cController.Init();
             }
         }
 
