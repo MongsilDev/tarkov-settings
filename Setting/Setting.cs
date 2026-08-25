@@ -14,8 +14,22 @@ namespace tarkov_settings.Setting
 
         public void Save(string fileName = null)
         {
-            Directory.CreateDirectory(SettingDir);
-            File.WriteAllText(GetPath(fileName), JsonConvert.SerializeObject(this, Formatting.Indented));
+            // best-effort: a failing disk must not crash the exit path
+            try
+            {
+                Directory.CreateDirectory(SettingDir);
+                string path = GetPath(fileName);
+                string temp = path + ".tmp";
+                File.WriteAllText(temp, JsonConvert.SerializeObject(this, Formatting.Indented));
+                if (File.Exists(path))
+                    File.Replace(temp, path, null);
+                else
+                    File.Move(temp, path);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[settings] save failed: {0}", e.Message);
+            }
         }
 
         public static T Load(string fileName = null)
@@ -24,19 +38,39 @@ namespace tarkov_settings.Setting
 
             // migrate from older versions that saved next to the exe
             if (!File.Exists(path))
-                path = fileName ?? DEFAULT_FILENAME;
+                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName ?? DEFAULT_FILENAME);
 
             T t = null;
             try
             {
                 if (File.Exists(path))
-                    t = JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+                    t = JsonConvert.DeserializeObject<T>(ReadWithRetry(path), new JsonSerializerSettings
+                    {
+                        // replace prefilled collection defaults instead of merging saved items into them
+                        ObjectCreationHandling = ObjectCreationHandling.Replace,
+                    });
             }
             catch (Exception)
             {
                 // corrupted settings file - fall back to defaults
             }
             return t ?? new T();
+        }
+
+        // antivirus/backup tools may hold the file briefly right after boot
+        private static string ReadWithRetry(string path)
+        {
+            for (int attempt = 0; ; attempt++)
+            {
+                try
+                {
+                    return File.ReadAllText(path);
+                }
+                catch (IOException) when (attempt < 3)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
+            }
         }
 
         private static string GetPath(string fileName)
