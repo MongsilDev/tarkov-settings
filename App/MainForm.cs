@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using tarkov_settings.Setting;
 using tarkov_settings.GPU;
@@ -9,6 +10,35 @@ namespace tarkov_settings
     public partial class MainForm : Form
     {
         private const string ARENA_PROCESS = "EscapeFromTarkovArena";
+
+        #region Volume Hotkey (Ctrl+Alt+PageUp / Ctrl+Alt+PageDown)
+        private const int WM_HOTKEY = 0x0312;
+        private const int HOTKEY_VOLUME_UP = 1;
+        private const int HOTKEY_VOLUME_DOWN = 2;
+        private const uint MOD_ALT = 0x0001;
+        private const uint MOD_CONTROL = 0x0002;
+
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        // ShowInTaskbar toggling recreates the handle, so (re)register here
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            RegisterHotKey(this.Handle, HOTKEY_VOLUME_UP, MOD_CONTROL | MOD_ALT, (uint)Keys.PageUp);
+            RegisterHotKey(this.Handle, HOTKEY_VOLUME_DOWN, MOD_CONTROL | MOD_ALT, (uint)Keys.PageDown);
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_UP);
+            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_DOWN);
+            base.OnHandleDestroyed(e);
+        }
+        #endregion
 
         private ProcessMonitor pMonitor = ProcessMonitor.Instance;
         private IGPU gpu = GPUDevice.Instance;
@@ -187,6 +217,14 @@ namespace tarkov_settings
                     "Check out tray to modify your color setting",
                     ToolTipIcon.Info
                     );
+            }
+            else if (m.Msg == WM_HOTKEY)
+            {
+                float step = appSetting.volumeStep / 100f;
+                if ((int)m.WParam == HOTKEY_VOLUME_UP)
+                    VolumeController.Adjust(step);
+                else if ((int)m.WParam == HOTKEY_VOLUME_DOWN)
+                    VolumeController.Adjust(-step);
             }
             base.WndProc(ref m);
         }

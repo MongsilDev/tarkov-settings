@@ -92,6 +92,11 @@ namespace tarkov_settings
             this.pTargets.Remove(process);
         }
 
+        public bool IsTarget(string pName)
+        {
+            return this.pTargets.Contains(pName);
+        }
+
         public void Init()
         {
             processHook = new NativeMethods.WinEventDelegate(WinEventProc);
