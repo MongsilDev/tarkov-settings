@@ -40,6 +40,10 @@
             this.arenaCheckBox = new System.Windows.Forms.CheckBox();
             this.hotkeyLabel = new System.Windows.Forms.Label();
             this.hotkeyTextBox = new System.Windows.Forms.TextBox();
+            this.volumeLevelLabel = new System.Windows.Forms.Label();
+            this.volumeLowNum = new System.Windows.Forms.NumericUpDown();
+            this.volumeSepLabel = new System.Windows.Forms.Label();
+            this.volumeHighNum = new System.Windows.Forms.NumericUpDown();
             this.DisplayCombo = new System.Windows.Forms.ComboBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
@@ -83,6 +87,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.ContrastBar)).BeginInit();
             this.gammaPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GammaBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.volumeLowNum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.volumeHighNum)).BeginInit();
             this.trayMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -163,6 +169,10 @@
             this.ColorPanel.Controls.Add(this.arenaCheckBox);
             this.ColorPanel.Controls.Add(this.hotkeyLabel);
             this.ColorPanel.Controls.Add(this.hotkeyTextBox);
+            this.ColorPanel.Controls.Add(this.volumeLevelLabel);
+            this.ColorPanel.Controls.Add(this.volumeLowNum);
+            this.ColorPanel.Controls.Add(this.volumeSepLabel);
+            this.ColorPanel.Controls.Add(this.volumeHighNum);
             this.ColorPanel.Controls.Add(this.DisplayCombo);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
@@ -234,6 +244,46 @@
             this.hotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.hotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
             this.hotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
+            //
+            // volumeLevelLabel
+            //
+            this.volumeLevelLabel.AutoSize = true;
+            this.volumeLevelLabel.BackColor = System.Drawing.Color.Transparent;
+            this.volumeLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.volumeLevelLabel.Location = new System.Drawing.Point(410, 398);
+            this.volumeLevelLabel.Name = "volumeLevelLabel";
+            this.volumeLevelLabel.Size = new System.Drawing.Size(84, 22);
+            this.volumeLevelLabel.TabIndex = 21;
+            this.volumeLevelLabel.Text = "Volume %";
+            //
+            // volumeLowNum
+            //
+            this.volumeLowNum.Location = new System.Drawing.Point(502, 394);
+            this.volumeLowNum.Name = "volumeLowNum";
+            this.volumeLowNum.Size = new System.Drawing.Size(58, 30);
+            this.volumeLowNum.TabIndex = 22;
+            this.volumeLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.volumeLowNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
+            //
+            // volumeSepLabel
+            //
+            this.volumeSepLabel.AutoSize = true;
+            this.volumeSepLabel.BackColor = System.Drawing.Color.Transparent;
+            this.volumeSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.volumeSepLabel.Location = new System.Drawing.Point(564, 398);
+            this.volumeSepLabel.Name = "volumeSepLabel";
+            this.volumeSepLabel.Size = new System.Drawing.Size(18, 22);
+            this.volumeSepLabel.TabIndex = 23;
+            this.volumeSepLabel.Text = "~";
+            //
+            // volumeHighNum
+            //
+            this.volumeHighNum.Location = new System.Drawing.Point(583, 394);
+            this.volumeHighNum.Name = "volumeHighNum";
+            this.volumeHighNum.Size = new System.Drawing.Size(58, 30);
+            this.volumeHighNum.TabIndex = 24;
+            this.volumeHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.volumeHighNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
             //
             // DisplayCombo
             // 
@@ -538,7 +588,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(734, 404);
+            this.ClientSize = new System.Drawing.Size(734, 436);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -567,6 +617,8 @@
             this.gammaPanel.ResumeLayout(false);
             this.gammaPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GammaBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.volumeLowNum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.volumeHighNum)).EndInit();
             this.trayMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -611,6 +663,10 @@
         private System.Windows.Forms.CheckBox arenaCheckBox;
         private System.Windows.Forms.Label hotkeyLabel;
         private System.Windows.Forms.TextBox hotkeyTextBox;
+        private System.Windows.Forms.Label volumeLevelLabel;
+        private System.Windows.Forms.NumericUpDown volumeLowNum;
+        private System.Windows.Forms.Label volumeSepLabel;
+        private System.Windows.Forms.NumericUpDown volumeHighNum;
         private System.Windows.Forms.ToolTip dvlToolTip;
         private System.Windows.Forms.ToolTip brightnessToolTip;
         private System.Windows.Forms.ToolTip contrastToolTip;

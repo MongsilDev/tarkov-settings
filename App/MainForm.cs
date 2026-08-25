@@ -173,6 +173,8 @@ namespace tarkov_settings
 
             this.arenaCheckBox.Checked = appSetting.pTargets.Contains(ARENA_PROCESS);
             this.hotkeyTextBox.Text = appSetting.volumeToggleHotkey;
+            this.volumeLowNum.Value = Math.Min(100, Math.Max(0, appSetting.volumeLow));
+            this.volumeHighNum.Value = Math.Min(100, Math.Max(0, appSetting.volumeHigh));
         }
 
         #region BCGS Getter/Setter
@@ -367,6 +369,12 @@ namespace tarkov_settings
         private void CheckOnAutostart(object sender, EventArgs e)
         {
             Autostart.Enabled = this.autostartCheckBox.Checked;
+        }
+
+        private void VolumeLevel_ValueChanged(object sender, EventArgs e)
+        {
+            appSetting.volumeLow = (int)volumeLowNum.Value;
+            appSetting.volumeHigh = (int)volumeHighNum.Value;
         }
 
         // applied at the next focus change, no restart needed
