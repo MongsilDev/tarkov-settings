@@ -29,8 +29,9 @@ namespace tarkov_settings
             minimizeOnStart = appSetting.minimizeOnStart;
             this.minimizeStartCheckBox.Checked = minimizeOnStart;
 
-            // setting Checked re-fires the handler, refreshing the registry path if the exe moved
-            this.autostartCheckBox.Checked = Autostart.Enabled;
+            this.autostartCheckBox.Checked = appSetting.autostart;
+            // handler fires only on change, so force-sync the registry with the saved state
+            Autostart.Enabled = appSetting.autostart;
             #endregion
             
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -120,22 +121,23 @@ namespace tarkov_settings
         private void ColorLabel_DClick(object sender, EventArgs e)
         {
             var label = sender as Label;
-            
+            var def = new AppSetting();
+
             if (label.Equals(BrightnessLabel))
             {
-                BrightnessBar.Value = 50;
+                BrightnessBar.Value = (int)(def.brightness * 100);
             }
             else if (label.Equals(ContrastLabel))
             {
-                ContrastBar.Value = 50;
+                ContrastBar.Value = (int)(def.contrast * 100);
             }
             else if (label.Equals(GammaLabel))
             {
-                GammaBar.Value = 100;
+                GammaBar.Value = (int)(def.gamma * 100);
             }
             else if (label.Equals(DVLLabel))
             {
-                DVLBar.Value = 0;
+                DVLBar.Value = def.saturation;
             }
         }
         private void TrackBar_ValueChanged(object sender, EventArgs e)
@@ -204,6 +206,7 @@ namespace tarkov_settings
             appSetting.saturation = DVL;
             appSetting.display = (string)DisplayCombo.SelectedItem;
             appSetting.minimizeOnStart = minimizeOnStart;
+            appSetting.autostart = autostartCheckBox.Checked;
             appSetting.Save();
         }
 
