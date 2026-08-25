@@ -19,7 +19,7 @@ namespace tarkov_settings.Setting
         public string display = @"\\.\DISPLAY1";
         public bool minimizeOnStart = true;
         public bool autostart = false;
-        public string volumeToggleHotkey = "Ctrl+Alt+PageDown";
+        public string volumeToggleHotkey = "PageDown";
         public int volumeLow = 5;
         public int volumeHigh = 100;
     }
