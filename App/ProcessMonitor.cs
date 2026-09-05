@@ -122,6 +122,7 @@ namespace tarkov_settings
             {
                 Console.WriteLine("[pMonitor] Target Process is focused");
 
+                Parent.SetHotkeysActive(true);
                 Parent.FollowWindowDisplay(hWnd);
 
                 var (b, c, g, dvl) = Parent.GetColorValue();
@@ -134,6 +135,8 @@ namespace tarkov_settings
             else
             {
                 Console.WriteLine("[pMonitor] Target Process is not focused");
+
+                Parent.SetHotkeysActive(false);
 
                 // skip GDI/NVAPI calls when switching between non-target windows
                 if (!cController.IsApplied)

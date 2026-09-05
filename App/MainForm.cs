@@ -55,21 +55,34 @@ namespace tarkov_settings
             return vk != 0;
         }
 
+        // hotkeys are only registered while a target game is focused, so plain keys
+        // like PageDown keep working in every other app
+        private bool hotkeysActive;
+
         private bool TryRegisterHotkey(int id, string hotkey)
         {
             return TryParseHotkey(hotkey, out uint modifiers, out uint vk)
                 && RegisterHotKey(this.Handle, id, modifiers | MOD_NOREPEAT, vk);
         }
 
-        // ShowInTaskbar toggling recreates the handle, so (re)register here
-        protected override void OnHandleCreated(EventArgs e)
+        public void SetHotkeysActive(bool active)
         {
-            base.OnHandleCreated(e);
-            if (appSetting != null)
+            hotkeysActive = active;
+            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE);
+            UnregisterHotKey(this.Handle, HOTKEY_GAMMA_TOGGLE);
+            if (active)
             {
                 TryRegisterHotkey(HOTKEY_VOLUME_TOGGLE, appSetting.volumeToggleHotkey);
                 TryRegisterHotkey(HOTKEY_GAMMA_TOGGLE, appSetting.gammaToggleHotkey);
             }
+        }
+
+        // ShowInTaskbar toggling recreates the handle, so (re)register here
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            if (appSetting != null && hotkeysActive)
+                SetHotkeysActive(true);
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
