@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -95,45 +96,92 @@ namespace tarkov_settings
             return hotkey + key.ToString();
         }
 
+        private static string HotkeyDisplay(string hotkey)
+        {
+            return string.IsNullOrEmpty(hotkey) ? "None" : hotkey;
+        }
+
         private void HotkeyTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            // let Tab/arrow keys reach KeyDown instead of moving focus
-            e.IsInputKey = true;
+            // arrows etc. reach KeyDown to be captured; Tab keeps moving focus
+            e.IsInputKey = e.KeyCode != Keys.Tab;
+        }
+
+        private void HotkeyTextBox_Enter(object sender, EventArgs e)
+        {
+            var box = (TextBox)sender;
+            box.BackColor = SystemColors.Window;
+            box.Text = "Press a key";
+        }
+
+        private void HotkeyTextBox_Leave(object sender, EventArgs e)
+        {
+            var box = (TextBox)sender;
+            box.BackColor = SystemColors.Control;
+            box.Text = HotkeyDisplay(box == gammaHotkeyTextBox ? appSetting.gammaToggleHotkey : appSetting.volumeToggleHotkey);
+        }
+
+        // unmodified letters/digits would swallow normal typing in every app
+        private static bool NeedsModifier(Keys key)
+        {
+            return (key >= Keys.A && key <= Keys.Z)
+                || (key >= Keys.D0 && key <= Keys.D9)
+                || key == Keys.Space
+                || (key >= Keys.Oem1 && key <= Keys.OemBackslash);
         }
 
         private void HotkeyTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             e.SuppressKeyPress = true;
-
+            var box = (TextBox)sender;
             Keys key = e.KeyCode;
+
             if (key == Keys.ControlKey || key == Keys.Menu || key == Keys.ShiftKey
                 || key == Keys.LWin || key == Keys.RWin)
                 return;
 
-            bool isGamma = sender == gammaHotkeyTextBox;
+            if (key == Keys.Escape || key == Keys.Return)
+            {
+                this.ActiveControl = null;
+                return;
+            }
+
+            bool isGamma = box == gammaHotkeyTextBox;
             int id = isGamma ? HOTKEY_GAMMA_TOGGLE : HOTKEY_VOLUME_TOGGLE;
             string previous = isGamma ? appSetting.gammaToggleHotkey : appSetting.volumeToggleHotkey;
-            string hotkey = BuildHotkeyString(e.Modifiers, key);
+            string hotkey;
 
-            UnregisterHotKey(this.Handle, id);
-            if (!TryRegisterHotkey(id, hotkey))
+            if (key == Keys.Back || key == Keys.Delete)
             {
-                // taken by another app (or by the other toggle) - restore the previous binding
-                hotkey = previous;
-                TryRegisterHotkey(id, previous);
-                this.trayIcon.ShowBalloonTip(
-                    2500,
-                    "Hotkey unavailable",
-                    "That key is already in use",
-                    ToolTipIcon.Warning
-                    );
+                hotkey = "";
+            }
+            else if (e.Modifiers == Keys.None && NeedsModifier(key))
+            {
+                hintToolTip.Show("Use F-keys or add Ctrl/Alt/Shift", box, 0, -22, 2000);
+                return;
+            }
+            else
+            {
+                hotkey = BuildHotkeyString(e.Modifiers, key);
+                // probe availability; the live registration happens only while a game is focused
+                UnregisterHotKey(this.Handle, id);
+                bool available = TryRegisterHotkey(id, hotkey);
+                UnregisterHotKey(this.Handle, id);
+                if (!available)
+                {
+                    hintToolTip.Show("That key is already in use", box, 0, -22, 2000);
+                    hotkey = previous;
+                }
             }
 
             if (isGamma)
                 appSetting.gammaToggleHotkey = hotkey;
             else
                 appSetting.volumeToggleHotkey = hotkey;
-            ((TextBox)sender).Text = hotkey;
+            if (hotkeysActive)
+                SetHotkeysActive(true);
+
+            this.ActiveControl = null;
         }
         #endregion
 
@@ -193,7 +241,7 @@ namespace tarkov_settings
             pMonitor.Init();
 
             this.arenaCheckBox.Checked = appSetting.pTargets.Contains(ARENA_PROCESS);
-            this.hotkeyTextBox.Text = appSetting.volumeToggleHotkey;
+            this.hotkeyTextBox.Text = HotkeyDisplay(appSetting.volumeToggleHotkey);
             // capture both before assigning - the shared ValueChanged handler writes the
             // sibling control's (not yet initialized) value back into appSetting
             int volumeLow = Math.Min(100, Math.Max(0, appSetting.volumeLow));
@@ -203,7 +251,7 @@ namespace tarkov_settings
             appSetting.volumeLow = volumeLow;
             appSetting.volumeHigh = volumeHigh;
 
-            this.gammaHotkeyTextBox.Text = appSetting.gammaToggleHotkey;
+            this.gammaHotkeyTextBox.Text = HotkeyDisplay(appSetting.gammaToggleHotkey);
             decimal gammaLow = ClampToNum(gammaLowNum, (decimal)appSetting.gammaLow);
             decimal gammaHigh = ClampToNum(gammaHighNum, (decimal)appSetting.gammaHigh);
             this.gammaLowNum.Value = gammaLow;
