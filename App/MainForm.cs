@@ -319,14 +319,15 @@ namespace tarkov_settings
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (minimizeOnStart)
+            // a fresh install always shows the window once, whatever the minimize default is
+            if (minimizeOnStart && !AppSetting.FirstRun)
             {
                 this.Visible = false;
                 this.ShowInTaskbar = false;
                 this.trayIcon.ShowBalloonTip(
                     2500,
-                    "Tarkov Settings Initailized!",
-                    "Check out tray to modify your color setting",
+                    "Tarkov Settings is running in the tray",
+                    "Double-click the tray icon to open settings",
                     ToolTipIcon.Info
                     );
             }
@@ -403,8 +404,8 @@ namespace tarkov_settings
             {
                 this.trayIcon.ShowBalloonTip(
                     2500,
-                    "Tarkov Settings is already running!",
-                    "Check out tray to modify your color setting",
+                    "Tarkov Settings is already running",
+                    "Double-click the tray icon to open settings",
                     ToolTipIcon.Info
                     );
             }

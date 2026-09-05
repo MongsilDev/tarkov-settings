@@ -32,6 +32,9 @@ namespace tarkov_settings.Setting
             }
         }
 
+        // true when no settings file existed anywhere at load time
+        public static bool FirstRun { get; private set; }
+
         public static T Load(string fileName = null)
         {
             string path = GetPath(fileName);
@@ -39,6 +42,8 @@ namespace tarkov_settings.Setting
             // migrate from older versions that saved next to the exe
             if (!File.Exists(path))
                 path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName ?? DEFAULT_FILENAME);
+
+            FirstRun = !File.Exists(path);
 
             T t = null;
             try
