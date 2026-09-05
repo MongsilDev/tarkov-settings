@@ -11,9 +11,10 @@ namespace tarkov_settings
     {
         private const string ARENA_PROCESS = "EscapeFromTarkovArena";
 
-        #region Volume Toggle Hotkey
+        #region Toggle Hotkeys (volume / gamma)
         private const int WM_HOTKEY = 0x0312;
         private const int HOTKEY_VOLUME_TOGGLE = 1;
+        private const int HOTKEY_GAMMA_TOGGLE = 2;
         private const uint MOD_ALT = 0x0001;
         private const uint MOD_CONTROL = 0x0002;
         private const uint MOD_SHIFT = 0x0004;
@@ -53,10 +54,10 @@ namespace tarkov_settings
             return vk != 0;
         }
 
-        private bool TryRegisterVolumeHotkey()
+        private bool TryRegisterHotkey(int id, string hotkey)
         {
-            return TryParseHotkey(appSetting.volumeToggleHotkey, out uint modifiers, out uint vk)
-                && RegisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE, modifiers | MOD_NOREPEAT, vk);
+            return TryParseHotkey(hotkey, out uint modifiers, out uint vk)
+                && RegisterHotKey(this.Handle, id, modifiers | MOD_NOREPEAT, vk);
         }
 
         // ShowInTaskbar toggling recreates the handle, so (re)register here
@@ -64,13 +65,25 @@ namespace tarkov_settings
         {
             base.OnHandleCreated(e);
             if (appSetting != null)
-                TryRegisterVolumeHotkey();
+            {
+                TryRegisterHotkey(HOTKEY_VOLUME_TOGGLE, appSetting.volumeToggleHotkey);
+                TryRegisterHotkey(HOTKEY_GAMMA_TOGGLE, appSetting.gammaToggleHotkey);
+            }
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
         {
             UnregisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE);
+            UnregisterHotKey(this.Handle, HOTKEY_GAMMA_TOGGLE);
             base.OnHandleDestroyed(e);
+        }
+
+        private void ToggleGamma()
+        {
+            double low = Math.Min(appSetting.gammaLow, appSetting.gammaHigh);
+            double high = Math.Max(appSetting.gammaLow, appSetting.gammaHigh);
+            Gamma = Gamma >= (low + high) / 2 ? low : high;
+            pMonitor.Reapply();
         }
 
         private static string BuildHotkeyString(Keys modifiers, Keys key)
@@ -97,22 +110,30 @@ namespace tarkov_settings
                 || key == Keys.LWin || key == Keys.RWin)
                 return;
 
-            string previous = appSetting.volumeToggleHotkey;
-            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE);
-            appSetting.volumeToggleHotkey = BuildHotkeyString(e.Modifiers, key);
-            if (!TryRegisterVolumeHotkey())
+            bool isGamma = sender == gammaHotkeyTextBox;
+            int id = isGamma ? HOTKEY_GAMMA_TOGGLE : HOTKEY_VOLUME_TOGGLE;
+            string previous = isGamma ? appSetting.gammaToggleHotkey : appSetting.volumeToggleHotkey;
+            string hotkey = BuildHotkeyString(e.Modifiers, key);
+
+            UnregisterHotKey(this.Handle, id);
+            if (!TryRegisterHotkey(id, hotkey))
             {
-                // taken by another app - restore the previous binding
-                appSetting.volumeToggleHotkey = previous;
-                TryRegisterVolumeHotkey();
+                // taken by another app (or by the other toggle) - restore the previous binding
+                hotkey = previous;
+                TryRegisterHotkey(id, previous);
                 this.trayIcon.ShowBalloonTip(
                     2500,
                     "Hotkey unavailable",
-                    "That key is used by another app",
+                    "That key is already in use",
                     ToolTipIcon.Warning
                     );
             }
-            hotkeyTextBox.Text = appSetting.volumeToggleHotkey;
+
+            if (isGamma)
+                appSetting.gammaToggleHotkey = hotkey;
+            else
+                appSetting.volumeToggleHotkey = hotkey;
+            ((TextBox)sender).Text = hotkey;
         }
         #endregion
 
@@ -181,6 +202,14 @@ namespace tarkov_settings
             this.volumeHighNum.Value = volumeHigh;
             appSetting.volumeLow = volumeLow;
             appSetting.volumeHigh = volumeHigh;
+
+            this.gammaHotkeyTextBox.Text = appSetting.gammaToggleHotkey;
+            decimal gammaLow = ClampToNum(gammaLowNum, (decimal)appSetting.gammaLow);
+            decimal gammaHigh = ClampToNum(gammaHighNum, (decimal)appSetting.gammaHigh);
+            this.gammaLowNum.Value = gammaLow;
+            this.gammaHighNum.Value = gammaHigh;
+            appSetting.gammaLow = (double)gammaLow;
+            appSetting.gammaHigh = (double)gammaHigh;
         }
 
         #region BCGS Getter/Setter
@@ -309,9 +338,17 @@ namespace tarkov_settings
                     ToolTipIcon.Info
                     );
             }
-            else if (m.Msg == WM_HOTKEY && (int)m.WParam == HOTKEY_VOLUME_TOGGLE)
+            else if (m.Msg == WM_HOTKEY)
             {
-                VolumeController.Toggle(appSetting.volumeLow / 100f, appSetting.volumeHigh / 100f);
+                switch ((int)m.WParam)
+                {
+                    case HOTKEY_VOLUME_TOGGLE:
+                        VolumeController.Toggle(appSetting.volumeLow / 100f, appSetting.volumeHigh / 100f);
+                        break;
+                    case HOTKEY_GAMMA_TOGGLE:
+                        ToggleGamma();
+                        break;
+                }
             }
             base.WndProc(ref m);
         }
@@ -381,6 +418,17 @@ namespace tarkov_settings
         {
             appSetting.volumeLow = (int)volumeLowNum.Value;
             appSetting.volumeHigh = (int)volumeHighNum.Value;
+        }
+
+        private void GammaLevel_ValueChanged(object sender, EventArgs e)
+        {
+            appSetting.gammaLow = (double)gammaLowNum.Value;
+            appSetting.gammaHigh = (double)gammaHighNum.Value;
+        }
+
+        private static decimal ClampToNum(NumericUpDown num, decimal value)
+        {
+            return Math.Min(Math.Max(value, num.Minimum), num.Maximum);
         }
 
         // applied at the next focus change, no restart needed

@@ -22,5 +22,8 @@ namespace tarkov_settings.Setting
         public string volumeToggleHotkey = "PageDown";
         public int volumeLow = 5;
         public int volumeHigh = 100;
+        public string gammaToggleHotkey = "PageUp";
+        public double gammaLow = 1.5;
+        public double gammaHigh = 2.0;
     }
 }

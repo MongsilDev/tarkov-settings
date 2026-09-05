@@ -143,6 +143,22 @@ namespace tarkov_settings
         }
 
         /**
+         * Push the current slider values to the display while a target is focused
+         */
+        public void Reapply()
+        {
+            if (!cController.IsApplied)
+                return;
+
+            var (b, c, g, dvl) = Parent.GetColorValue();
+            cController.ChangeColorRamp(brightness: b,
+                                        contrast: c,
+                                        gamma: g,
+                                        reset: false);
+            cController.DVL = dvl;
+        }
+
+        /**
          * Reset to original color settings before exit
          */
         public void Close()

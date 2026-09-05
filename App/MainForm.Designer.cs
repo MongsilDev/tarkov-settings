@@ -44,6 +44,12 @@
             this.volumeLowNum = new System.Windows.Forms.NumericUpDown();
             this.volumeSepLabel = new System.Windows.Forms.Label();
             this.volumeHighNum = new System.Windows.Forms.NumericUpDown();
+            this.gammaLevelLabel = new System.Windows.Forms.Label();
+            this.gammaLowNum = new System.Windows.Forms.NumericUpDown();
+            this.gammaSepLabel = new System.Windows.Forms.Label();
+            this.gammaHighNum = new System.Windows.Forms.NumericUpDown();
+            this.gammaKeyLabel = new System.Windows.Forms.Label();
+            this.gammaHotkeyTextBox = new System.Windows.Forms.TextBox();
             this.DisplayCombo = new System.Windows.Forms.ComboBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
@@ -89,6 +95,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.GammaBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.volumeLowNum)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.volumeHighNum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gammaLowNum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gammaHighNum)).BeginInit();
             this.trayMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -173,6 +181,12 @@
             this.ColorPanel.Controls.Add(this.volumeLowNum);
             this.ColorPanel.Controls.Add(this.volumeSepLabel);
             this.ColorPanel.Controls.Add(this.volumeHighNum);
+            this.ColorPanel.Controls.Add(this.gammaLevelLabel);
+            this.ColorPanel.Controls.Add(this.gammaLowNum);
+            this.ColorPanel.Controls.Add(this.gammaSepLabel);
+            this.ColorPanel.Controls.Add(this.gammaHighNum);
+            this.ColorPanel.Controls.Add(this.gammaKeyLabel);
+            this.ColorPanel.Controls.Add(this.gammaHotkeyTextBox);
             this.ColorPanel.Controls.Add(this.DisplayCombo);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
@@ -284,6 +298,80 @@
             this.volumeHighNum.TabIndex = 24;
             this.volumeHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.volumeHighNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
+            //
+            // gammaLevelLabel
+            //
+            this.gammaLevelLabel.AutoSize = true;
+            this.gammaLevelLabel.BackColor = System.Drawing.Color.Transparent;
+            this.gammaLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaLevelLabel.Location = new System.Drawing.Point(185, 398);
+            this.gammaLevelLabel.Name = "gammaLevelLabel";
+            this.gammaLevelLabel.Size = new System.Drawing.Size(84, 22);
+            this.gammaLevelLabel.TabIndex = 25;
+            this.gammaLevelLabel.Text = "Gamma";
+            //
+            // gammaLowNum
+            //
+            this.gammaLowNum.DecimalPlaces = 1;
+            this.gammaLowNum.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            this.gammaLowNum.Location = new System.Drawing.Point(280, 394);
+            this.gammaLowNum.Maximum = new decimal(new int[] { 28, 0, 0, 65536 });
+            this.gammaLowNum.Minimum = new decimal(new int[] { 4, 0, 0, 65536 });
+            this.gammaLowNum.Name = "gammaLowNum";
+            this.gammaLowNum.Size = new System.Drawing.Size(58, 30);
+            this.gammaLowNum.TabIndex = 26;
+            this.gammaLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.gammaLowNum.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            this.gammaLowNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
+            //
+            // gammaSepLabel
+            //
+            this.gammaSepLabel.AutoSize = true;
+            this.gammaSepLabel.BackColor = System.Drawing.Color.Transparent;
+            this.gammaSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaSepLabel.Location = new System.Drawing.Point(340, 398);
+            this.gammaSepLabel.Name = "gammaSepLabel";
+            this.gammaSepLabel.Size = new System.Drawing.Size(18, 22);
+            this.gammaSepLabel.TabIndex = 27;
+            this.gammaSepLabel.Text = "~";
+            //
+            // gammaHighNum
+            //
+            this.gammaHighNum.DecimalPlaces = 1;
+            this.gammaHighNum.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            this.gammaHighNum.Location = new System.Drawing.Point(356, 394);
+            this.gammaHighNum.Maximum = new decimal(new int[] { 28, 0, 0, 65536 });
+            this.gammaHighNum.Minimum = new decimal(new int[] { 4, 0, 0, 65536 });
+            this.gammaHighNum.Name = "gammaHighNum";
+            this.gammaHighNum.Size = new System.Drawing.Size(58, 30);
+            this.gammaHighNum.TabIndex = 28;
+            this.gammaHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.gammaHighNum.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            this.gammaHighNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
+            //
+            // gammaKeyLabel
+            //
+            this.gammaKeyLabel.AutoSize = true;
+            this.gammaKeyLabel.BackColor = System.Drawing.Color.Transparent;
+            this.gammaKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaKeyLabel.Location = new System.Drawing.Point(455, 398);
+            this.gammaKeyLabel.Name = "gammaKeyLabel";
+            this.gammaKeyLabel.Size = new System.Drawing.Size(50, 22);
+            this.gammaKeyLabel.TabIndex = 29;
+            this.gammaKeyLabel.Text = "Key";
+            //
+            // gammaHotkeyTextBox
+            //
+            this.gammaHotkeyTextBox.Location = new System.Drawing.Point(502, 394);
+            this.gammaHotkeyTextBox.Name = "gammaHotkeyTextBox";
+            this.gammaHotkeyTextBox.ReadOnly = true;
+            this.gammaHotkeyTextBox.ShortcutsEnabled = false;
+            this.gammaHotkeyTextBox.Size = new System.Drawing.Size(139, 30);
+            this.gammaHotkeyTextBox.TabIndex = 30;
+            this.gammaHotkeyTextBox.TabStop = false;
+            this.gammaHotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.gammaHotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
+            this.gammaHotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
             //
             // DisplayCombo
             // 
@@ -588,7 +676,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(734, 404);
+            this.ClientSize = new System.Drawing.Size(734, 436);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -619,6 +707,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.GammaBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.volumeLowNum)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.volumeHighNum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gammaLowNum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gammaHighNum)).EndInit();
             this.trayMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -667,6 +757,12 @@
         private System.Windows.Forms.NumericUpDown volumeLowNum;
         private System.Windows.Forms.Label volumeSepLabel;
         private System.Windows.Forms.NumericUpDown volumeHighNum;
+        private System.Windows.Forms.Label gammaLevelLabel;
+        private System.Windows.Forms.NumericUpDown gammaLowNum;
+        private System.Windows.Forms.Label gammaSepLabel;
+        private System.Windows.Forms.NumericUpDown gammaHighNum;
+        private System.Windows.Forms.Label gammaKeyLabel;
+        private System.Windows.Forms.TextBox gammaHotkeyTextBox;
         private System.Windows.Forms.ToolTip dvlToolTip;
         private System.Windows.Forms.ToolTip brightnessToolTip;
         private System.Windows.Forms.ToolTip contrastToolTip;
