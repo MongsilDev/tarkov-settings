@@ -32,8 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.layoutTablePanel = new System.Windows.Forms.TableLayoutPanel();
             this.SideMenu = new System.Windows.Forms.ToolStrip();
-            this.MiscsButton = new System.Windows.Forms.ToolStripButton();
-            this.ColorButton = new System.Windows.Forms.ToolStripButton();
+            this.ColorButton = new System.Windows.Forms.ToolStripLabel();
             this.ColorPanel = new System.Windows.Forms.Panel();
             this.minimizeStartCheckBox = new System.Windows.Forms.CheckBox();
             this.autostartCheckBox = new System.Windows.Forms.CheckBox();
@@ -50,6 +49,8 @@
             this.gammaHighNum = new System.Windows.Forms.NumericUpDown();
             this.gammaKeyLabel = new System.Windows.Forms.Label();
             this.gammaHotkeyTextBox = new System.Windows.Forms.TextBox();
+            this.displayLabel = new System.Windows.Forms.Label();
+            this.hotkeyGroupBox = new System.Windows.Forms.GroupBox();
             this.DisplayCombo = new System.Windows.Forms.ComboBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
@@ -76,12 +77,14 @@
             this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.brightnessToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.hintToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.contrastToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.gammaToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dvlToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.layoutTablePanel.SuspendLayout();
             this.SideMenu.SuspendLayout();
             this.ColorPanel.SuspendLayout();
+            this.hotkeyGroupBox.SuspendLayout();
             this.DVLGroupBox.SuspendLayout();
             this.DVLPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DVLBar)).BeginInit();
@@ -125,7 +128,7 @@
             this.layoutTablePanel.RowCount = 1;
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.4669F));
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.5331F));
-            this.layoutTablePanel.Size = new System.Drawing.Size(734, 372);
+            this.layoutTablePanel.Size = new System.Drawing.Size(734, 452);
             this.layoutTablePanel.TabIndex = 0;
             // 
             // SideMenu
@@ -136,7 +139,6 @@
             this.SideMenu.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.SideMenu.ImageScalingSize = new System.Drawing.Size(48, 48);
             this.SideMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MiscsButton,
             this.ColorButton});
             this.SideMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.SideMenu.Location = new System.Drawing.Point(0, 5);
@@ -145,19 +147,6 @@
             this.SideMenu.Size = new System.Drawing.Size(76, 362);
             this.SideMenu.TabIndex = 1;
             this.SideMenu.Text = "colorSettings";
-            // 
-            // MiscsButton
-            // 
-            this.MiscsButton.Enabled = false;
-            this.MiscsButton.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MiscsButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.MiscsButton.Image = global::tarkov_settings.Properties.Resources.nikita;
-            this.MiscsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.MiscsButton.Name = "MiscsButton";
-            this.MiscsButton.Size = new System.Drawing.Size(73, 74);
-            this.MiscsButton.Text = "Miscs";
-            this.MiscsButton.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
-            this.MiscsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // ColorButton
             // 
@@ -172,217 +161,241 @@
             // 
             // ColorPanel
             // 
-            this.ColorPanel.Controls.Add(this.minimizeStartCheckBox);
             this.ColorPanel.Controls.Add(this.autostartCheckBox);
+            this.ColorPanel.Controls.Add(this.minimizeStartCheckBox);
             this.ColorPanel.Controls.Add(this.arenaCheckBox);
-            this.ColorPanel.Controls.Add(this.hotkeyLabel);
-            this.ColorPanel.Controls.Add(this.hotkeyTextBox);
-            this.ColorPanel.Controls.Add(this.volumeLevelLabel);
-            this.ColorPanel.Controls.Add(this.volumeLowNum);
-            this.ColorPanel.Controls.Add(this.volumeSepLabel);
-            this.ColorPanel.Controls.Add(this.volumeHighNum);
-            this.ColorPanel.Controls.Add(this.gammaLevelLabel);
-            this.ColorPanel.Controls.Add(this.gammaLowNum);
-            this.ColorPanel.Controls.Add(this.gammaSepLabel);
-            this.ColorPanel.Controls.Add(this.gammaHighNum);
-            this.ColorPanel.Controls.Add(this.gammaKeyLabel);
-            this.ColorPanel.Controls.Add(this.gammaHotkeyTextBox);
+            this.ColorPanel.Controls.Add(this.displayLabel);
             this.ColorPanel.Controls.Add(this.DisplayCombo);
+            this.ColorPanel.Controls.Add(this.hotkeyGroupBox);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
             this.ColorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ColorPanel.Location = new System.Drawing.Point(79, 3);
             this.ColorPanel.Name = "ColorPanel";
-            this.ColorPanel.Size = new System.Drawing.Size(652, 366);
+            this.ColorPanel.Size = new System.Drawing.Size(652, 446);
             this.ColorPanel.TabIndex = 2;
+            // 
+            // autostartCheckBox
+            // 
+            this.autostartCheckBox.AutoSize = true;
+            this.autostartCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.autostartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.autostartCheckBox.Location = new System.Drawing.Point(8, 330);
+            this.autostartCheckBox.Name = "autostartCheckBox";
+            this.autostartCheckBox.Size = new System.Drawing.Size(150, 17);
+            this.autostartCheckBox.TabIndex = 15;
+            this.autostartCheckBox.Text = "Start with Windows";
+            this.autostartCheckBox.UseVisualStyleBackColor = false;
+            this.autostartCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnAutostart);
             // 
             // minimizeStartCheckBox
             // 
             this.minimizeStartCheckBox.AutoSize = true;
             this.minimizeStartCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.minimizeStartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.minimizeStartCheckBox.Location = new System.Drawing.Point(289, 332);
+            this.minimizeStartCheckBox.Location = new System.Drawing.Point(166, 330);
             this.minimizeStartCheckBox.Name = "minimizeStartCheckBox";
-            this.minimizeStartCheckBox.Size = new System.Drawing.Size(286, 26);
+            this.minimizeStartCheckBox.Size = new System.Drawing.Size(129, 17);
             this.minimizeStartCheckBox.TabIndex = 16;
-            this.minimizeStartCheckBox.Text = "Minimize to Tray on Start";
+            this.minimizeStartCheckBox.Text = "Start minimized";
             this.minimizeStartCheckBox.UseVisualStyleBackColor = false;
             this.minimizeStartCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnMinimizeToTray);
-            //
-            // autostartCheckBox
-            //
-            this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.autostartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.autostartCheckBox.Location = new System.Drawing.Point(8, 332);
-            this.autostartCheckBox.Name = "autostartCheckBox";
-            this.autostartCheckBox.Size = new System.Drawing.Size(250, 26);
-            this.autostartCheckBox.TabIndex = 17;
-            this.autostartCheckBox.Text = "Run on Windows Startup";
-            this.autostartCheckBox.UseVisualStyleBackColor = false;
-            this.autostartCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnAutostart);
-            //
+            // 
             // arenaCheckBox
-            //
+            // 
             this.arenaCheckBox.AutoSize = true;
             this.arenaCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.arenaCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.arenaCheckBox.Location = new System.Drawing.Point(8, 364);
+            this.arenaCheckBox.Location = new System.Drawing.Point(303, 330);
             this.arenaCheckBox.Name = "arenaCheckBox";
-            this.arenaCheckBox.Size = new System.Drawing.Size(200, 26);
-            this.arenaCheckBox.TabIndex = 18;
+            this.arenaCheckBox.Size = new System.Drawing.Size(122, 17);
+            this.arenaCheckBox.TabIndex = 17;
             this.arenaCheckBox.Text = "Apply to Arena";
             this.arenaCheckBox.UseVisualStyleBackColor = false;
             this.arenaCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnArena);
-            //
-            // hotkeyLabel
-            //
-            this.hotkeyLabel.AutoSize = true;
-            this.hotkeyLabel.BackColor = System.Drawing.Color.Transparent;
-            this.hotkeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.hotkeyLabel.Location = new System.Drawing.Point(455, 366);
-            this.hotkeyLabel.Name = "hotkeyLabel";
-            this.hotkeyLabel.Size = new System.Drawing.Size(50, 22);
-            this.hotkeyLabel.TabIndex = 19;
-            this.hotkeyLabel.Text = "Key";
-            //
-            // hotkeyTextBox
-            //
-            this.hotkeyTextBox.Location = new System.Drawing.Point(502, 362);
-            this.hotkeyTextBox.Name = "hotkeyTextBox";
-            this.hotkeyTextBox.ReadOnly = true;
-            this.hotkeyTextBox.ShortcutsEnabled = false;
-            this.hotkeyTextBox.Size = new System.Drawing.Size(139, 30);
-            this.hotkeyTextBox.TabIndex = 20;
-            this.hotkeyTextBox.TabStop = false;
-            this.hotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.hotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
-            this.hotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
-            //
-            // volumeLevelLabel
-            //
-            this.volumeLevelLabel.AutoSize = true;
-            this.volumeLevelLabel.BackColor = System.Drawing.Color.Transparent;
-            this.volumeLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.volumeLevelLabel.Location = new System.Drawing.Point(185, 366);
-            this.volumeLevelLabel.Name = "volumeLevelLabel";
-            this.volumeLevelLabel.Size = new System.Drawing.Size(84, 22);
-            this.volumeLevelLabel.TabIndex = 21;
-            this.volumeLevelLabel.Text = "Volume %";
-            //
-            // volumeLowNum
-            //
-            this.volumeLowNum.Location = new System.Drawing.Point(280, 362);
-            this.volumeLowNum.Name = "volumeLowNum";
-            this.volumeLowNum.Size = new System.Drawing.Size(58, 30);
-            this.volumeLowNum.TabIndex = 22;
-            this.volumeLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.volumeLowNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
-            //
-            // volumeSepLabel
-            //
-            this.volumeSepLabel.AutoSize = true;
-            this.volumeSepLabel.BackColor = System.Drawing.Color.Transparent;
-            this.volumeSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.volumeSepLabel.Location = new System.Drawing.Point(340, 366);
-            this.volumeSepLabel.Name = "volumeSepLabel";
-            this.volumeSepLabel.Size = new System.Drawing.Size(18, 22);
-            this.volumeSepLabel.TabIndex = 23;
-            this.volumeSepLabel.Text = "~";
-            //
-            // volumeHighNum
-            //
-            this.volumeHighNum.Location = new System.Drawing.Point(356, 362);
-            this.volumeHighNum.Name = "volumeHighNum";
-            this.volumeHighNum.Size = new System.Drawing.Size(58, 30);
-            this.volumeHighNum.TabIndex = 24;
-            this.volumeHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.volumeHighNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
-            //
-            // gammaLevelLabel
-            //
-            this.gammaLevelLabel.AutoSize = true;
-            this.gammaLevelLabel.BackColor = System.Drawing.Color.Transparent;
-            this.gammaLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaLevelLabel.Location = new System.Drawing.Point(185, 398);
-            this.gammaLevelLabel.Name = "gammaLevelLabel";
-            this.gammaLevelLabel.Size = new System.Drawing.Size(84, 22);
-            this.gammaLevelLabel.TabIndex = 25;
-            this.gammaLevelLabel.Text = "Gamma";
-            //
-            // gammaLowNum
-            //
-            this.gammaLowNum.DecimalPlaces = 1;
-            this.gammaLowNum.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            this.gammaLowNum.Location = new System.Drawing.Point(280, 394);
-            this.gammaLowNum.Maximum = new decimal(new int[] { 28, 0, 0, 65536 });
-            this.gammaLowNum.Minimum = new decimal(new int[] { 4, 0, 0, 65536 });
-            this.gammaLowNum.Name = "gammaLowNum";
-            this.gammaLowNum.Size = new System.Drawing.Size(58, 30);
-            this.gammaLowNum.TabIndex = 26;
-            this.gammaLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.gammaLowNum.Value = new decimal(new int[] { 10, 0, 0, 65536 });
-            this.gammaLowNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
-            //
-            // gammaSepLabel
-            //
-            this.gammaSepLabel.AutoSize = true;
-            this.gammaSepLabel.BackColor = System.Drawing.Color.Transparent;
-            this.gammaSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaSepLabel.Location = new System.Drawing.Point(340, 398);
-            this.gammaSepLabel.Name = "gammaSepLabel";
-            this.gammaSepLabel.Size = new System.Drawing.Size(18, 22);
-            this.gammaSepLabel.TabIndex = 27;
-            this.gammaSepLabel.Text = "~";
-            //
-            // gammaHighNum
-            //
-            this.gammaHighNum.DecimalPlaces = 1;
-            this.gammaHighNum.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            this.gammaHighNum.Location = new System.Drawing.Point(356, 394);
-            this.gammaHighNum.Maximum = new decimal(new int[] { 28, 0, 0, 65536 });
-            this.gammaHighNum.Minimum = new decimal(new int[] { 4, 0, 0, 65536 });
-            this.gammaHighNum.Name = "gammaHighNum";
-            this.gammaHighNum.Size = new System.Drawing.Size(58, 30);
-            this.gammaHighNum.TabIndex = 28;
-            this.gammaHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.gammaHighNum.Value = new decimal(new int[] { 10, 0, 0, 65536 });
-            this.gammaHighNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
-            //
-            // gammaKeyLabel
-            //
-            this.gammaKeyLabel.AutoSize = true;
-            this.gammaKeyLabel.BackColor = System.Drawing.Color.Transparent;
-            this.gammaKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaKeyLabel.Location = new System.Drawing.Point(455, 398);
-            this.gammaKeyLabel.Name = "gammaKeyLabel";
-            this.gammaKeyLabel.Size = new System.Drawing.Size(50, 22);
-            this.gammaKeyLabel.TabIndex = 29;
-            this.gammaKeyLabel.Text = "Key";
-            //
-            // gammaHotkeyTextBox
-            //
-            this.gammaHotkeyTextBox.Location = new System.Drawing.Point(502, 394);
-            this.gammaHotkeyTextBox.Name = "gammaHotkeyTextBox";
-            this.gammaHotkeyTextBox.ReadOnly = true;
-            this.gammaHotkeyTextBox.ShortcutsEnabled = false;
-            this.gammaHotkeyTextBox.Size = new System.Drawing.Size(139, 30);
-            this.gammaHotkeyTextBox.TabIndex = 30;
-            this.gammaHotkeyTextBox.TabStop = false;
-            this.gammaHotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.gammaHotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
-            this.gammaHotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
-            //
+            // 
+            // displayLabel
+            // 
+            this.displayLabel.AutoSize = true;
+            this.displayLabel.BackColor = System.Drawing.Color.Transparent;
+            this.displayLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.displayLabel.Location = new System.Drawing.Point(440, 331);
+            this.displayLabel.Name = "displayLabel";
+            this.displayLabel.Size = new System.Drawing.Size(56, 14);
+            this.displayLabel.TabIndex = 18;
+            this.displayLabel.Text = "Display";
+            // 
             // DisplayCombo
             // 
             this.DisplayCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.DisplayCombo.Enabled = false;
             this.DisplayCombo.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.DisplayCombo.FormattingEnabled = true;
-            this.DisplayCombo.Location = new System.Drawing.Point(502, 328);
+            this.DisplayCombo.Location = new System.Drawing.Point(502, 327);
             this.DisplayCombo.Name = "DisplayCombo";
-            this.DisplayCombo.Size = new System.Drawing.Size(139, 30);
-            this.DisplayCombo.TabIndex = 15;
+            this.DisplayCombo.Size = new System.Drawing.Size(139, 22);
+            this.DisplayCombo.TabIndex = 19;
+            this.hintToolTip.SetToolTip(this.DisplayCombo, "Follows the monitor the game is on");
             this.DisplayCombo.SelectedValueChanged += new System.EventHandler(this.DisplayCombo_SelectedValueChanged);
+            // 
+            // hotkeyGroupBox
+            // 
+            this.hotkeyGroupBox.Controls.Add(this.volumeLevelLabel);
+            this.hotkeyGroupBox.Controls.Add(this.volumeLowNum);
+            this.hotkeyGroupBox.Controls.Add(this.volumeSepLabel);
+            this.hotkeyGroupBox.Controls.Add(this.volumeHighNum);
+            this.hotkeyGroupBox.Controls.Add(this.hotkeyLabel);
+            this.hotkeyGroupBox.Controls.Add(this.hotkeyTextBox);
+            this.hotkeyGroupBox.Controls.Add(this.gammaLevelLabel);
+            this.hotkeyGroupBox.Controls.Add(this.gammaLowNum);
+            this.hotkeyGroupBox.Controls.Add(this.gammaSepLabel);
+            this.hotkeyGroupBox.Controls.Add(this.gammaHighNum);
+            this.hotkeyGroupBox.Controls.Add(this.gammaKeyLabel);
+            this.hotkeyGroupBox.Controls.Add(this.gammaHotkeyTextBox);
+            this.hotkeyGroupBox.Location = new System.Drawing.Point(3, 354);
+            this.hotkeyGroupBox.Name = "hotkeyGroupBox";
+            this.hotkeyGroupBox.Size = new System.Drawing.Size(641, 84);
+            this.hotkeyGroupBox.TabIndex = 20;
+            this.hotkeyGroupBox.TabStop = false;
+            this.hotkeyGroupBox.Text = "Hotkeys";
+            // 
+            // volumeLevelLabel
+            // 
+            this.volumeLevelLabel.AutoSize = true;
+            this.volumeLevelLabel.BackColor = System.Drawing.Color.Transparent;
+            this.volumeLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.volumeLevelLabel.Location = new System.Drawing.Point(12, 27);
+            this.volumeLevelLabel.Name = "volumeLevelLabel";
+            this.volumeLevelLabel.Size = new System.Drawing.Size(98, 14);
+            this.volumeLevelLabel.Text = "Game volume %";
+            // 
+            // volumeLowNum
+            // 
+            this.volumeLowNum.Location = new System.Drawing.Point(118, 24);
+            this.volumeLowNum.Name = "volumeLowNum";
+            this.volumeLowNum.Size = new System.Drawing.Size(58, 22);
+            this.volumeLowNum.TabIndex = 0;
+            this.volumeLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.volumeLowNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
+            // 
+            // volumeSepLabel
+            // 
+            this.volumeSepLabel.AutoSize = true;
+            this.volumeSepLabel.BackColor = System.Drawing.Color.Transparent;
+            this.volumeSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.volumeSepLabel.Location = new System.Drawing.Point(180, 27);
+            this.volumeSepLabel.Name = "volumeSepLabel";
+            this.volumeSepLabel.Size = new System.Drawing.Size(14, 14);
+            this.volumeSepLabel.Text = "/";
+            // 
+            // volumeHighNum
+            // 
+            this.volumeHighNum.Location = new System.Drawing.Point(196, 24);
+            this.volumeHighNum.Name = "volumeHighNum";
+            this.volumeHighNum.Size = new System.Drawing.Size(58, 22);
+            this.volumeHighNum.TabIndex = 1;
+            this.volumeHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.volumeHighNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
+            // 
+            // hotkeyLabel
+            // 
+            this.hotkeyLabel.AutoSize = true;
+            this.hotkeyLabel.BackColor = System.Drawing.Color.Transparent;
+            this.hotkeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.hotkeyLabel.Location = new System.Drawing.Point(402, 27);
+            this.hotkeyLabel.Name = "hotkeyLabel";
+            this.hotkeyLabel.Size = new System.Drawing.Size(28, 14);
+            this.hotkeyLabel.Text = "Key";
+            // 
+            // hotkeyTextBox
+            // 
+            this.hotkeyTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.hotkeyTextBox.Location = new System.Drawing.Point(448, 24);
+            this.hotkeyTextBox.Name = "hotkeyTextBox";
+            this.hotkeyTextBox.ReadOnly = true;
+            this.hotkeyTextBox.ShortcutsEnabled = false;
+            this.hotkeyTextBox.Size = new System.Drawing.Size(190, 22);
+            this.hotkeyTextBox.TabIndex = 2;
+            this.hotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.hintToolTip.SetToolTip(this.hotkeyTextBox, "Click, then press a key. Esc cancels, Backspace clears");
+            this.hotkeyTextBox.Enter += new System.EventHandler(this.HotkeyTextBox_Enter);
+            this.hotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
+            this.hotkeyTextBox.Leave += new System.EventHandler(this.HotkeyTextBox_Leave);
+            this.hotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
+            // 
+            // gammaLevelLabel
+            // 
+            this.gammaLevelLabel.AutoSize = true;
+            this.gammaLevelLabel.BackColor = System.Drawing.Color.Transparent;
+            this.gammaLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaLevelLabel.Location = new System.Drawing.Point(12, 55);
+            this.gammaLevelLabel.Name = "gammaLevelLabel";
+            this.gammaLevelLabel.Size = new System.Drawing.Size(42, 14);
+            this.gammaLevelLabel.Text = "Gamma";
+            // 
+            // gammaLowNum
+            // 
+            this.gammaLowNum.DecimalPlaces = 1;
+            this.gammaLowNum.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            this.gammaLowNum.Location = new System.Drawing.Point(118, 52);
+            this.gammaLowNum.Maximum = new decimal(new int[] { 28, 0, 0, 65536 });
+            this.gammaLowNum.Minimum = new decimal(new int[] { 4, 0, 0, 65536 });
+            this.gammaLowNum.Name = "gammaLowNum";
+            this.gammaLowNum.Size = new System.Drawing.Size(58, 22);
+            this.gammaLowNum.TabIndex = 3;
+            this.gammaLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.gammaLowNum.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            this.gammaLowNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
+            // 
+            // gammaSepLabel
+            // 
+            this.gammaSepLabel.AutoSize = true;
+            this.gammaSepLabel.BackColor = System.Drawing.Color.Transparent;
+            this.gammaSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaSepLabel.Location = new System.Drawing.Point(180, 55);
+            this.gammaSepLabel.Name = "gammaSepLabel";
+            this.gammaSepLabel.Size = new System.Drawing.Size(14, 14);
+            this.gammaSepLabel.Text = "/";
+            // 
+            // gammaHighNum
+            // 
+            this.gammaHighNum.DecimalPlaces = 1;
+            this.gammaHighNum.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            this.gammaHighNum.Location = new System.Drawing.Point(196, 52);
+            this.gammaHighNum.Maximum = new decimal(new int[] { 28, 0, 0, 65536 });
+            this.gammaHighNum.Minimum = new decimal(new int[] { 4, 0, 0, 65536 });
+            this.gammaHighNum.Name = "gammaHighNum";
+            this.gammaHighNum.Size = new System.Drawing.Size(58, 22);
+            this.gammaHighNum.TabIndex = 4;
+            this.gammaHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.gammaHighNum.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            this.gammaHighNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
+            // 
+            // gammaKeyLabel
+            // 
+            this.gammaKeyLabel.AutoSize = true;
+            this.gammaKeyLabel.BackColor = System.Drawing.Color.Transparent;
+            this.gammaKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaKeyLabel.Location = new System.Drawing.Point(402, 55);
+            this.gammaKeyLabel.Name = "gammaKeyLabel";
+            this.gammaKeyLabel.Size = new System.Drawing.Size(28, 14);
+            this.gammaKeyLabel.Text = "Key";
+            // 
+            // gammaHotkeyTextBox
+            // 
+            this.gammaHotkeyTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.gammaHotkeyTextBox.Location = new System.Drawing.Point(448, 52);
+            this.gammaHotkeyTextBox.Name = "gammaHotkeyTextBox";
+            this.gammaHotkeyTextBox.ReadOnly = true;
+            this.gammaHotkeyTextBox.ShortcutsEnabled = false;
+            this.gammaHotkeyTextBox.Size = new System.Drawing.Size(190, 22);
+            this.gammaHotkeyTextBox.TabIndex = 5;
+            this.gammaHotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.hintToolTip.SetToolTip(this.gammaHotkeyTextBox, "Click, then press a key. Esc cancels, Backspace clears");
+            this.gammaHotkeyTextBox.Enter += new System.EventHandler(this.HotkeyTextBox_Enter);
+            this.gammaHotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
+            this.gammaHotkeyTextBox.Leave += new System.EventHandler(this.HotkeyTextBox_Leave);
+            this.gammaHotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
             // 
             // DVLGroupBox
             // 
@@ -414,7 +427,7 @@
             this.DVLLabel.Name = "DVLLabel";
             this.DVLLabel.Size = new System.Drawing.Size(170, 44);
             this.DVLLabel.TabIndex = 10;
-            this.DVLLabel.Text = "Digital Vibrance\r\n(Saturation)\r\n";
+            this.DVLLabel.Text = "Digital Vibrance\r\n(Saturation)";
             this.DVLLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.dvlToolTip.SetToolTip(this.DVLLabel, "Double-click to reset");
             this.DVLLabel.DoubleClick += new System.EventHandler(this.ColorLabel_DClick);
@@ -437,6 +450,7 @@
             this.DVLText.ReadOnly = true;
             this.DVLText.Size = new System.Drawing.Size(41, 29);
             this.DVLText.TabIndex = 11;
+            this.DVLText.TabStop = false;
             this.DVLText.Text = "0";
             this.DVLText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -509,6 +523,7 @@
             this.BrightnessText.ReadOnly = true;
             this.BrightnessText.Size = new System.Drawing.Size(41, 29);
             this.BrightnessText.TabIndex = 24;
+            this.BrightnessText.TabStop = false;
             this.BrightnessText.Text = "0.50";
             this.BrightnessText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -541,6 +556,7 @@
             this.ContrastText.ReadOnly = true;
             this.ContrastText.Size = new System.Drawing.Size(41, 29);
             this.ContrastText.TabIndex = 25;
+            this.ContrastText.TabStop = false;
             this.ContrastText.Text = "0.50";
             this.ContrastText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -575,6 +591,7 @@
             this.GammaText.ReadOnly = true;
             this.GammaText.Size = new System.Drawing.Size(41, 29);
             this.GammaText.TabIndex = 26;
+            this.GammaText.TabStop = false;
             this.GammaText.Text = "1.00";
             this.GammaText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -655,7 +672,7 @@
             // 
             this.contrastToolTip.IsBalloon = true;
             this.contrastToolTip.ShowAlways = true;
-            this.contrastToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Warning;
+            this.contrastToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.contrastToolTip.ToolTipTitle = "Contrast";
             // 
             // gammaToolTip
@@ -670,13 +687,14 @@
             this.dvlToolTip.IsBalloon = true;
             this.dvlToolTip.ShowAlways = true;
             this.dvlToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.dvlToolTip.ToolTipTitle = "Saturation";
+            this.dvlToolTip.ToolTipTitle = "Digital Vibrance";
             // 
             // MainForm
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(734, 436);
+            this.ClientSize = new System.Drawing.Size(734, 452);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -690,6 +708,8 @@
             this.SideMenu.PerformLayout();
             this.ColorPanel.ResumeLayout(false);
             this.ColorPanel.PerformLayout();
+            this.hotkeyGroupBox.ResumeLayout(false);
+            this.hotkeyGroupBox.PerformLayout();
             this.DVLGroupBox.ResumeLayout(false);
             this.DVLPanel.ResumeLayout(false);
             this.DVLPanel.PerformLayout();
@@ -717,8 +737,7 @@
         #endregion
         private System.Windows.Forms.TableLayoutPanel layoutTablePanel;
         private System.Windows.Forms.ToolStrip SideMenu;
-        private System.Windows.Forms.ToolStripButton MiscsButton;
-        private System.Windows.Forms.ToolStripButton ColorButton;
+        private System.Windows.Forms.ToolStripLabel ColorButton;
         private System.Windows.Forms.Panel ColorPanel;
         
         
@@ -763,6 +782,9 @@
         private System.Windows.Forms.NumericUpDown gammaHighNum;
         private System.Windows.Forms.Label gammaKeyLabel;
         private System.Windows.Forms.TextBox gammaHotkeyTextBox;
+        private System.Windows.Forms.Label displayLabel;
+        private System.Windows.Forms.GroupBox hotkeyGroupBox;
+        private System.Windows.Forms.ToolTip hintToolTip;
         private System.Windows.Forms.ToolTip dvlToolTip;
         private System.Windows.Forms.ToolTip brightnessToolTip;
         private System.Windows.Forms.ToolTip contrastToolTip;
