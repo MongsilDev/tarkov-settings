@@ -12,7 +12,9 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 ## What does it do?
 - Brightness / Contrast / Gamma / Digital Vibrance, applied **only while the game window is focused** — no sudden flash when alt-tabbing
 - Escape from Tarkov and Arena supported, Arena toggle included
-- Game volume hotkey: one key toggles the game's volume between 5% and 100%
+- Game volume hotkey: one key toggles the game's volume between two levels (default 5% / 100%)
+- Gamma hotkey: one key toggles gamma between two levels (default 1.5 / 2.0)
+- Follows the game to whichever monitor it is on
 - Run on Windows startup option
 - Lives in the tray, single instance
 
@@ -29,12 +31,12 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 1. Download the zip, right-click it > Properties > **Unblock**, then extract and run
 2. Set color values with the sliders — double-click a slider label to reset it
 3. Check **Apply to Arena** to use the same colors for Arena
-4. Click the **Volume Key** box and press a key to bind the volume toggle (default: `PageDown`)
-5. Check **Run on Windows Startup** to launch with Windows
-6. Minimize and play
+4. Set the two **Volume %** levels, then click the **Key** box next to them and press a key to bind the volume toggle (default: `PageDown`)
+5. Same for **Gamma** — two levels and a key (default: `PageUp`)
+6. Check **Run on Windows Startup** to launch with Windows
+7. Minimize and play
 
 Settings are saved to `%LOCALAPPDATA%\tarkov-settings\settings.json` whenever the app closes.
-Volume levels can be changed there (`volumeLow`, `volumeHigh`).
 
 ## Warning
 1. The screen may blink a couple of times when the game window activates. It still works.
