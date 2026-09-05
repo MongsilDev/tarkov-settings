@@ -122,6 +122,8 @@ namespace tarkov_settings
             {
                 Console.WriteLine("[pMonitor] Target Process is focused");
 
+                Parent.FollowWindowDisplay(hWnd);
+
                 var (b, c, g, dvl) = Parent.GetColorValue();
                 cController.ChangeColorRamp(brightness: b,
                                             contrast: c,

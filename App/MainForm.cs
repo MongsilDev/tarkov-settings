@@ -315,6 +315,15 @@ namespace tarkov_settings
                 DVLText.Text = DVLBar.Value.ToString();
             }
         }
+        // follow the game window to whichever monitor it is on
+        public void FollowWindowDisplay(IntPtr hWnd)
+        {
+            string device = Screen.FromHandle(hWnd).DeviceName;
+            int index = DisplayCombo.FindStringExact(device);
+            if (index != -1 && index != DisplayCombo.SelectedIndex)
+                DisplayCombo.SelectedIndex = index;
+        }
+
         private void DisplayCombo_SelectedValueChanged(object sender, EventArgs e)
         {
             string selectedDisplay = (string)DisplayCombo.SelectedItem;
