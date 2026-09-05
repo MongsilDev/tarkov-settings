@@ -246,23 +246,23 @@ namespace tarkov_settings
         private void ColorLabel_DClick(object sender, EventArgs e)
         {
             var label = sender as Label;
-            var def = new AppSetting();
 
+            // identity values - the display looks exactly as Windows renders it
             if (label.Equals(BrightnessLabel))
             {
-                BrightnessBar.Value = (int)(def.brightness * 100);
+                BrightnessBar.Value = 50;
             }
             else if (label.Equals(ContrastLabel))
             {
-                ContrastBar.Value = (int)(def.contrast * 100);
+                ContrastBar.Value = 50;
             }
             else if (label.Equals(GammaLabel))
             {
-                GammaBar.Value = (int)(def.gamma * 100);
+                GammaBar.Value = 100;
             }
             else if (label.Equals(DVLLabel))
             {
-                DVLBar.Value = def.saturation;
+                DVLBar.Value = 0;
             }
         }
         private void TrackBar_ValueChanged(object sender, EventArgs e)
