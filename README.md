@@ -33,8 +33,8 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 1. Download the zip, right-click it > Properties > **Unblock**, then extract and run
 2. Set color values with the sliders — **Recommended** applies the suggested values, double-clicking a slider label resets it to the Windows default
 3. Check **Apply to Arena** to use the same colors for Arena
-4. In **Hotkeys**, set the two **Game volume %** levels, then click the **Key** box and press a key (default: `PageDown`). Esc cancels, Backspace clears the binding
-5. Same for **Gamma** — two levels and a key (default: `PageUp`)
+4. In **Hotkeys**, set the two **Gamma** levels, then click the **Key** box and press a key (default: `PageUp`). Esc cancels, Backspace clears the binding
+5. Same for **Game volume %** — two levels and a key (default: `PageDown`)
 5.1. **Kill game** has no key until you set one (Ctrl/Alt/Shift + key). You confirm once when binding; pressing it later ends the game at once
 6. Check **Start with Windows** to launch on boot, **Start minimized** to start in the tray
 7. Minimize and play
