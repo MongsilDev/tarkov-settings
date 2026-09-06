@@ -31,8 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.layoutTablePanel = new System.Windows.Forms.TableLayoutPanel();
-            this.SideMenu = new System.Windows.Forms.ToolStrip();
-            this.ColorButton = new System.Windows.Forms.ToolStripLabel();
             this.ColorPanel = new System.Windows.Forms.Panel();
             this.minimizeStartCheckBox = new System.Windows.Forms.CheckBox();
             this.autostartCheckBox = new System.Windows.Forms.CheckBox();
@@ -81,7 +79,6 @@
             this.gammaToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dvlToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.layoutTablePanel.SuspendLayout();
-            this.SideMenu.SuspendLayout();
             this.ColorPanel.SuspendLayout();
             this.hotkeyGroupBox.SuspendLayout();
             this.DVLGroupBox.SuspendLayout();
@@ -104,21 +101,9 @@
             // 
             // layoutTablePanel
             // 
-            this.layoutTablePanel.ColumnCount = 2;
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.37594F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 89.62406F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.layoutTablePanel.Controls.Add(this.SideMenu, 0, 0);
-            this.layoutTablePanel.Controls.Add(this.ColorPanel, 1, 0);
+            this.layoutTablePanel.ColumnCount = 1;
+            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.layoutTablePanel.Controls.Add(this.ColorPanel, 0, 0);
             this.layoutTablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutTablePanel.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.layoutTablePanel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -127,49 +112,20 @@
             this.layoutTablePanel.RowCount = 1;
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.4669F));
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.5331F));
-            this.layoutTablePanel.Size = new System.Drawing.Size(734, 452);
+            this.layoutTablePanel.Size = new System.Drawing.Size(658, 452);
             this.layoutTablePanel.TabIndex = 0;
-            // 
-            // SideMenu
-            // 
-            this.SideMenu.AutoSize = false;
-            this.SideMenu.BackColor = System.Drawing.Color.AliceBlue;
-            this.SideMenu.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SideMenu.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.SideMenu.ImageScalingSize = new System.Drawing.Size(48, 48);
-            this.SideMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ColorButton});
-            this.SideMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-            this.SideMenu.Location = new System.Drawing.Point(0, 5);
-            this.SideMenu.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
-            this.SideMenu.Name = "SideMenu";
-            this.SideMenu.Size = new System.Drawing.Size(76, 362);
-            this.SideMenu.TabIndex = 1;
-            this.SideMenu.Text = "colorSettings";
-            // 
-            // ColorButton
-            // 
-            this.ColorButton.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ColorButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ColorButton.Image = global::tarkov_settings.Properties.Resources.nikita_rainbow;
-            this.ColorButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ColorButton.Name = "ColorButton";
-            this.ColorButton.Size = new System.Drawing.Size(73, 74);
-            this.ColorButton.Text = "Color";
-            this.ColorButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // ColorPanel
             // 
             this.ColorPanel.Controls.Add(this.autostartCheckBox);
             this.ColorPanel.Controls.Add(this.minimizeStartCheckBox);
             this.ColorPanel.Controls.Add(this.arenaCheckBox);
-            this.ColorPanel.Controls.Add(this.displayLabel);
-            this.ColorPanel.Controls.Add(this.DisplayCombo);
+            this.ColorPanel.Controls.Add(this.recommendButton);
             this.ColorPanel.Controls.Add(this.hotkeyGroupBox);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
             this.ColorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ColorPanel.Location = new System.Drawing.Point(79, 3);
+            this.ColorPanel.Location = new System.Drawing.Point(3, 3);
             this.ColorPanel.Name = "ColorPanel";
             this.ColorPanel.Size = new System.Drawing.Size(652, 446);
             this.ColorPanel.TabIndex = 2;
@@ -680,7 +636,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(734, 452);
+            this.ClientSize = new System.Drawing.Size(658, 452);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -690,8 +646,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.layoutTablePanel.ResumeLayout(false);
-            this.SideMenu.ResumeLayout(false);
-            this.SideMenu.PerformLayout();
             this.ColorPanel.ResumeLayout(false);
             this.ColorPanel.PerformLayout();
             this.hotkeyGroupBox.ResumeLayout(false);
@@ -722,8 +676,6 @@
 
         #endregion
         private System.Windows.Forms.TableLayoutPanel layoutTablePanel;
-        private System.Windows.Forms.ToolStrip SideMenu;
-        private System.Windows.Forms.ToolStripLabel ColorButton;
         private System.Windows.Forms.Panel ColorPanel;
         
         
