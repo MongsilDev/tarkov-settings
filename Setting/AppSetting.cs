@@ -10,7 +10,7 @@ namespace tarkov_settings.Setting
     {
         public double brightness = 0.75;
         public double contrast = 0.60;
-        public double gamma = 1.0;
+        public double gamma = 1.5;
         public int saturation = 60;
         public HashSet<string> pTargets = new HashSet<string>{
             "EscapeFromTarkov",
