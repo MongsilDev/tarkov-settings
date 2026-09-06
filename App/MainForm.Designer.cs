@@ -400,7 +400,7 @@
             this.killHotkeyTextBox.Size = new System.Drawing.Size(158, 22);
             this.killHotkeyTextBox.TabIndex = 6;
             this.killHotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.hintToolTip.SetToolTip(this.killHotkeyTextBox, "Ends the game process after a confirmation. Needs Ctrl/Alt/Shift");
+            this.hintToolTip.SetToolTip(this.killHotkeyTextBox, "Ends the game process immediately. Needs Ctrl/Alt/Shift");
             this.killHotkeyTextBox.Enter += new System.EventHandler(this.HotkeyTextBox_Enter);
             this.killHotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
             this.killHotkeyTextBox.Leave += new System.EventHandler(this.HotkeyTextBox_Leave);

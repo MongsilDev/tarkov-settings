@@ -122,35 +122,28 @@ namespace tarkov_settings
             base.OnHandleDestroyed(e);
         }
 
-        private bool killPrompting;
+        private bool killing;
 
-        // the hook skips our own windows (WINEVENT_SKIPOWNPROCESS), so the focused
-        // target is captured up front instead of being re-read after the prompt
-        private void ConfirmAndKill()
+        // no prompt here - the user already confirmed when binding the key
+        private void KillFocusedGame()
         {
-            if (killPrompting)
+            if (killing)
                 return;
             int pid = pMonitor.FocusedTargetPid;
             string name = pMonitor.FocusedTargetName;
 
-            // no prompt for a game that already exited (its pid may have been reused)
+            // nothing to do for a game that already exited (its pid may have been reused)
             if (!pMonitor.IsTarget(pid, name))
                 return;
 
-            killPrompting = true;
+            killing = true;
             try
             {
-                // TopMost owner placed on the game's monitor so the prompt shows over a borderless window
-                Screen screen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName == Display.Primary) ?? Screen.PrimaryScreen;
-                using (var owner = new Form { TopMost = true, StartPosition = FormStartPosition.Manual, Bounds = screen.Bounds })
+                if (!pMonitor.KillTarget(pid, name))
                 {
-                    DialogResult answer = MessageBox.Show(owner,
-                        "Terminate " + name + ".exe (PID " + pid + ") now?\nUnsaved progress in the game will be lost.",
-                        "Kill game",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Warning,
-                        MessageBoxDefaultButton.Button2);
-                    if (answer == DialogResult.Yes && !pMonitor.KillTarget(pid, name))
+                    // TopMost owner on the game's monitor so the notice shows over a borderless window
+                    Screen screen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName == Display.Primary) ?? Screen.PrimaryScreen;
+                    using (var owner = new Form { TopMost = true, StartPosition = FormStartPosition.Manual, Bounds = screen.Bounds })
                     {
                         MessageBox.Show(owner,
                             "Could not terminate " + name + ".exe (already exited or access denied).",
@@ -162,8 +155,21 @@ namespace tarkov_settings
             }
             finally
             {
-                killPrompting = false;
+                killing = false;
             }
+        }
+
+        // binding is the moment to warn: pressing the key later ends the game without asking
+        private bool ConfirmKillBinding(string hotkey)
+        {
+            DialogResult answer = MessageBox.Show(this,
+                "Pressing " + hotkey + " while the game is focused will end the game process immediately, without asking again.\n" +
+                "Unsaved progress will be lost.\n\nBind this key?",
+                "Kill game hotkey",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+            return answer == DialogResult.Yes;
         }
 
         private void ToggleGamma()
@@ -251,12 +257,6 @@ namespace tarkov_settings
             {
                 hotkey = BuildHotkeyString(e.Modifiers, key);
 
-                // Y is the Yes mnemonic of the confirmation prompt
-                if (id == HOTKEY_KILL && key == Keys.Y)
-                {
-                    hintToolTip.Show("Y can't be used for the kill key", box, 0, -22, 2000);
-                    return;
-                }
                 foreach (int other in HOTKEY_IDS)
                 {
                     if (other != id && string.Equals(GetHotkey(other), hotkey, StringComparison.OrdinalIgnoreCase))
@@ -275,12 +275,19 @@ namespace tarkov_settings
                     hintToolTip.Show("That key is already in use", box, 0, -22, 2000);
                     hotkey = previous;
                 }
+                else if (id == HOTKEY_KILL && !ConfirmKillBinding(hotkey))
+                {
+                    hotkey = previous;
+                }
             }
 
             SetHotkey(id, hotkey);
             if (hotkeysActive)
                 SetHotkeysActive(true);
 
+            // Leave may already have fired (a dialog took focus), so refresh explicitly
+            box.BackColor = SystemColors.Control;
+            box.Text = HotkeyDisplay(hotkey);
             this.ActiveControl = null;
         }
         #endregion
@@ -491,7 +498,7 @@ namespace tarkov_settings
                         ToggleGamma();
                         break;
                     case HOTKEY_KILL:
-                        ConfirmAndKill();
+                        KillFocusedGame();
                         break;
                 }
             }
