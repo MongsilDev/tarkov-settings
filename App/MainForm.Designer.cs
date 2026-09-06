@@ -237,17 +237,17 @@
             this.volumeLevelLabel.AutoSize = true;
             this.volumeLevelLabel.BackColor = System.Drawing.Color.Transparent;
             this.volumeLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.volumeLevelLabel.Location = new System.Drawing.Point(12, 25);
+            this.volumeLevelLabel.Location = new System.Drawing.Point(12, 51);
             this.volumeLevelLabel.Name = "volumeLevelLabel";
             this.volumeLevelLabel.Size = new System.Drawing.Size(98, 14);
             this.volumeLevelLabel.Text = "Game volume %";
             // 
             // volumeLowNum
             // 
-            this.volumeLowNum.Location = new System.Drawing.Point(118, 22);
+            this.volumeLowNum.Location = new System.Drawing.Point(118, 48);
             this.volumeLowNum.Name = "volumeLowNum";
             this.volumeLowNum.Size = new System.Drawing.Size(58, 22);
-            this.volumeLowNum.TabIndex = 0;
+            this.volumeLowNum.TabIndex = 3;
             this.volumeLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.volumeLowNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
             // 
@@ -256,17 +256,17 @@
             this.volumeSepLabel.AutoSize = true;
             this.volumeSepLabel.BackColor = System.Drawing.Color.Transparent;
             this.volumeSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.volumeSepLabel.Location = new System.Drawing.Point(180, 25);
+            this.volumeSepLabel.Location = new System.Drawing.Point(180, 51);
             this.volumeSepLabel.Name = "volumeSepLabel";
             this.volumeSepLabel.Size = new System.Drawing.Size(14, 14);
             this.volumeSepLabel.Text = "/";
             // 
             // volumeHighNum
             // 
-            this.volumeHighNum.Location = new System.Drawing.Point(196, 22);
+            this.volumeHighNum.Location = new System.Drawing.Point(196, 48);
             this.volumeHighNum.Name = "volumeHighNum";
             this.volumeHighNum.Size = new System.Drawing.Size(58, 22);
-            this.volumeHighNum.TabIndex = 1;
+            this.volumeHighNum.TabIndex = 4;
             this.volumeHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.volumeHighNum.ValueChanged += new System.EventHandler(this.VolumeLevel_ValueChanged);
             // 
@@ -275,7 +275,7 @@
             this.hotkeyLabel.AutoSize = true;
             this.hotkeyLabel.BackColor = System.Drawing.Color.Transparent;
             this.hotkeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.hotkeyLabel.Location = new System.Drawing.Point(300, 25);
+            this.hotkeyLabel.Location = new System.Drawing.Point(300, 51);
             this.hotkeyLabel.Name = "hotkeyLabel";
             this.hotkeyLabel.Size = new System.Drawing.Size(28, 14);
             this.hotkeyLabel.Text = "Key";
@@ -283,12 +283,12 @@
             // hotkeyTextBox
             // 
             this.hotkeyTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.hotkeyTextBox.Location = new System.Drawing.Point(340, 22);
+            this.hotkeyTextBox.Location = new System.Drawing.Point(340, 48);
             this.hotkeyTextBox.Name = "hotkeyTextBox";
             this.hotkeyTextBox.ReadOnly = true;
             this.hotkeyTextBox.ShortcutsEnabled = false;
             this.hotkeyTextBox.Size = new System.Drawing.Size(158, 22);
-            this.hotkeyTextBox.TabIndex = 2;
+            this.hotkeyTextBox.TabIndex = 5;
             this.hotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.hintToolTip.SetToolTip(this.hotkeyTextBox, "Click, then press a key. Esc cancels, Backspace clears");
             this.hotkeyTextBox.Enter += new System.EventHandler(this.HotkeyTextBox_Enter);
@@ -301,7 +301,7 @@
             this.gammaLevelLabel.AutoSize = true;
             this.gammaLevelLabel.BackColor = System.Drawing.Color.Transparent;
             this.gammaLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaLevelLabel.Location = new System.Drawing.Point(12, 51);
+            this.gammaLevelLabel.Location = new System.Drawing.Point(12, 25);
             this.gammaLevelLabel.Name = "gammaLevelLabel";
             this.gammaLevelLabel.Size = new System.Drawing.Size(42, 14);
             this.gammaLevelLabel.Text = "Gamma";
@@ -310,12 +310,12 @@
             // 
             this.gammaLowNum.DecimalPlaces = 2;
             this.gammaLowNum.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            this.gammaLowNum.Location = new System.Drawing.Point(118, 48);
+            this.gammaLowNum.Location = new System.Drawing.Point(118, 22);
             this.gammaLowNum.Maximum = new decimal(new int[] { 280, 0, 0, 131072 });
             this.gammaLowNum.Minimum = new decimal(new int[] { 40, 0, 0, 131072 });
             this.gammaLowNum.Name = "gammaLowNum";
             this.gammaLowNum.Size = new System.Drawing.Size(58, 22);
-            this.gammaLowNum.TabIndex = 3;
+            this.gammaLowNum.TabIndex = 0;
             this.gammaLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.gammaLowNum.Value = new decimal(new int[] { 100, 0, 0, 131072 });
             this.gammaLowNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
@@ -325,7 +325,7 @@
             this.gammaSepLabel.AutoSize = true;
             this.gammaSepLabel.BackColor = System.Drawing.Color.Transparent;
             this.gammaSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaSepLabel.Location = new System.Drawing.Point(180, 51);
+            this.gammaSepLabel.Location = new System.Drawing.Point(180, 25);
             this.gammaSepLabel.Name = "gammaSepLabel";
             this.gammaSepLabel.Size = new System.Drawing.Size(14, 14);
             this.gammaSepLabel.Text = "/";
@@ -334,12 +334,12 @@
             // 
             this.gammaHighNum.DecimalPlaces = 2;
             this.gammaHighNum.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            this.gammaHighNum.Location = new System.Drawing.Point(196, 48);
+            this.gammaHighNum.Location = new System.Drawing.Point(196, 22);
             this.gammaHighNum.Maximum = new decimal(new int[] { 280, 0, 0, 131072 });
             this.gammaHighNum.Minimum = new decimal(new int[] { 40, 0, 0, 131072 });
             this.gammaHighNum.Name = "gammaHighNum";
             this.gammaHighNum.Size = new System.Drawing.Size(58, 22);
-            this.gammaHighNum.TabIndex = 4;
+            this.gammaHighNum.TabIndex = 1;
             this.gammaHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.gammaHighNum.Value = new decimal(new int[] { 100, 0, 0, 131072 });
             this.gammaHighNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
@@ -349,7 +349,7 @@
             this.gammaKeyLabel.AutoSize = true;
             this.gammaKeyLabel.BackColor = System.Drawing.Color.Transparent;
             this.gammaKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaKeyLabel.Location = new System.Drawing.Point(300, 51);
+            this.gammaKeyLabel.Location = new System.Drawing.Point(300, 25);
             this.gammaKeyLabel.Name = "gammaKeyLabel";
             this.gammaKeyLabel.Size = new System.Drawing.Size(28, 14);
             this.gammaKeyLabel.Text = "Key";
@@ -357,12 +357,12 @@
             // gammaHotkeyTextBox
             // 
             this.gammaHotkeyTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.gammaHotkeyTextBox.Location = new System.Drawing.Point(340, 48);
+            this.gammaHotkeyTextBox.Location = new System.Drawing.Point(340, 22);
             this.gammaHotkeyTextBox.Name = "gammaHotkeyTextBox";
             this.gammaHotkeyTextBox.ReadOnly = true;
             this.gammaHotkeyTextBox.ShortcutsEnabled = false;
             this.gammaHotkeyTextBox.Size = new System.Drawing.Size(158, 22);
-            this.gammaHotkeyTextBox.TabIndex = 5;
+            this.gammaHotkeyTextBox.TabIndex = 2;
             this.gammaHotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.hintToolTip.SetToolTip(this.gammaHotkeyTextBox, "Click, then press a key. Esc cancels, Backspace clears");
             this.gammaHotkeyTextBox.Enter += new System.EventHandler(this.HotkeyTextBox_Enter);
