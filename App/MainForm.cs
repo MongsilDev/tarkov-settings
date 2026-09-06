@@ -105,6 +105,21 @@ namespace tarkov_settings
                 if (active)
                     TryRegisterHotkey(id, GetHotkey(id));
             }
+            displayFollowTimer.Enabled = active;
+        }
+
+        // the focus hook only fires on focus changes; a game dragged to another monitor
+        // while focused is caught by this 1 s poll
+        private readonly Timer displayFollowTimer = new Timer { Interval = 1000 };
+
+        private void DisplayFollowTimer_Tick(object sender, EventArgs e)
+        {
+            IntPtr hWnd = pMonitor.FocusedTargetHwnd;
+            if (hWnd == IntPtr.Zero || Screen.FromHandle(hWnd).DeviceName == Display.Primary)
+                return;
+            FollowWindowDisplay(hWnd);
+            // switching Display.Primary resets IsApplied, so apply unconditionally
+            pMonitor.ApplyCurrent();
         }
 
         // ShowInTaskbar toggling recreates the handle, so (re)register here
@@ -177,7 +192,6 @@ namespace tarkov_settings
             double low = Math.Min(appSetting.gammaLow, appSetting.gammaHigh);
             double high = Math.Max(appSetting.gammaLow, appSetting.gammaHigh);
             Gamma = Gamma >= (low + high) / 2 ? low : high;
-            pMonitor.Reapply();
         }
 
         private static string BuildHotkeyString(Keys modifiers, Keys key)
@@ -356,6 +370,8 @@ namespace tarkov_settings
             Display.Primary = appSetting.display;
             #endregion
 
+            displayFollowTimer.Tick += DisplayFollowTimer_Tick;
+
             // Initialize Process Monitor
             pMonitor.Parent = this;
             foreach (string pTarget in appSetting.pTargets)
@@ -492,6 +508,9 @@ namespace tarkov_settings
             {
                 DVLText.Text = DVLBar.Value.ToString();
             }
+
+            // live preview while the game is focused (no-op otherwise)
+            pMonitor.Reapply();
         }
         // follow the game window to whichever monitor it is on
         public void FollowWindowDisplay(IntPtr hWnd)
@@ -620,7 +639,6 @@ namespace tarkov_settings
             Contrast = 0.5;
             Gamma = 1.0;
             DVL = 0;
-            pMonitor.Reapply();
         }
 
         private void RecommendButton_Click(object sender, EventArgs e)
@@ -630,7 +648,6 @@ namespace tarkov_settings
             Contrast = recommended.contrast;
             Gamma = recommended.gamma;
             DVL = recommended.saturation;
-            pMonitor.Reapply();
         }
 
         // applied at the next focus change, no restart needed

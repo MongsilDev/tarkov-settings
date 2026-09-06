@@ -74,6 +74,7 @@ namespace tarkov_settings
         // the target process that most recently took focus; 0 when none is focused
         public int FocusedTargetPid { get; private set; }
         public string FocusedTargetName { get; private set; }
+        public IntPtr FocusedTargetHwnd { get; private set; }
 
         #region Singleton Pattern implement
         private static readonly Lazy<ProcessMonitor> instance =
@@ -134,15 +135,10 @@ namespace tarkov_settings
 
                 FocusedTargetPid = NativeMethods.GetWindowProcessId(hWnd);
                 FocusedTargetName = pName;
+                FocusedTargetHwnd = hWnd;
                 Parent.SetHotkeysActive(true);
                 Parent.FollowWindowDisplay(hWnd);
-
-                var (b, c, g, dvl) = Parent.GetColorValue();
-                cController.ChangeColorRamp(brightness: b,
-                                            contrast: c,
-                                            gamma: g,
-                                            reset: false);
-                cController.DVL = dvl;
+                ApplyCurrent();
             }
             else
             {
@@ -150,6 +146,7 @@ namespace tarkov_settings
 
                 FocusedTargetPid = 0;
                 FocusedTargetName = null;
+                FocusedTargetHwnd = IntPtr.Zero;
                 Parent.SetHotkeysActive(false);
 
                 // skip GDI/NVAPI calls when switching between non-target windows
@@ -211,19 +208,26 @@ namespace tarkov_settings
         }
 
         /**
-         * Push the current slider values to the display while a target is focused
+         * Apply the current slider values unconditionally (target focused, or display switched)
          */
-        public void Reapply()
+        public void ApplyCurrent()
         {
-            if (!cController.IsApplied)
-                return;
-
             var (b, c, g, dvl) = Parent.GetColorValue();
             cController.ChangeColorRamp(brightness: b,
                                         contrast: c,
                                         gamma: g,
                                         reset: false);
             cController.DVL = dvl;
+        }
+
+        /**
+         * Push the current slider values to the display while a target is focused
+         */
+        public void Reapply()
+        {
+            if (Parent == null || !cController.IsApplied)
+                return;
+            ApplyCurrent();
         }
 
         /**
