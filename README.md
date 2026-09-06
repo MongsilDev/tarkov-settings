@@ -13,7 +13,7 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 - Brightness / Contrast / Gamma / Digital Vibrance, applied **only while the game window is focused** — no sudden flash when alt-tabbing
 - Escape from Tarkov and Arena supported, Arena toggle included
 - Game volume hotkey: one key toggles the game's volume between two levels (default 5% / 100%)
-- Gamma hotkey: one key toggles gamma between two levels (default 1.5 / 2.0)
+- Gamma hotkey: one key toggles gamma between two levels (default 1.0 / 1.5)
 - Hotkeys are only active while the game is focused, so they never get in the way elsewhere
 - Follows the game to whichever monitor it is on
 - Run on Windows startup option
@@ -30,7 +30,7 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 
 ## How to Use
 1. Download the zip, right-click it > Properties > **Unblock**, then extract and run
-2. Set color values with the sliders — double-click a slider label to reset it
+2. Set color values with the sliders — **Recommended** applies the suggested values, double-clicking a slider label resets it to the Windows default
 3. Check **Apply to Arena** to use the same colors for Arena
 4. In **Hotkeys**, set the two **Game volume %** levels, then click the **Key** box and press a key (default: `PageDown`). Esc cancels, Backspace clears the binding
 5. Same for **Gamma** — two levels and a key (default: `PageUp`)
