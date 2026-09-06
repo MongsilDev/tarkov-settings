@@ -14,7 +14,7 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 - Escape from Tarkov and Arena supported, Arena toggle included
 - Game volume hotkey: one key toggles the game's volume between two levels (default 5% / 100%)
 - Gamma hotkey: one key toggles gamma between two levels (default 1.0 / 1.5)
-- Kill hotkey: ends the game process after a confirmation prompt — unbound by default, requires a modifier key
+- Kill hotkey: ends the game process immediately — unbound by default, requires a modifier key, confirmed once when you bind it
 - Hotkeys are only active while the game is focused, so they never get in the way elsewhere
 - Follows the game to whichever monitor it is on
 - Run on Windows startup option
@@ -35,7 +35,7 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 3. Check **Apply to Arena** to use the same colors for Arena
 4. In **Hotkeys**, set the two **Game volume %** levels, then click the **Key** box and press a key (default: `PageDown`). Esc cancels, Backspace clears the binding
 5. Same for **Gamma** — two levels and a key (default: `PageUp`)
-5.1. **Kill game** has no key until you set one (Ctrl/Alt/Shift + key). Pressing it asks for confirmation before ending the game
+5.1. **Kill game** has no key until you set one (Ctrl/Alt/Shift + key). You confirm once when binding; pressing it later ends the game at once
 6. Check **Start with Windows** to launch on boot, **Start minimized** to start in the tray
 7. Minimize and play
 
