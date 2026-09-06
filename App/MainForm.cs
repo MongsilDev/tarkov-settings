@@ -16,6 +16,7 @@ namespace tarkov_settings
         private const int WM_HOTKEY = 0x0312;
         private const int HOTKEY_VOLUME_TOGGLE = 1;
         private const int HOTKEY_GAMMA_TOGGLE = 2;
+        private const int HOTKEY_KILL = 3;
         private const uint MOD_ALT = 0x0001;
         private const uint MOD_CONTROL = 0x0002;
         private const uint MOD_SHIFT = 0x0004;
@@ -65,15 +66,43 @@ namespace tarkov_settings
                 && RegisterHotKey(this.Handle, id, modifiers | MOD_NOREPEAT, vk);
         }
 
+        private static readonly int[] HOTKEY_IDS = { HOTKEY_VOLUME_TOGGLE, HOTKEY_GAMMA_TOGGLE, HOTKEY_KILL };
+
+        private string GetHotkey(int id)
+        {
+            switch (id)
+            {
+                case HOTKEY_GAMMA_TOGGLE: return appSetting.gammaToggleHotkey;
+                case HOTKEY_KILL: return appSetting.killHotkey;
+                default: return appSetting.volumeToggleHotkey;
+            }
+        }
+
+        private void SetHotkey(int id, string hotkey)
+        {
+            switch (id)
+            {
+                case HOTKEY_GAMMA_TOGGLE: appSetting.gammaToggleHotkey = hotkey; break;
+                case HOTKEY_KILL: appSetting.killHotkey = hotkey; break;
+                default: appSetting.volumeToggleHotkey = hotkey; break;
+            }
+        }
+
+        private int HotkeyIdOf(TextBox box)
+        {
+            if (box == gammaHotkeyTextBox) return HOTKEY_GAMMA_TOGGLE;
+            if (box == killHotkeyTextBox) return HOTKEY_KILL;
+            return HOTKEY_VOLUME_TOGGLE;
+        }
+
         public void SetHotkeysActive(bool active)
         {
             hotkeysActive = active;
-            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE);
-            UnregisterHotKey(this.Handle, HOTKEY_GAMMA_TOGGLE);
-            if (active)
+            foreach (int id in HOTKEY_IDS)
             {
-                TryRegisterHotkey(HOTKEY_VOLUME_TOGGLE, appSetting.volumeToggleHotkey);
-                TryRegisterHotkey(HOTKEY_GAMMA_TOGGLE, appSetting.gammaToggleHotkey);
+                UnregisterHotKey(this.Handle, id);
+                if (active)
+                    TryRegisterHotkey(id, GetHotkey(id));
             }
         }
 
@@ -87,9 +116,44 @@ namespace tarkov_settings
 
         protected override void OnHandleDestroyed(EventArgs e)
         {
-            UnregisterHotKey(this.Handle, HOTKEY_VOLUME_TOGGLE);
-            UnregisterHotKey(this.Handle, HOTKEY_GAMMA_TOGGLE);
+            foreach (int id in HOTKEY_IDS)
+                UnregisterHotKey(this.Handle, id);
             base.OnHandleDestroyed(e);
+        }
+
+        private bool killPrompting;
+
+        // pid is captured before the prompt: the prompt itself takes focus, which
+        // clears the monitor's focused target and deactivates the hotkeys
+        private void ConfirmAndKill()
+        {
+            if (killPrompting)
+                return;
+            int pid = pMonitor.FocusedTargetPid;
+            string name = pMonitor.FocusedTargetName;
+            if (pid <= 0 || name == null)
+                return;
+
+            killPrompting = true;
+            try
+            {
+                // TopMost owner so the prompt appears over a borderless game window
+                using (var owner = new Form { TopMost = true })
+                {
+                    DialogResult answer = MessageBox.Show(owner,
+                        "Terminate " + name + ".exe (PID " + pid + ") now?\nUnsaved progress in the game will be lost.",
+                        "Kill game",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning,
+                        MessageBoxDefaultButton.Button2);
+                    if (answer == DialogResult.Yes)
+                        pMonitor.KillTarget(pid);
+                }
+            }
+            finally
+            {
+                killPrompting = false;
+            }
         }
 
         private void ToggleGamma()
@@ -131,7 +195,7 @@ namespace tarkov_settings
         {
             var box = (TextBox)sender;
             box.BackColor = SystemColors.Control;
-            box.Text = HotkeyDisplay(box == gammaHotkeyTextBox ? appSetting.gammaToggleHotkey : appSetting.volumeToggleHotkey);
+            box.Text = HotkeyDisplay(GetHotkey(HotkeyIdOf(box)));
         }
 
         // unmodified letters/digits would swallow normal typing in every app
@@ -159,18 +223,18 @@ namespace tarkov_settings
                 return;
             }
 
-            bool isGamma = box == gammaHotkeyTextBox;
-            int id = isGamma ? HOTKEY_GAMMA_TOGGLE : HOTKEY_VOLUME_TOGGLE;
-            string previous = isGamma ? appSetting.gammaToggleHotkey : appSetting.volumeToggleHotkey;
+            int id = HotkeyIdOf(box);
+            string previous = GetHotkey(id);
             string hotkey;
 
             if (key == Keys.Back || key == Keys.Delete)
             {
                 hotkey = "";
             }
-            else if (e.Modifiers == Keys.None && NeedsModifier(key))
+            else if (e.Modifiers == Keys.None && (id == HOTKEY_KILL || NeedsModifier(key)))
             {
-                hintToolTip.Show("Use F-keys or add Ctrl/Alt/Shift", box, 0, -22, 2000);
+                // the kill key always needs a modifier so a stray keypress can never trigger it
+                hintToolTip.Show(id == HOTKEY_KILL ? "Kill key needs Ctrl/Alt/Shift" : "Use F-keys or add Ctrl/Alt/Shift", box, 0, -22, 2000);
                 return;
             }
             else
@@ -187,10 +251,7 @@ namespace tarkov_settings
                 }
             }
 
-            if (isGamma)
-                appSetting.gammaToggleHotkey = hotkey;
-            else
-                appSetting.volumeToggleHotkey = hotkey;
+            SetHotkey(id, hotkey);
             if (hotkeysActive)
                 SetHotkeysActive(true);
 
@@ -257,6 +318,7 @@ namespace tarkov_settings
             appSetting.volumeHigh = volumeHigh;
 
             this.gammaHotkeyTextBox.Text = HotkeyDisplay(appSetting.gammaToggleHotkey);
+            this.killHotkeyTextBox.Text = HotkeyDisplay(appSetting.killHotkey);
             decimal gammaLow = ClampToNum(gammaLowNum, (decimal)appSetting.gammaLow);
             decimal gammaHigh = ClampToNum(gammaHighNum, (decimal)appSetting.gammaHigh);
             this.gammaLowNum.Value = gammaLow;
@@ -397,6 +459,9 @@ namespace tarkov_settings
                         break;
                     case HOTKEY_GAMMA_TOGGLE:
                         ToggleGamma();
+                        break;
+                    case HOTKEY_KILL:
+                        ConfirmAndKill();
                         break;
                 }
             }

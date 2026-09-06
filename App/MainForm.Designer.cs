@@ -47,6 +47,9 @@
             this.gammaHighNum = new System.Windows.Forms.NumericUpDown();
             this.gammaKeyLabel = new System.Windows.Forms.Label();
             this.gammaHotkeyTextBox = new System.Windows.Forms.TextBox();
+            this.killLabel = new System.Windows.Forms.Label();
+            this.killKeyLabel = new System.Windows.Forms.Label();
+            this.killHotkeyTextBox = new System.Windows.Forms.TextBox();
             this.recommendButton = new System.Windows.Forms.Button();
             this.hotkeyGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
@@ -112,7 +115,7 @@
             this.layoutTablePanel.RowCount = 1;
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.4669F));
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.5331F));
-            this.layoutTablePanel.Size = new System.Drawing.Size(658, 452);
+            this.layoutTablePanel.Size = new System.Drawing.Size(658, 480);
             this.layoutTablePanel.TabIndex = 0;
             // 
             // ColorPanel
@@ -127,7 +130,7 @@
             this.ColorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ColorPanel.Location = new System.Drawing.Point(3, 3);
             this.ColorPanel.Name = "ColorPanel";
-            this.ColorPanel.Size = new System.Drawing.Size(652, 446);
+            this.ColorPanel.Size = new System.Drawing.Size(652, 474);
             this.ColorPanel.TabIndex = 2;
             // 
             // autostartCheckBox
@@ -194,9 +197,12 @@
             this.hotkeyGroupBox.Controls.Add(this.gammaHighNum);
             this.hotkeyGroupBox.Controls.Add(this.gammaKeyLabel);
             this.hotkeyGroupBox.Controls.Add(this.gammaHotkeyTextBox);
+            this.hotkeyGroupBox.Controls.Add(this.killLabel);
+            this.hotkeyGroupBox.Controls.Add(this.killKeyLabel);
+            this.hotkeyGroupBox.Controls.Add(this.killHotkeyTextBox);
             this.hotkeyGroupBox.Location = new System.Drawing.Point(3, 354);
             this.hotkeyGroupBox.Name = "hotkeyGroupBox";
-            this.hotkeyGroupBox.Size = new System.Drawing.Size(641, 84);
+            this.hotkeyGroupBox.Size = new System.Drawing.Size(641, 112);
             this.hotkeyGroupBox.TabIndex = 20;
             this.hotkeyGroupBox.TabStop = false;
             this.hotkeyGroupBox.Text = "Hotkeys";
@@ -338,6 +344,42 @@
             this.gammaHotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
             this.gammaHotkeyTextBox.Leave += new System.EventHandler(this.HotkeyTextBox_Leave);
             this.gammaHotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
+            // 
+            // killLabel
+            // 
+            this.killLabel.AutoSize = true;
+            this.killLabel.BackColor = System.Drawing.Color.Transparent;
+            this.killLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.killLabel.Location = new System.Drawing.Point(12, 83);
+            this.killLabel.Name = "killLabel";
+            this.killLabel.Size = new System.Drawing.Size(70, 14);
+            this.killLabel.Text = "Kill game";
+            // 
+            // killKeyLabel
+            // 
+            this.killKeyLabel.AutoSize = true;
+            this.killKeyLabel.BackColor = System.Drawing.Color.Transparent;
+            this.killKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.killKeyLabel.Location = new System.Drawing.Point(402, 83);
+            this.killKeyLabel.Name = "killKeyLabel";
+            this.killKeyLabel.Size = new System.Drawing.Size(28, 14);
+            this.killKeyLabel.Text = "Key";
+            // 
+            // killHotkeyTextBox
+            // 
+            this.killHotkeyTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.killHotkeyTextBox.Location = new System.Drawing.Point(448, 80);
+            this.killHotkeyTextBox.Name = "killHotkeyTextBox";
+            this.killHotkeyTextBox.ReadOnly = true;
+            this.killHotkeyTextBox.ShortcutsEnabled = false;
+            this.killHotkeyTextBox.Size = new System.Drawing.Size(190, 22);
+            this.killHotkeyTextBox.TabIndex = 6;
+            this.killHotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.hintToolTip.SetToolTip(this.killHotkeyTextBox, "Ends the game process after a confirmation. Needs Ctrl/Alt/Shift");
+            this.killHotkeyTextBox.Enter += new System.EventHandler(this.HotkeyTextBox_Enter);
+            this.killHotkeyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyTextBox_KeyDown);
+            this.killHotkeyTextBox.Leave += new System.EventHandler(this.HotkeyTextBox_Leave);
+            this.killHotkeyTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.HotkeyTextBox_PreviewKeyDown);
             // 
             // DVLGroupBox
             // 
@@ -636,7 +678,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(658, 452);
+            this.ClientSize = new System.Drawing.Size(658, 480);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -719,6 +761,9 @@
         private System.Windows.Forms.NumericUpDown gammaHighNum;
         private System.Windows.Forms.Label gammaKeyLabel;
         private System.Windows.Forms.TextBox gammaHotkeyTextBox;
+        private System.Windows.Forms.Label killLabel;
+        private System.Windows.Forms.Label killKeyLabel;
+        private System.Windows.Forms.TextBox killHotkeyTextBox;
         private System.Windows.Forms.Button recommendButton;
         private System.Windows.Forms.GroupBox hotkeyGroupBox;
         private System.Windows.Forms.ToolTip hintToolTip;

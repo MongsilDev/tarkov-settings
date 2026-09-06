@@ -43,6 +43,12 @@ namespace tarkov_settings
         [DllImport("user32.dll", SetLastError = true)]
         static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
         #endregion
+
+        public static int GetWindowProcessId(IntPtr hWnd)
+        {
+            GetWindowThreadProcessId(hWnd, out uint processID);
+            return (int)processID;
+        }
         public static string GetActiveWindowTitle()
         {
             try
@@ -64,6 +70,10 @@ namespace tarkov_settings
         private readonly ColorController cController = ColorController.Instance;
 
         private HashSet<string> pTargets = new HashSet<string>();
+
+        // the target process that most recently took focus; 0 when none is focused
+        public int FocusedTargetPid { get; private set; }
+        public string FocusedTargetName { get; private set; }
 
         #region Singleton Pattern implement
         private static readonly Lazy<ProcessMonitor> instance =
@@ -122,6 +132,8 @@ namespace tarkov_settings
             {
                 Console.WriteLine("[pMonitor] Target Process is focused");
 
+                FocusedTargetPid = NativeMethods.GetWindowProcessId(hWnd);
+                FocusedTargetName = pName;
                 Parent.SetHotkeysActive(true);
                 Parent.FollowWindowDisplay(hWnd);
 
@@ -136,6 +148,8 @@ namespace tarkov_settings
             {
                 Console.WriteLine("[pMonitor] Target Process is not focused");
 
+                FocusedTargetPid = 0;
+                FocusedTargetName = null;
                 Parent.SetHotkeysActive(false);
 
                 // skip GDI/NVAPI calls when switching between non-target windows
@@ -144,6 +158,37 @@ namespace tarkov_settings
 
                 cController.ChangeColorRamp(reset: true);
                 cController.ResetDVL();
+            }
+        }
+
+        /**
+         * Kill the given process only if it still exists and is still a target by name.
+         * The pid is captured before any confirmation dialog, since the dialog itself
+         * steals focus and clears FocusedTargetPid.
+         */
+        public bool KillTarget(int pid)
+        {
+            if (pid <= 0)
+                return false;
+            try
+            {
+                using (Process process = Process.GetProcessById(pid))
+                {
+                    if (!this.pTargets.Contains(process.ProcessName.ToLower()))
+                    {
+                        Console.WriteLine("[pMonitor] Refusing to kill non-target pid {0}", pid);
+                        return false;
+                    }
+                    process.Kill();
+                    Console.WriteLine("[pMonitor] Killed {0} ({1})", process.ProcessName, pid);
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                // already exited, or access denied
+                Console.WriteLine("[pMonitor] Kill failed: {0}", e.Message);
+                return false;
             }
         }
 

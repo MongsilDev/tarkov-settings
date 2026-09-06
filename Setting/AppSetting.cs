@@ -25,5 +25,7 @@ namespace tarkov_settings.Setting
         public string gammaToggleHotkey = "PageUp";
         public double gammaLow = 1.0;
         public double gammaHigh = 1.5;
+        // unbound on purpose - the user must opt in
+        public string killHotkey = "";
     }
 }
