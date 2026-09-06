@@ -574,6 +574,16 @@ namespace tarkov_settings
             return Math.Min(Math.Max(value, num.Minimum), num.Maximum);
         }
 
+        // identity values - the display looks exactly as Windows renders it
+        private void DefaultButton_Click(object sender, EventArgs e)
+        {
+            Brightness = 0.5;
+            Contrast = 0.5;
+            Gamma = 1.0;
+            DVL = 0;
+            pMonitor.Reapply();
+        }
+
         private void RecommendButton_Click(object sender, EventArgs e)
         {
             var recommended = new AppSetting();
