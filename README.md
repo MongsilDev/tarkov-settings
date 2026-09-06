@@ -1,49 +1,34 @@
 # tarkov-settings
-![screenshot](./1.png)
 
+[![English](https://img.shields.io/badge/README-English-555555?style=flat-square)](README.en.md)
 [![Hits](https://hits.sh/github.com/MongsilDev/tarkov-settings.svg?style=flat-square&label=hits&color=8c8c8c&labelColor=555555)](https://hits.sh)
 
-## [->**DOWNLOAD Latest**<-](https://github.com/MongsilDev/tarkov-settings/releases/latest)
+![screenshot](./1.png)
 
-Automatically change color settings for [Escape from Tarkov](https://escapefromtarkov.com) and Arena.
+## [->**최신 버전 다운로드**<-](https://github.com/MongsilDev/tarkov-settings/releases/latest)
 
-Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings) with additional features and fixes.
+Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는 프로그램.
+[incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings) 포크에 기능과 수정을 더한 버전.
 
-## What does it do?
-- Brightness / Contrast / Gamma / Digital Vibrance, applied **only while the game window is focused** — no sudden flash when alt-tabbing
-- Escape from Tarkov and Arena supported, Arena toggle included
-- Game volume hotkey: one key toggles the game's volume between two levels (default 5% / 100%)
-- Gamma hotkey: one key toggles gamma between two levels (default 1.0 / 1.5)
-- Kill hotkey: ends the game process immediately — unbound by default, requires a modifier key, confirmed once when you bind it
-- Hotkeys are only active while the game is focused, so they never get in the way elsewhere
-- Follows the game to whichever monitor it is on
-- Run on Windows startup option
-- Lives in the tray, single instance
+## 기능
+- 밝기, 대비, 감마, Digital Vibrance를 게임 창이 포커스일 때만 적용. 알트탭 시 화면 번쩍임 없음
+- Escape from Tarkov와 Arena 지원, Arena는 체크박스로 켜고 끔
+- 핫키 3종: 감마 두 값 전환, 게임 볼륨 두 값 전환, 게임 즉시 종료. 게임 포커스 중에만 동작
+- 게임 창이 있는 모니터 자동 추적
+- 윈도우 시작 시 실행, 트레이 최소화 시작
 
-## How it works?
-- Changes Digital Vibrance value from Nvidia Settings using [NvAPIWrapper](https://github.com/falahati/NvAPIWrapper)
-- Changes Gamma using [Win32 API calls](https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setdevicegammaramp)
+## 사용법
+1. exe 다운로드 후 우클릭 > 속성 > 차단 해제, 실행
+2. 슬라이더로 색상 조절. Recommended는 추천값, Default는 윈도우 기본값, 라벨 더블클릭은 항목별 기본값
+3. Arena에도 적용하려면 Apply to Arena 체크
+4. Hotkeys에서 값 두 개와 키 지정. Key 칸을 클릭하고 키 입력, Esc 취소, Backspace 해제. 기본 키는 Gamma PageUp, Game volume PageDown. Kill game은 Ctrl/Alt/Shift 조합만 가능하고 지정할 때 한 번 확인
+5. 필요하면 Start with Windows, Start minimized 체크
 
-## Supported Graphic Cards
-- Nvidia GPU **fully supported.** (Brightness/Contrast/Gamma/Saturation)
-- AMD GPU **partially supported.** (Except Saturation)
-- **Intel/Etc is not supported.**
+설정 파일: `%LOCALAPPDATA%\tarkov-settings\settings.json`, 앱이 닫힐 때 저장.
 
-## How to Use
-1. Download the zip, right-click it > Properties > **Unblock**, then extract and run
-2. Set color values with the sliders — **Recommended** applies the suggested values, double-clicking a slider label resets it to the Windows default
-3. Check **Apply to Arena** to use the same colors for Arena
-4. In **Hotkeys**, set the two **Gamma** levels, then click the **Key** box and press a key (default: `PageUp`). Esc cancels, Backspace clears the binding
-5. Same for **Game volume %** — two levels and a key (default: `PageDown`)
-5.1. **Kill game** has no key until you set one (Ctrl/Alt/Shift + key). You confirm once when binding; pressing it later ends the game at once
-6. Check **Start with Windows** to launch on boot, **Start minimized** to start in the tray
-7. Minimize and play
-
-Settings are saved to `%LOCALAPPDATA%\tarkov-settings\settings.json` whenever the app closes.
-
-## Warning
-1. The screen may blink a couple of times when the game window activates. It still works.
-2. **Disclaimer: I don't know if BSG will ban for using this.**
-3. Only works in **Borderless mode.**
-4. Windows Defender may flag the unsigned build — allow it or add an exclusion.
-5. Nvidia Optimus environment (mostly laptops) is not tested.
+## 주의
+1. 게임 창이 활성화될 때 화면이 한두 번 깜빡일 수 있음
+2. BSG가 이 프로그램 사용을 제재할지는 알 수 없음
+3. Borderless 모드에서만 동작
+4. GPU: NVIDIA 전체 지원, AMD는 채도 제외, Intel 미지원
+5. 서명 없는 빌드라 Defender나 SmartScreen 경고가 뜨면 허용 또는 제외 등록 필요
