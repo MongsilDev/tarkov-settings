@@ -8,10 +8,10 @@ namespace tarkov_settings.Setting
 {
     class AppSetting : Settings<AppSetting>
     {
-        public double brightness = 0.55;
-        public double contrast = 0.75;
-        public double gamma = 2.0;
-        public int saturation = 0;
+        public double brightness = 0.75;
+        public double contrast = 0.60;
+        public double gamma = 1.0;
+        public int saturation = 60;
         public HashSet<string> pTargets = new HashSet<string>{
             "EscapeFromTarkov",
             "EscapeFromTarkovArena"
@@ -23,7 +23,7 @@ namespace tarkov_settings.Setting
         public int volumeLow = 5;
         public int volumeHigh = 100;
         public string gammaToggleHotkey = "PageUp";
-        public double gammaLow = 1.5;
-        public double gammaHigh = 2.0;
+        public double gammaLow = 1.0;
+        public double gammaHigh = 1.5;
     }
 }
