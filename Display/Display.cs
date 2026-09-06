@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -28,7 +28,6 @@ namespace tarkov_settings
         [DllImport("gdi32")]
         public static extern bool DeleteDC([In] IntPtr hdc);
 
-        public readonly static List<string> displays;
         private static string _primary;
 
         public static string Primary
@@ -36,7 +35,9 @@ namespace tarkov_settings
             get => _primary;
             set
             {
-                string target = displays.Contains(value) ? value : displays[0];
+                // live query so monitors plugged in after startup are recognised
+                Screen[] screens = Screen.AllScreens;
+                string target = screens.Any(s => s.DeviceName == value) ? value : screens[0].DeviceName;
                 if (target == _primary)
                     return;
 
@@ -51,11 +52,7 @@ namespace tarkov_settings
                 }
 
                 _primary = target;
-                try
-                {
-                    gpu.Load(_primary);
-                }
-                catch (NotImplementedException) { }
+                gpu.Load(_primary);
 
                 // re-backup the gamma ramp of the newly selected display
                 cController.Init();
@@ -64,18 +61,7 @@ namespace tarkov_settings
 
         static Display()
         {
-            displays = GetWinDisplays();
             gpu = GPUDevice.Instance;
-        }
-
-        private static List<string> GetWinDisplays()
-        {
-            List<string> list = new List<string>();
-            foreach (Screen screen in Screen.AllScreens)
-            {
-                list.Add(screen.DeviceName);
-            }
-            return list;
         }
     }
 }

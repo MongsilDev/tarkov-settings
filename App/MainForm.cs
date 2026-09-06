@@ -356,8 +356,8 @@ namespace tarkov_settings
                 || (killModifiers & (MOD_CONTROL | MOD_ALT | MOD_SHIFT)) == 0)
                 appSetting.killHotkey = "";
             this.killHotkeyTextBox.Text = HotkeyDisplay(appSetting.killHotkey);
-            decimal gammaLow = ClampToNum(gammaLowNum, (decimal)appSetting.gammaLow);
-            decimal gammaHigh = ClampToNum(gammaHighNum, (decimal)appSetting.gammaHigh);
+            decimal gammaLow = ClampToNum(gammaLowNum, appSetting.gammaLow);
+            decimal gammaHigh = ClampToNum(gammaHighNum, appSetting.gammaHigh);
             this.gammaLowNum.Value = gammaLow;
             this.gammaHighNum.Value = gammaHigh;
             appSetting.gammaLow = (double)gammaLow;
@@ -534,24 +534,26 @@ namespace tarkov_settings
             appSetting.Save();
         }
 
+        // FormClosing also fires for WM_QUERYENDSESSION, which the user (or another app)
+        // may still cancel - so only the idempotent save happens here
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            SaveSettings();
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                SaveSettings();
                 e.Cancel = true;
                 this.Hide();
             }
-            else
-            {
-                // covers windows shutdown as well, not only the tray Exit menu
-                SaveSettings();
+        }
 
-                Console.WriteLine(e.CloseReason);
-                this.trayIcon.Dispose();
-                Console.WriteLine("[mainForm] Closing pMonitor");
-                pMonitor.Close();
-            }
+        // reached only when the form really closes (Exit menu, confirmed shutdown)
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            displayFollowTimer.Stop();
+            this.trayIcon.Dispose();
+            Console.WriteLine("[mainForm] Closing pMonitor");
+            pMonitor.Close();
+            base.OnFormClosed(e);
         }
 
         private void CheckOnMinimizeToTray(object sender, EventArgs e)
@@ -576,9 +578,14 @@ namespace tarkov_settings
             appSetting.gammaHigh = (double)gammaHighNum.Value;
         }
 
-        private static decimal ClampToNum(NumericUpDown num, decimal value)
+        // clamp before the decimal cast: NaN/Infinity/huge values from a hand-edited file would throw
+        private static decimal ClampToNum(NumericUpDown num, double value)
         {
-            return Math.Min(Math.Max(value, num.Minimum), num.Maximum);
+            if (double.IsNaN(value) || value < (double)num.Minimum)
+                return num.Minimum;
+            if (value > (double)num.Maximum)
+                return num.Maximum;
+            return (decimal)value;
         }
 
         // identity values - the display looks exactly as Windows renders it

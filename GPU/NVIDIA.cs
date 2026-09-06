@@ -40,11 +40,17 @@ namespace tarkov_settings.GPU
             get => _initSaturation;
         }
 
+        // false until Load succeeds for the current display; a failed Load must not
+        // leave the previous display's handle in use
+        private bool hasDisplay;
+
         public int Saturation
         {
             get => currentSaturation;
             set
             {
+                if (!hasDisplay)
+                    return;
                 if (value > this.MaxSaturation)
                     value = this.MaxSaturation;
                 if (value < this.MinSaturation)
@@ -89,10 +95,14 @@ namespace tarkov_settings.GPU
                 this._maxSaturation = dvcInfo.MaximumLevel;
                 this._minSaturation = dvcInfo.MinimumLevel;
                 this._initSaturation = this.currentSaturation = dvcInfo.CurrentLevel;
+                this.hasDisplay = true;
             }
             catch (NvAPIWrapper.Native.Exceptions.NVIDIAApiException)
             {
-                // keep previous handle/levels; retried on the next display change
+                // this display has no DVC (or NvAPI is unavailable right now): disable
+                // saturation until a later Load succeeds instead of driving the old handle
+                this.hasDisplay = false;
+                this._maxSaturation = this._minSaturation = this._initSaturation = this.currentSaturation = 0;
             }
         }
 

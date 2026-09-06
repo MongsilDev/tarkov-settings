@@ -12,8 +12,18 @@ namespace tarkov_settings.Setting
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "tarkov-settings");
 
+        // true when the file existed but could not be read (locked); saving would then
+        // overwrite the user's real settings with defaults
+        public static bool LoadFailed { get; private set; }
+
         public void Save(string fileName = null)
         {
+            if (LoadFailed)
+            {
+                Console.WriteLine("[settings] not saving: load failed this session");
+                return;
+            }
+
             // best-effort: a failing disk must not crash the exit path
             try
             {
@@ -55,6 +65,11 @@ namespace tarkov_settings.Setting
                         ObjectCreationHandling = ObjectCreationHandling.Replace,
                     });
             }
+            catch (IOException)
+            {
+                // still locked after retries - run on defaults but never overwrite the file
+                LoadFailed = true;
+            }
             catch (Exception)
             {
                 // corrupted settings file - fall back to defaults
@@ -71,7 +86,7 @@ namespace tarkov_settings.Setting
                 {
                     return File.ReadAllText(path);
                 }
-                catch (IOException) when (attempt < 3)
+                catch (IOException) when (attempt < 10)
                 {
                     System.Threading.Thread.Sleep(100);
                 }
