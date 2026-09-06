@@ -233,16 +233,8 @@ namespace tarkov_settings
                 DVLGroupBox.Enabled = false;
 
             #region Initialize Display
-            // Initialize Display Dropdown
-            foreach (string display in Display.displays)
-            {
-                DisplayCombo.Items.Add(display);
-            }
-            
-            if(DisplayCombo.FindString(appSetting.display) != -1)
-                DisplayCombo.SelectedIndex = DisplayCombo.FindString(appSetting.display);
-
-            Display.Primary = (string)DisplayCombo.SelectedItem;
+            // last used display; overridden whenever a game window gains focus
+            Display.Primary = appSetting.display;
             #endregion
 
             // Initialize Process Monitor
@@ -380,22 +372,9 @@ namespace tarkov_settings
         // follow the game window to whichever monitor it is on
         public void FollowWindowDisplay(IntPtr hWnd)
         {
-            string device = Screen.FromHandle(hWnd).DeviceName;
-            int index = DisplayCombo.FindStringExact(device);
-            if (index != -1 && index != DisplayCombo.SelectedIndex)
-                DisplayCombo.SelectedIndex = index;
+            Display.Primary = Screen.FromHandle(hWnd).DeviceName;
         }
 
-        private void DisplayCombo_SelectedValueChanged(object sender, EventArgs e)
-        {
-            string selectedDisplay = (string)DisplayCombo.SelectedItem;
-            Display.Primary = selectedDisplay;
-
-            if(Display.Primary != selectedDisplay)
-            {
-                DisplayCombo.SelectedIndex = DisplayCombo.FindString(Display.Primary);
-            }
-        }
         #endregion
 
         protected override void WndProc(ref Message m)
@@ -443,9 +422,7 @@ namespace tarkov_settings
             appSetting.contrast = Contrast;
             appSetting.gamma = Gamma;
             appSetting.saturation = DVL;
-            // keep the last saved display when nothing is selected (e.g. monitor unplugged)
-            if (DisplayCombo.SelectedItem != null)
-                appSetting.display = (string)DisplayCombo.SelectedItem;
+            appSetting.display = Display.Primary;
             appSetting.minimizeOnStart = minimizeOnStart;
             appSetting.autostart = autostartCheckBox.Checked;
             if (arenaCheckBox.Checked)
@@ -500,6 +477,16 @@ namespace tarkov_settings
         private static decimal ClampToNum(NumericUpDown num, decimal value)
         {
             return Math.Min(Math.Max(value, num.Minimum), num.Maximum);
+        }
+
+        private void RecommendButton_Click(object sender, EventArgs e)
+        {
+            var recommended = new AppSetting();
+            Brightness = recommended.brightness;
+            Contrast = recommended.contrast;
+            Gamma = recommended.gamma;
+            DVL = recommended.saturation;
+            pMonitor.Reapply();
         }
 
         // applied at the next focus change, no restart needed

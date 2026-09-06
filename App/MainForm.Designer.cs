@@ -49,9 +49,8 @@
             this.gammaHighNum = new System.Windows.Forms.NumericUpDown();
             this.gammaKeyLabel = new System.Windows.Forms.Label();
             this.gammaHotkeyTextBox = new System.Windows.Forms.TextBox();
-            this.displayLabel = new System.Windows.Forms.Label();
+            this.recommendButton = new System.Windows.Forms.Button();
             this.hotkeyGroupBox = new System.Windows.Forms.GroupBox();
-            this.DisplayCombo = new System.Windows.Forms.ComboBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
             this.DVLLabel = new System.Windows.Forms.Label();
@@ -214,29 +213,16 @@
             this.arenaCheckBox.UseVisualStyleBackColor = false;
             this.arenaCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnArena);
             // 
-            // displayLabel
+            // recommendButton
             // 
-            this.displayLabel.AutoSize = true;
-            this.displayLabel.BackColor = System.Drawing.Color.Transparent;
-            this.displayLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.displayLabel.Location = new System.Drawing.Point(440, 331);
-            this.displayLabel.Name = "displayLabel";
-            this.displayLabel.Size = new System.Drawing.Size(56, 14);
-            this.displayLabel.TabIndex = 18;
-            this.displayLabel.Text = "Display";
-            // 
-            // DisplayCombo
-            // 
-            this.DisplayCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.DisplayCombo.Enabled = false;
-            this.DisplayCombo.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.DisplayCombo.FormattingEnabled = true;
-            this.DisplayCombo.Location = new System.Drawing.Point(502, 327);
-            this.DisplayCombo.Name = "DisplayCombo";
-            this.DisplayCombo.Size = new System.Drawing.Size(139, 22);
-            this.DisplayCombo.TabIndex = 19;
-            this.hintToolTip.SetToolTip(this.DisplayCombo, "Follows the monitor the game is on");
-            this.DisplayCombo.SelectedValueChanged += new System.EventHandler(this.DisplayCombo_SelectedValueChanged);
+            this.recommendButton.Location = new System.Drawing.Point(502, 326);
+            this.recommendButton.Name = "recommendButton";
+            this.recommendButton.Size = new System.Drawing.Size(139, 25);
+            this.recommendButton.TabIndex = 18;
+            this.recommendButton.Text = "Recommended";
+            this.hintToolTip.SetToolTip(this.recommendButton, "Apply the recommended color values");
+            this.recommendButton.UseVisualStyleBackColor = true;
+            this.recommendButton.Click += new System.EventHandler(this.RecommendButton_Click);
             // 
             // hotkeyGroupBox
             // 
@@ -761,7 +747,6 @@
         private System.Windows.Forms.Panel gammaPanel;
         private System.Windows.Forms.GroupBox DVLGroupBox;
         private System.Windows.Forms.Panel DVLPanel;
-        private System.Windows.Forms.ComboBox DisplayCombo;
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip trayMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
@@ -782,7 +767,7 @@
         private System.Windows.Forms.NumericUpDown gammaHighNum;
         private System.Windows.Forms.Label gammaKeyLabel;
         private System.Windows.Forms.TextBox gammaHotkeyTextBox;
-        private System.Windows.Forms.Label displayLabel;
+        private System.Windows.Forms.Button recommendButton;
         private System.Windows.Forms.GroupBox hotkeyGroupBox;
         private System.Windows.Forms.ToolTip hintToolTip;
         private System.Windows.Forms.ToolTip dvlToolTip;
