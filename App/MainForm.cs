@@ -186,7 +186,27 @@ namespace tarkov_settings
             if ((modifiers & Keys.Control) != 0) hotkey += "Ctrl+";
             if ((modifiers & Keys.Alt) != 0) hotkey += "Alt+";
             if ((modifiers & Keys.Shift) != 0) hotkey += "Shift+";
-            return hotkey + key.ToString();
+            return hotkey + KeyName(key);
+        }
+
+        // Keys has duplicate members (PageDown/Next, PageUp/Prior...) and ToString() may
+        // pick either name; pin the ones users actually see
+        private static string KeyName(Keys key)
+        {
+            switch (key)
+            {
+                case Keys.PageDown: return "PageDown";
+                case Keys.PageUp: return "PageUp";
+                case Keys.Capital: return "CapsLock";
+                default: return key.ToString();
+            }
+        }
+
+        private static bool SameHotkey(string a, string b)
+        {
+            return TryParseHotkey(a, out uint ma, out uint va)
+                && TryParseHotkey(b, out uint mb, out uint vb)
+                && ma == mb && va == vb;
         }
 
         private static string HotkeyDisplay(string hotkey)
@@ -202,6 +222,9 @@ namespace tarkov_settings
 
         private void HotkeyTextBox_Enter(object sender, EventArgs e)
         {
+            // while capturing, a currently registered key must reach the box, not fire the toggle
+            foreach (int id in HOTKEY_IDS)
+                UnregisterHotKey(this.Handle, id);
             var box = (TextBox)sender;
             box.BackColor = SystemColors.Window;
             box.Text = "Press a key";
@@ -209,6 +232,8 @@ namespace tarkov_settings
 
         private void HotkeyTextBox_Leave(object sender, EventArgs e)
         {
+            if (hotkeysActive)
+                SetHotkeysActive(true);
             var box = (TextBox)sender;
             box.BackColor = SystemColors.Control;
             box.Text = HotkeyDisplay(GetHotkey(HotkeyIdOf(box)));
@@ -259,7 +284,7 @@ namespace tarkov_settings
 
                 foreach (int other in HOTKEY_IDS)
                 {
-                    if (other != id && string.Equals(GetHotkey(other), hotkey, StringComparison.OrdinalIgnoreCase))
+                    if (other != id && SameHotkey(GetHotkey(other), hotkey))
                     {
                         hintToolTip.Show("Already used by another hotkey", box, 0, -22, 2000);
                         return;
@@ -374,19 +399,19 @@ namespace tarkov_settings
         public double Brightness
         {
             get => BrightnessBar.Value / 100.0;
-            set => BrightnessBar.Value = ClampToBar(BrightnessBar, (int)(value * 100));
+            set => BrightnessBar.Value = ClampToBar(BrightnessBar, (int)Math.Round(value * 100));
         }
 
         public double Contrast
         {
             get => ContrastBar.Value / 100.0;
-            set => ContrastBar.Value = ClampToBar(ContrastBar, (int)(value * 100));
+            set => ContrastBar.Value = ClampToBar(ContrastBar, (int)Math.Round(value * 100));
         }
 
         public double Gamma
         {
             get => GammaBar.Value / 100.0;
-            set => GammaBar.Value = ClampToBar(GammaBar, (int)(value * 100));
+            set => GammaBar.Value = ClampToBar(GammaBar, (int)Math.Round(value * 100));
         }
 
         public int DVL
