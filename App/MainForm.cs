@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -123,22 +124,25 @@ namespace tarkov_settings
 
         private bool killPrompting;
 
-        // pid is captured before the prompt: the prompt itself takes focus, which
-        // clears the monitor's focused target and deactivates the hotkeys
+        // the hook skips our own windows (WINEVENT_SKIPOWNPROCESS), so the focused
+        // target is captured up front instead of being re-read after the prompt
         private void ConfirmAndKill()
         {
             if (killPrompting)
                 return;
             int pid = pMonitor.FocusedTargetPid;
             string name = pMonitor.FocusedTargetName;
-            if (pid <= 0 || name == null)
+
+            // no prompt for a game that already exited (its pid may have been reused)
+            if (!pMonitor.IsTarget(pid, name))
                 return;
 
             killPrompting = true;
             try
             {
-                // TopMost owner so the prompt appears over a borderless game window
-                using (var owner = new Form { TopMost = true })
+                // TopMost owner placed on the game's monitor so the prompt shows over a borderless window
+                Screen screen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName == Display.Primary) ?? Screen.PrimaryScreen;
+                using (var owner = new Form { TopMost = true, StartPosition = FormStartPosition.Manual, Bounds = screen.Bounds })
                 {
                     DialogResult answer = MessageBox.Show(owner,
                         "Terminate " + name + ".exe (PID " + pid + ") now?\nUnsaved progress in the game will be lost.",
@@ -146,8 +150,14 @@ namespace tarkov_settings
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning,
                         MessageBoxDefaultButton.Button2);
-                    if (answer == DialogResult.Yes)
-                        pMonitor.KillTarget(pid);
+                    if (answer == DialogResult.Yes && !pMonitor.KillTarget(pid, name))
+                    {
+                        MessageBox.Show(owner,
+                            "Could not terminate " + name + ".exe (already exited or access denied).",
+                            "Kill game",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
                 }
             }
             finally
@@ -240,6 +250,22 @@ namespace tarkov_settings
             else
             {
                 hotkey = BuildHotkeyString(e.Modifiers, key);
+
+                // Y is the Yes mnemonic of the confirmation prompt
+                if (id == HOTKEY_KILL && key == Keys.Y)
+                {
+                    hintToolTip.Show("Y can't be used for the kill key", box, 0, -22, 2000);
+                    return;
+                }
+                foreach (int other in HOTKEY_IDS)
+                {
+                    if (other != id && string.Equals(GetHotkey(other), hotkey, StringComparison.OrdinalIgnoreCase))
+                    {
+                        hintToolTip.Show("Already used by another hotkey", box, 0, -22, 2000);
+                        return;
+                    }
+                }
+
                 // probe availability; the live registration happens only while a game is focused
                 UnregisterHotKey(this.Handle, id);
                 bool available = TryRegisterHotkey(id, hotkey);
@@ -318,6 +344,10 @@ namespace tarkov_settings
             appSetting.volumeHigh = volumeHigh;
 
             this.gammaHotkeyTextBox.Text = HotkeyDisplay(appSetting.gammaToggleHotkey);
+            // a hand-edited settings file must not bypass the modifier rule for the kill key
+            if (!TryParseHotkey(appSetting.killHotkey, out uint killModifiers, out _)
+                || (killModifiers & (MOD_CONTROL | MOD_ALT | MOD_SHIFT)) == 0)
+                appSetting.killHotkey = "";
             this.killHotkeyTextBox.Text = HotkeyDisplay(appSetting.killHotkey);
             decimal gammaLow = ClampToNum(gammaLowNum, (decimal)appSetting.gammaLow);
             decimal gammaHigh = ClampToNum(gammaHighNum, (decimal)appSetting.gammaHigh);

@@ -162,31 +162,49 @@ namespace tarkov_settings
         }
 
         /**
-         * Kill the given process only if it still exists and is still a target by name.
-         * The pid is captured before any confirmation dialog, since the dialog itself
-         * steals focus and clears FocusedTargetPid.
+         * True only if pid still exists, carries the expected name (guards against pid
+         * reuse after the game exited) and that name is a target.
          */
-        public bool KillTarget(int pid)
+        public bool IsTarget(int pid, string name)
         {
-            if (pid <= 0)
+            if (pid <= 0 || name == null)
                 return false;
             try
             {
                 using (Process process = Process.GetProcessById(pid))
                 {
-                    if (!this.pTargets.Contains(process.ProcessName.ToLower()))
-                    {
-                        Console.WriteLine("[pMonitor] Refusing to kill non-target pid {0}", pid);
-                        return false;
-                    }
-                    process.Kill();
-                    Console.WriteLine("[pMonitor] Killed {0} ({1})", process.ProcessName, pid);
-                    return true;
+                    return process.ProcessName.Equals(name, StringComparison.OrdinalIgnoreCase)
+                        && this.pTargets.Contains(process.ProcessName.ToLower());
                 }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /**
+         * Kill only after re-verifying pid + name at the last moment.
+         */
+        public bool KillTarget(int pid, string name)
+        {
+            if (!IsTarget(pid, name))
+            {
+                Console.WriteLine("[pMonitor] Refusing to kill pid {0}: not the expected target", pid);
+                return false;
+            }
+            try
+            {
+                using (Process process = Process.GetProcessById(pid))
+                {
+                    process.Kill();
+                }
+                Console.WriteLine("[pMonitor] Killed {0} ({1})", name, pid);
+                return true;
             }
             catch (Exception e)
             {
-                // already exited, or access denied
+                // already exited, or access denied (e.g. game running elevated)
                 Console.WriteLine("[pMonitor] Kill failed: {0}", e.Message);
                 return false;
             }
