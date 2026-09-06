@@ -335,16 +335,16 @@
             // 
             // gammaLowNum
             // 
-            this.gammaLowNum.DecimalPlaces = 1;
-            this.gammaLowNum.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            this.gammaLowNum.DecimalPlaces = 2;
+            this.gammaLowNum.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
             this.gammaLowNum.Location = new System.Drawing.Point(118, 52);
-            this.gammaLowNum.Maximum = new decimal(new int[] { 28, 0, 0, 65536 });
-            this.gammaLowNum.Minimum = new decimal(new int[] { 4, 0, 0, 65536 });
+            this.gammaLowNum.Maximum = new decimal(new int[] { 280, 0, 0, 131072 });
+            this.gammaLowNum.Minimum = new decimal(new int[] { 40, 0, 0, 131072 });
             this.gammaLowNum.Name = "gammaLowNum";
             this.gammaLowNum.Size = new System.Drawing.Size(58, 22);
             this.gammaLowNum.TabIndex = 3;
             this.gammaLowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.gammaLowNum.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            this.gammaLowNum.Value = new decimal(new int[] { 100, 0, 0, 131072 });
             this.gammaLowNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
             // 
             // gammaSepLabel
@@ -359,16 +359,16 @@
             // 
             // gammaHighNum
             // 
-            this.gammaHighNum.DecimalPlaces = 1;
-            this.gammaHighNum.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            this.gammaHighNum.DecimalPlaces = 2;
+            this.gammaHighNum.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
             this.gammaHighNum.Location = new System.Drawing.Point(196, 52);
-            this.gammaHighNum.Maximum = new decimal(new int[] { 28, 0, 0, 65536 });
-            this.gammaHighNum.Minimum = new decimal(new int[] { 4, 0, 0, 65536 });
+            this.gammaHighNum.Maximum = new decimal(new int[] { 280, 0, 0, 131072 });
+            this.gammaHighNum.Minimum = new decimal(new int[] { 40, 0, 0, 131072 });
             this.gammaHighNum.Name = "gammaHighNum";
             this.gammaHighNum.Size = new System.Drawing.Size(58, 22);
             this.gammaHighNum.TabIndex = 4;
             this.gammaHighNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.gammaHighNum.Value = new decimal(new int[] { 10, 0, 0, 65536 });
+            this.gammaHighNum.Value = new decimal(new int[] { 100, 0, 0, 131072 });
             this.gammaHighNum.ValueChanged += new System.EventHandler(this.GammaLevel_ValueChanged);
             // 
             // gammaKeyLabel
