@@ -118,7 +118,7 @@
             this.layoutTablePanel.RowCount = 1;
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.4669F));
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.5331F));
-            this.layoutTablePanel.Size = new System.Drawing.Size(516, 480);
+            this.layoutTablePanel.Size = new System.Drawing.Size(516, 374);
             this.layoutTablePanel.TabIndex = 0;
             // 
             // ColorPanel
@@ -132,7 +132,7 @@
             this.ColorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ColorPanel.Location = new System.Drawing.Point(3, 3);
             this.ColorPanel.Name = "ColorPanel";
-            this.ColorPanel.Size = new System.Drawing.Size(510, 474);
+            this.ColorPanel.Size = new System.Drawing.Size(510, 368);
             this.ColorPanel.TabIndex = 2;
             // 
             // autostartCheckBox
@@ -140,7 +140,7 @@
             this.autostartCheckBox.AutoSize = true;
             this.autostartCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.autostartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.autostartCheckBox.Location = new System.Drawing.Point(8, 330);
+            this.autostartCheckBox.Location = new System.Drawing.Point(8, 231);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(150, 17);
             this.autostartCheckBox.TabIndex = 15;
@@ -153,7 +153,7 @@
             this.minimizeStartCheckBox.AutoSize = true;
             this.minimizeStartCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.minimizeStartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.minimizeStartCheckBox.Location = new System.Drawing.Point(166, 330);
+            this.minimizeStartCheckBox.Location = new System.Drawing.Point(166, 231);
             this.minimizeStartCheckBox.Name = "minimizeStartCheckBox";
             this.minimizeStartCheckBox.Size = new System.Drawing.Size(129, 17);
             this.minimizeStartCheckBox.TabIndex = 16;
@@ -166,7 +166,7 @@
             this.arenaCheckBox.AutoSize = true;
             this.arenaCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.arenaCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.arenaCheckBox.Location = new System.Drawing.Point(303, 330);
+            this.arenaCheckBox.Location = new System.Drawing.Point(303, 231);
             this.arenaCheckBox.Name = "arenaCheckBox";
             this.arenaCheckBox.Size = new System.Drawing.Size(122, 17);
             this.arenaCheckBox.TabIndex = 17;
@@ -181,7 +181,7 @@
             this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonPanel.Location = new System.Drawing.Point(3, 228);
             this.buttonPanel.Name = "buttonPanel";
-            this.buttonPanel.Size = new System.Drawing.Size(338, 28);
+            this.buttonPanel.Size = new System.Drawing.Size(338, 30);
             this.buttonPanel.TabIndex = 3;
             // 
             // defaultButton
@@ -225,9 +225,9 @@
             this.hotkeyGroupBox.Controls.Add(this.killLabel);
             this.hotkeyGroupBox.Controls.Add(this.killKeyLabel);
             this.hotkeyGroupBox.Controls.Add(this.killHotkeyTextBox);
-            this.hotkeyGroupBox.Location = new System.Drawing.Point(3, 354);
+            this.hotkeyGroupBox.Location = new System.Drawing.Point(3, 256);
             this.hotkeyGroupBox.Name = "hotkeyGroupBox";
-            this.hotkeyGroupBox.Size = new System.Drawing.Size(501, 112);
+            this.hotkeyGroupBox.Size = new System.Drawing.Size(501, 104);
             this.hotkeyGroupBox.TabIndex = 20;
             this.hotkeyGroupBox.TabStop = false;
             this.hotkeyGroupBox.Text = "Hotkeys";
@@ -237,14 +237,14 @@
             this.volumeLevelLabel.AutoSize = true;
             this.volumeLevelLabel.BackColor = System.Drawing.Color.Transparent;
             this.volumeLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.volumeLevelLabel.Location = new System.Drawing.Point(12, 27);
+            this.volumeLevelLabel.Location = new System.Drawing.Point(12, 25);
             this.volumeLevelLabel.Name = "volumeLevelLabel";
             this.volumeLevelLabel.Size = new System.Drawing.Size(98, 14);
             this.volumeLevelLabel.Text = "Game volume %";
             // 
             // volumeLowNum
             // 
-            this.volumeLowNum.Location = new System.Drawing.Point(118, 24);
+            this.volumeLowNum.Location = new System.Drawing.Point(118, 22);
             this.volumeLowNum.Name = "volumeLowNum";
             this.volumeLowNum.Size = new System.Drawing.Size(58, 22);
             this.volumeLowNum.TabIndex = 0;
@@ -256,14 +256,14 @@
             this.volumeSepLabel.AutoSize = true;
             this.volumeSepLabel.BackColor = System.Drawing.Color.Transparent;
             this.volumeSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.volumeSepLabel.Location = new System.Drawing.Point(180, 27);
+            this.volumeSepLabel.Location = new System.Drawing.Point(180, 25);
             this.volumeSepLabel.Name = "volumeSepLabel";
             this.volumeSepLabel.Size = new System.Drawing.Size(14, 14);
             this.volumeSepLabel.Text = "/";
             // 
             // volumeHighNum
             // 
-            this.volumeHighNum.Location = new System.Drawing.Point(196, 24);
+            this.volumeHighNum.Location = new System.Drawing.Point(196, 22);
             this.volumeHighNum.Name = "volumeHighNum";
             this.volumeHighNum.Size = new System.Drawing.Size(58, 22);
             this.volumeHighNum.TabIndex = 1;
@@ -275,7 +275,7 @@
             this.hotkeyLabel.AutoSize = true;
             this.hotkeyLabel.BackColor = System.Drawing.Color.Transparent;
             this.hotkeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.hotkeyLabel.Location = new System.Drawing.Point(300, 27);
+            this.hotkeyLabel.Location = new System.Drawing.Point(300, 25);
             this.hotkeyLabel.Name = "hotkeyLabel";
             this.hotkeyLabel.Size = new System.Drawing.Size(28, 14);
             this.hotkeyLabel.Text = "Key";
@@ -283,7 +283,7 @@
             // hotkeyTextBox
             // 
             this.hotkeyTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.hotkeyTextBox.Location = new System.Drawing.Point(340, 24);
+            this.hotkeyTextBox.Location = new System.Drawing.Point(340, 22);
             this.hotkeyTextBox.Name = "hotkeyTextBox";
             this.hotkeyTextBox.ReadOnly = true;
             this.hotkeyTextBox.ShortcutsEnabled = false;
@@ -301,7 +301,7 @@
             this.gammaLevelLabel.AutoSize = true;
             this.gammaLevelLabel.BackColor = System.Drawing.Color.Transparent;
             this.gammaLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaLevelLabel.Location = new System.Drawing.Point(12, 55);
+            this.gammaLevelLabel.Location = new System.Drawing.Point(12, 51);
             this.gammaLevelLabel.Name = "gammaLevelLabel";
             this.gammaLevelLabel.Size = new System.Drawing.Size(42, 14);
             this.gammaLevelLabel.Text = "Gamma";
@@ -310,7 +310,7 @@
             // 
             this.gammaLowNum.DecimalPlaces = 2;
             this.gammaLowNum.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            this.gammaLowNum.Location = new System.Drawing.Point(118, 52);
+            this.gammaLowNum.Location = new System.Drawing.Point(118, 48);
             this.gammaLowNum.Maximum = new decimal(new int[] { 280, 0, 0, 131072 });
             this.gammaLowNum.Minimum = new decimal(new int[] { 40, 0, 0, 131072 });
             this.gammaLowNum.Name = "gammaLowNum";
@@ -325,7 +325,7 @@
             this.gammaSepLabel.AutoSize = true;
             this.gammaSepLabel.BackColor = System.Drawing.Color.Transparent;
             this.gammaSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaSepLabel.Location = new System.Drawing.Point(180, 55);
+            this.gammaSepLabel.Location = new System.Drawing.Point(180, 51);
             this.gammaSepLabel.Name = "gammaSepLabel";
             this.gammaSepLabel.Size = new System.Drawing.Size(14, 14);
             this.gammaSepLabel.Text = "/";
@@ -334,7 +334,7 @@
             // 
             this.gammaHighNum.DecimalPlaces = 2;
             this.gammaHighNum.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            this.gammaHighNum.Location = new System.Drawing.Point(196, 52);
+            this.gammaHighNum.Location = new System.Drawing.Point(196, 48);
             this.gammaHighNum.Maximum = new decimal(new int[] { 280, 0, 0, 131072 });
             this.gammaHighNum.Minimum = new decimal(new int[] { 40, 0, 0, 131072 });
             this.gammaHighNum.Name = "gammaHighNum";
@@ -349,7 +349,7 @@
             this.gammaKeyLabel.AutoSize = true;
             this.gammaKeyLabel.BackColor = System.Drawing.Color.Transparent;
             this.gammaKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.gammaKeyLabel.Location = new System.Drawing.Point(300, 55);
+            this.gammaKeyLabel.Location = new System.Drawing.Point(300, 51);
             this.gammaKeyLabel.Name = "gammaKeyLabel";
             this.gammaKeyLabel.Size = new System.Drawing.Size(28, 14);
             this.gammaKeyLabel.Text = "Key";
@@ -357,7 +357,7 @@
             // gammaHotkeyTextBox
             // 
             this.gammaHotkeyTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.gammaHotkeyTextBox.Location = new System.Drawing.Point(340, 52);
+            this.gammaHotkeyTextBox.Location = new System.Drawing.Point(340, 48);
             this.gammaHotkeyTextBox.Name = "gammaHotkeyTextBox";
             this.gammaHotkeyTextBox.ReadOnly = true;
             this.gammaHotkeyTextBox.ShortcutsEnabled = false;
@@ -375,7 +375,7 @@
             this.killLabel.AutoSize = true;
             this.killLabel.BackColor = System.Drawing.Color.Transparent;
             this.killLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.killLabel.Location = new System.Drawing.Point(12, 83);
+            this.killLabel.Location = new System.Drawing.Point(12, 77);
             this.killLabel.Name = "killLabel";
             this.killLabel.Size = new System.Drawing.Size(70, 14);
             this.killLabel.Text = "Kill game";
@@ -385,7 +385,7 @@
             this.killKeyLabel.AutoSize = true;
             this.killKeyLabel.BackColor = System.Drawing.Color.Transparent;
             this.killKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.killKeyLabel.Location = new System.Drawing.Point(300, 83);
+            this.killKeyLabel.Location = new System.Drawing.Point(300, 77);
             this.killKeyLabel.Name = "killKeyLabel";
             this.killKeyLabel.Size = new System.Drawing.Size(28, 14);
             this.killKeyLabel.Text = "Key";
@@ -393,7 +393,7 @@
             // killHotkeyTextBox
             // 
             this.killHotkeyTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.killHotkeyTextBox.Location = new System.Drawing.Point(340, 80);
+            this.killHotkeyTextBox.Location = new System.Drawing.Point(340, 74);
             this.killHotkeyTextBox.Name = "killHotkeyTextBox";
             this.killHotkeyTextBox.ReadOnly = true;
             this.killHotkeyTextBox.ShortcutsEnabled = false;
@@ -411,7 +411,7 @@
             this.DVLGroupBox.Controls.Add(this.DVLPanel);
             this.DVLGroupBox.Location = new System.Drawing.Point(359, 9);
             this.DVLGroupBox.Name = "DVLGroupBox";
-            this.DVLGroupBox.Size = new System.Drawing.Size(145, 307);
+            this.DVLGroupBox.Size = new System.Drawing.Size(145, 210);
             this.DVLGroupBox.TabIndex = 13;
             this.DVLGroupBox.TabStop = false;
             this.DVLGroupBox.Text = "DVL";
@@ -424,7 +424,7 @@
             this.DVLPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DVLPanel.Location = new System.Drawing.Point(3, 25);
             this.DVLPanel.Name = "DVLPanel";
-            this.DVLPanel.Size = new System.Drawing.Size(139, 279);
+            this.DVLPanel.Size = new System.Drawing.Size(139, 182);
             this.DVLPanel.TabIndex = 0;
             // 
             // DVLLabel
@@ -443,18 +443,18 @@
             // 
             // DVLBar
             // 
-            this.DVLBar.Location = new System.Drawing.Point(56, 42);
+            this.DVLBar.Location = new System.Drawing.Point(56, 44);
             this.DVLBar.Maximum = 63;
             this.DVLBar.Name = "DVLBar";
             this.DVLBar.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.DVLBar.Size = new System.Drawing.Size(69, 184);
+            this.DVLBar.Size = new System.Drawing.Size(69, 96);
             this.DVLBar.TabIndex = 9;
             this.DVLBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.DVLBar.ValueChanged += new System.EventHandler(this.TrackBar_ValueChanged);
             // 
             // DVLText
             // 
-            this.DVLText.Location = new System.Drawing.Point(46, 232);
+            this.DVLText.Location = new System.Drawing.Point(46, 146);
             this.DVLText.Name = "DVLText";
             this.DVLText.ReadOnly = true;
             this.DVLText.Size = new System.Drawing.Size(41, 29);
@@ -468,7 +468,7 @@
             this.colorGroupBox.Controls.Add(this.colorTablePanel);
             this.colorGroupBox.Location = new System.Drawing.Point(3, 9);
             this.colorGroupBox.Name = "colorGroupBox";
-            this.colorGroupBox.Size = new System.Drawing.Size(350, 307);
+            this.colorGroupBox.Size = new System.Drawing.Size(350, 210);
             this.colorGroupBox.TabIndex = 12;
             this.colorGroupBox.TabStop = false;
             this.colorGroupBox.Text = "Color";
@@ -485,11 +485,11 @@
             this.colorTablePanel.Location = new System.Drawing.Point(3, 25);
             this.colorTablePanel.Name = "colorTablePanel";
             this.colorTablePanel.RowCount = 4;
-            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
-            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
-            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
-            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.colorTablePanel.Size = new System.Drawing.Size(344, 279);
+            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.colorTablePanel.Size = new System.Drawing.Size(344, 182);
             this.colorTablePanel.TabIndex = 1;
             // 
             // brightnessPanel
@@ -500,15 +500,15 @@
             this.brightnessPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.brightnessPanel.Location = new System.Drawing.Point(3, 3);
             this.brightnessPanel.Name = "brightnessPanel";
-            this.brightnessPanel.Size = new System.Drawing.Size(338, 75);
+            this.brightnessPanel.Size = new System.Drawing.Size(338, 50);
             this.brightnessPanel.TabIndex = 0;
             // 
             // BrightnessBar
             // 
-            this.BrightnessBar.Location = new System.Drawing.Point(13, 24);
+            this.BrightnessBar.Location = new System.Drawing.Point(92, 2);
             this.BrightnessBar.Maximum = 100;
             this.BrightnessBar.Name = "BrightnessBar";
-            this.BrightnessBar.Size = new System.Drawing.Size(257, 45);
+            this.BrightnessBar.Size = new System.Drawing.Size(184, 45);
             this.BrightnessBar.TabIndex = 18;
             this.BrightnessBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.BrightnessBar.Value = 50;
@@ -519,7 +519,7 @@
             this.BrightnessLabel.AutoSize = true;
             this.BrightnessLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.BrightnessLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.BrightnessLabel.Location = new System.Drawing.Point(20, 6);
+            this.BrightnessLabel.Location = new System.Drawing.Point(8, 12);
             this.BrightnessLabel.Name = "BrightnessLabel";
             this.BrightnessLabel.Size = new System.Drawing.Size(110, 22);
             this.BrightnessLabel.TabIndex = 21;
@@ -529,7 +529,7 @@
             // 
             // BrightnessText
             // 
-            this.BrightnessText.Location = new System.Drawing.Point(284, 24);
+            this.BrightnessText.Location = new System.Drawing.Point(284, 8);
             this.BrightnessText.Name = "BrightnessText";
             this.BrightnessText.ReadOnly = true;
             this.BrightnessText.Size = new System.Drawing.Size(41, 29);
@@ -546,15 +546,15 @@
             this.contrastPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.contrastPanel.Location = new System.Drawing.Point(3, 96);
             this.contrastPanel.Name = "contrastPanel";
-            this.contrastPanel.Size = new System.Drawing.Size(338, 75);
+            this.contrastPanel.Size = new System.Drawing.Size(338, 50);
             this.contrastPanel.TabIndex = 1;
             // 
             // ContrastBar
             // 
-            this.ContrastBar.Location = new System.Drawing.Point(13, 24);
+            this.ContrastBar.Location = new System.Drawing.Point(92, 2);
             this.ContrastBar.Maximum = 100;
             this.ContrastBar.Name = "ContrastBar";
-            this.ContrastBar.Size = new System.Drawing.Size(257, 45);
+            this.ContrastBar.Size = new System.Drawing.Size(184, 45);
             this.ContrastBar.TabIndex = 19;
             this.ContrastBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.ContrastBar.Value = 50;
@@ -562,7 +562,7 @@
             // 
             // ContrastText
             // 
-            this.ContrastText.Location = new System.Drawing.Point(284, 24);
+            this.ContrastText.Location = new System.Drawing.Point(284, 8);
             this.ContrastText.Name = "ContrastText";
             this.ContrastText.ReadOnly = true;
             this.ContrastText.Size = new System.Drawing.Size(41, 29);
@@ -576,7 +576,7 @@
             this.ContrastLabel.AutoSize = true;
             this.ContrastLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ContrastLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ContrastLabel.Location = new System.Drawing.Point(20, 6);
+            this.ContrastLabel.Location = new System.Drawing.Point(8, 12);
             this.ContrastLabel.Name = "ContrastLabel";
             this.ContrastLabel.Size = new System.Drawing.Size(90, 22);
             this.ContrastLabel.TabIndex = 22;
@@ -592,12 +592,12 @@
             this.gammaPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gammaPanel.Location = new System.Drawing.Point(3, 189);
             this.gammaPanel.Name = "gammaPanel";
-            this.gammaPanel.Size = new System.Drawing.Size(338, 75);
+            this.gammaPanel.Size = new System.Drawing.Size(338, 50);
             this.gammaPanel.TabIndex = 2;
             // 
             // GammaText
             // 
-            this.GammaText.Location = new System.Drawing.Point(284, 24);
+            this.GammaText.Location = new System.Drawing.Point(284, 8);
             this.GammaText.Name = "GammaText";
             this.GammaText.ReadOnly = true;
             this.GammaText.Size = new System.Drawing.Size(41, 29);
@@ -608,11 +608,11 @@
             // 
             // GammaBar
             // 
-            this.GammaBar.Location = new System.Drawing.Point(13, 24);
+            this.GammaBar.Location = new System.Drawing.Point(92, 2);
             this.GammaBar.Maximum = 280;
             this.GammaBar.Minimum = 40;
             this.GammaBar.Name = "GammaBar";
-            this.GammaBar.Size = new System.Drawing.Size(257, 45);
+            this.GammaBar.Size = new System.Drawing.Size(184, 45);
             this.GammaBar.TabIndex = 20;
             this.GammaBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.GammaBar.Value = 100;
@@ -623,7 +623,7 @@
             this.GammaLabel.AutoSize = true;
             this.GammaLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.GammaLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.GammaLabel.Location = new System.Drawing.Point(20, 6);
+            this.GammaLabel.Location = new System.Drawing.Point(8, 12);
             this.GammaLabel.Name = "GammaLabel";
             this.GammaLabel.Size = new System.Drawing.Size(60, 22);
             this.GammaLabel.TabIndex = 23;
@@ -705,7 +705,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(516, 480);
+            this.ClientSize = new System.Drawing.Size(516, 374);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
