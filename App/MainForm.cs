@@ -704,7 +704,8 @@ namespace tarkov_settings
             try
             {
                 long ms = await PingAsync(raid.Ip);
-                if (item.ListView != null)
+                // a failed ping keeps the last reading; "-" only before the first one
+                if (item.ListView != null && (ms >= 0 || item.SubItems[5].Text == "..."))
                     item.SubItems[5].Text = ms >= 0 ? ms + " ms" : "-";
 
                 liveTicks++;
