@@ -246,7 +246,7 @@
             this.serverListView.HideSelection = false;
             this.serverListView.SelectedIndexChanged += new System.EventHandler(this.ServerListView_SelectedIndexChanged);
             this.serverListView.Name = "serverListView";
-            this.serverListView.Size = new System.Drawing.Size(496, 278);
+            this.serverListView.Size = new System.Drawing.Size(496, 266);
             this.serverListView.TabIndex = 3;
             this.serverListView.UseCompatibleStateImageBehavior = false;
             this.serverListView.View = System.Windows.Forms.View.Details;
@@ -254,7 +254,7 @@
             // serverTimeColumn
             // 
             this.serverTimeColumn.Text = "Time";
-            this.serverTimeColumn.Width = 88;
+            this.serverTimeColumn.Width = 84;
             // 
             // serverMapColumn
             // 
@@ -264,12 +264,12 @@
             // serverRegionColumn
             // 
             this.serverRegionColumn.Text = "Region";
-            this.serverRegionColumn.Width = 52;
+            this.serverRegionColumn.Width = 64;
             // 
             // serverLocationColumn
             // 
             this.serverLocationColumn.Text = "Location";
-            this.serverLocationColumn.Width = 142;
+            this.serverLocationColumn.Width = 132;
             // 
             // serverWaitColumn
             // 
@@ -286,9 +286,9 @@
             this.serverDetailLabel.AutoEllipsis = true;
             this.serverDetailLabel.BackColor = System.Drawing.Color.Transparent;
             this.serverDetailLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.serverDetailLabel.Location = new System.Drawing.Point(8, 322);
+            this.serverDetailLabel.Location = new System.Drawing.Point(8, 312);
             this.serverDetailLabel.Name = "serverDetailLabel";
-            this.serverDetailLabel.Size = new System.Drawing.Size(496, 16);
+            this.serverDetailLabel.Size = new System.Drawing.Size(496, 32);
             this.serverDetailLabel.TabIndex = 5;
             // 
             // serverStatusLabel
@@ -296,7 +296,7 @@
             this.serverStatusLabel.AutoSize = true;
             this.serverStatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.serverStatusLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.serverStatusLabel.Location = new System.Drawing.Point(8, 348);
+            this.serverStatusLabel.Location = new System.Drawing.Point(8, 350);
             this.serverStatusLabel.Name = "serverStatusLabel";
             this.serverStatusLabel.Size = new System.Drawing.Size(0, 14);
             this.serverStatusLabel.TabIndex = 4;
