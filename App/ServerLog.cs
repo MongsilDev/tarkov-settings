@@ -288,13 +288,14 @@ namespace tarkov_settings
                 if (startedEvent != null)
                     raid.TotalSec = startedEvent.Real;
 
-                EndEvent end = ends.Where(x => x.IpPort == ipPort && x.Time >= raid.Time)
-                    .OrderBy(x => x.Time).FirstOrDefault();
-                if (end != null)
+                var endsAfter = ends.Where(x => x.IpPort == ipPort && x.Time >= raid.Time).ToList();
+                if (endsAfter.Count > 0)
                 {
                     raid.Ended = true;
-                    if (end.Rtt >= 0)
-                        raid.SessionRtt = end.Rtt;
+                    // Disconnect and Statistics share a timestamp; prefer the one carrying rtt
+                    EndEvent withRtt = endsAfter.Where(x => x.Rtt >= 0).OrderBy(x => x.Time).FirstOrDefault();
+                    if (withRtt != null)
+                        raid.SessionRtt = withRtt.Rtt;
                 }
                 else if (mapUnloads.Any(u => u >= raid.Time.AddSeconds(30)))
                 {
