@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace tarkov_settings
 {
@@ -42,6 +44,17 @@ namespace tarkov_settings
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        private const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool CloseHandle(IntPtr hObject);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        static extern bool QueryFullProcessImageName(IntPtr hProcess, int dwFlags, StringBuilder lpExeName, ref int lpdwSize);
         #endregion
 
         public static int GetWindowProcessId(IntPtr hWnd)
@@ -49,13 +62,32 @@ namespace tarkov_settings
             GetWindowThreadProcessId(hWnd, out uint processID);
             return (int)processID;
         }
+        // direct handle query: Process.ProcessName would parse a full system
+        // snapshot on every foreground switch
         public static string GetActiveWindowTitle()
         {
             try
             {
                 IntPtr handle = GetForegroundWindow();
-                uint threadID = GetWindowThreadProcessId(handle, out uint processID);
-                return Process.GetProcessById(Convert.ToInt32(processID)).ProcessName;
+                GetWindowThreadProcessId(handle, out uint processID);
+                if (processID == 0)
+                    return null;
+
+                IntPtr process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, (int)processID);
+                if (process == IntPtr.Zero)
+                    return null;
+                try
+                {
+                    var path = new StringBuilder(1024);
+                    int size = path.Capacity;
+                    if (!QueryFullProcessImageName(process, 0, path, ref size))
+                        return null;
+                    return Path.GetFileNameWithoutExtension(path.ToString());
+                }
+                finally
+                {
+                    CloseHandle(process);
+                }
             }
             catch
             {
