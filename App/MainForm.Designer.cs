@@ -124,10 +124,9 @@
             this.sideTabPanel.BackColor = System.Drawing.Color.AliceBlue;
             this.sideTabPanel.Controls.Add(this.colorTabButton);
             this.sideTabPanel.Controls.Add(this.serversTabButton);
-            this.sideTabPanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.sideTabPanel.Location = new System.Drawing.Point(0, 0);
             this.sideTabPanel.Name = "sideTabPanel";
-            this.sideTabPanel.Size = new System.Drawing.Size(62, 374);
+            this.sideTabPanel.Size = new System.Drawing.Size(76, 374);
             this.sideTabPanel.TabIndex = 0;
             // 
             // colorTabButton
@@ -138,7 +137,7 @@
             this.colorTabButton.ForeColor = System.Drawing.SystemColors.ControlText;
             this.colorTabButton.Location = new System.Drawing.Point(0, 8);
             this.colorTabButton.Name = "colorTabButton";
-            this.colorTabButton.Size = new System.Drawing.Size(62, 36);
+            this.colorTabButton.Size = new System.Drawing.Size(76, 36);
             this.colorTabButton.TabIndex = 0;
             this.colorTabButton.Text = "Color";
             this.colorTabButton.UseVisualStyleBackColor = false;
@@ -152,7 +151,7 @@
             this.serversTabButton.ForeColor = System.Drawing.SystemColors.ControlText;
             this.serversTabButton.Location = new System.Drawing.Point(0, 44);
             this.serversTabButton.Name = "serversTabButton";
-            this.serversTabButton.Size = new System.Drawing.Size(62, 36);
+            this.serversTabButton.Size = new System.Drawing.Size(76, 36);
             this.serversTabButton.TabIndex = 1;
             this.serversTabButton.Text = "Servers";
             this.serversTabButton.UseVisualStyleBackColor = false;
@@ -165,8 +164,7 @@
             this.serversPanel.Controls.Add(this.refreshServersButton);
             this.serversPanel.Controls.Add(this.serverListView);
             this.serversPanel.Controls.Add(this.serverStatusLabel);
-            this.serversPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.serversPanel.Location = new System.Drawing.Point(62, 0);
+            this.serversPanel.Location = new System.Drawing.Point(76, 0);
             this.serversPanel.Name = "serversPanel";
             this.serversPanel.Size = new System.Drawing.Size(512, 374);
             this.serversPanel.TabIndex = 2;
@@ -221,7 +219,7 @@
             this.serverListView.Location = new System.Drawing.Point(8, 38);
             this.serverListView.MultiSelect = false;
             this.serverListView.Name = "serverListView";
-            this.serverListView.Size = new System.Drawing.Size(496, 152);
+            this.serverListView.Size = new System.Drawing.Size(496, 300);
             this.serverListView.TabIndex = 3;
             this.serverListView.UseCompatibleStateImageBehavior = false;
             this.serverListView.View = System.Windows.Forms.View.Details;
@@ -256,7 +254,7 @@
             this.serverStatusLabel.AutoSize = true;
             this.serverStatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.serverStatusLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.serverStatusLabel.Location = new System.Drawing.Point(8, 198);
+            this.serverStatusLabel.Location = new System.Drawing.Point(8, 348);
             this.serverStatusLabel.Name = "serverStatusLabel";
             this.serverStatusLabel.Size = new System.Drawing.Size(0, 14);
             this.serverStatusLabel.TabIndex = 4;
@@ -269,10 +267,9 @@
             this.ColorPanel.Controls.Add(this.hotkeyGroupBox);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
-            this.ColorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ColorPanel.Location = new System.Drawing.Point(3, 3);
+            this.ColorPanel.Location = new System.Drawing.Point(76, 0);
             this.ColorPanel.Name = "ColorPanel";
-            this.ColorPanel.Size = new System.Drawing.Size(510, 368);
+            this.ColorPanel.Size = new System.Drawing.Size(512, 374);
             this.ColorPanel.TabIndex = 2;
             // 
             // autostartCheckBox
@@ -847,7 +844,7 @@
             this.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(574, 374);
+            this.ClientSize = new System.Drawing.Size(588, 374);
             this.Controls.Add(this.ColorPanel);
             this.Controls.Add(this.serversPanel);
             this.Controls.Add(this.sideTabPanel);
