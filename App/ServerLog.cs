@@ -15,11 +15,70 @@ namespace tarkov_settings
             @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|[^|]*\|[^|]*\|network-connection\|Connect \(address: (?<ip>[\d.]+):(?<port>\d+)\)",
             RegexOptions.Multiline | RegexOptions.Compiled);
 
+        // TRACE-NetworkGameCreate profileStatus: '..., Ip: 178.249.208.40, Port: 17002, Location: Shoreline, Sid: CN-HK03G043_..., GameMode: deathmatch, shortId: CDMMV5'
+        private static readonly Regex ProfileStatusPattern = new Regex(
+            @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|.*profileStatus: '.*Ip: (?<ip>[\d.]+), Port: (?<port>\d+), Location: (?<map>[^,]+), Sid: (?<sid>[^,']+)(?:.*shortId: (?<short>\w+))?",
+            RegexOptions.Compiled);
+
+        // MatchingCompleted:10.81 real:18.08 diff:7.26 (real = seconds since matching started)
+        private static readonly Regex TimingPattern = new Regex(
+            @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|.*\|(?<kind>MatchingCompleted|LocationLoaded|GameStarted):[^ ]* real:(?<real>[\d.]+)",
+            RegexOptions.Compiled);
+
+        private static readonly Regex SessionModePattern = new Regex(@"Session mode: (\w+)", RegexOptions.Compiled);
+
+        // RealDateTime:09/09/2026 04:12:19  GameDateTime:09/09/2026 08:26:14  factor:7
+        private static readonly Regex GameTimePattern = new Regex(
+            @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|.*GameDateTime:(?<game>\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2})",
+            RegexOptions.Compiled);
+
+        private static readonly Regex SidRegionPattern = new Regex(@"^([A-Za-z]+-[A-Za-z]+)", RegexOptions.Compiled);
+
+        // log_2026.08.28_12-49-01_<version>; hours may lack a leading zero
+        private static readonly Regex FolderTimePattern = new Regex(
+            @"log_(\d{4})\.(\d{2})\.(\d{2})_(\d{1,2})-(\d{1,2})-(\d{1,2})", RegexOptions.Compiled);
+
+        private static readonly Dictionary<string, string> MapNames = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "bigmap", "Customs" },
+            { "factory4_day", "Factory" },
+            { "factory4_night", "Factory" },
+            { "RezervBase", "Reserve" },
+            { "laboratory", "Labs" },
+            { "Sandbox", "Ground Zero" },
+            { "Sandbox_high", "Ground Zero" },
+            { "TarkovStreets", "Streets" },
+        };
+
         public class Entry
         {
             public DateTime Time;
             public string Ip;
             public int Port;
+            public string Map = "";
+            public string Region = "";
+            public string ShortId = "";
+            public string Mode = "";
+            public DateTime? GameTime;
+            public double QueueSec = -1;
+            public double LoadSec = -1;
+            public double TotalSec = -1;
+        }
+
+        private class RaidMeta
+        {
+            public DateTime Time;
+            public string IpPort;
+            public string Map;
+            public string Region;
+            public string ShortId;
+        }
+
+        private class TimingEvent
+        {
+            public DateTime Time;
+            public string Kind;
+            public double Real;
         }
 
         public static string DetectLogsPath()
@@ -65,10 +124,6 @@ namespace tarkov_settings
             return path;
         }
 
-        // log_2026.08.28_12-49-01_<version>; hours may lack a leading zero
-        private static readonly Regex FolderTimePattern = new Regex(
-            @"log_(\d{4})\.(\d{2})\.(\d{2})_(\d{1,2})-(\d{1,2})-(\d{1,2})", RegexOptions.Compiled);
-
         public static List<Entry> Read(string logsPath, int max, TimeSpan window)
         {
             DateTime since = DateTime.Now - window;
@@ -86,26 +141,166 @@ namespace tarkov_settings
                     if (started < since - TimeSpan.FromHours(24))
                         break;
                 }
-                foreach (string file in Directory.GetFiles(dir, "*network-connection*.log"))
-                {
-                    string text;
-                    try { text = File.ReadAllText(file); }
-                    catch (IOException) { continue; }
 
-                    foreach (Match m in ConnectPattern.Matches(text))
-                    {
-                        entries.Add(new Entry
-                        {
-                            Time = DateTime.ParseExact(m.Groups["time"].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                            Ip = m.Groups["ip"].Value,
-                            Port = int.Parse(m.Groups["port"].Value),
-                        });
-                    }
-                }
+                entries.AddRange(ReadSession(dir));
+
                 if (entries.Count(e => e.Time >= since) >= max)
                     break;
             }
             return entries.Where(e => e.Time >= since).OrderByDescending(e => e.Time).Take(max).ToList();
+        }
+
+        private static List<Entry> ReadSession(string dir)
+        {
+            var raids = new List<Entry>();
+            foreach (string file in Directory.GetFiles(dir, "*network-connection*.log"))
+            {
+                string text;
+                try { text = File.ReadAllText(file); }
+                catch (IOException) { continue; }
+
+                foreach (Match m in ConnectPattern.Matches(text))
+                {
+                    raids.Add(new Entry
+                    {
+                        Time = ParseTime(m.Groups["time"].Value),
+                        Ip = m.Groups["ip"].Value,
+                        Port = int.Parse(m.Groups["port"].Value),
+                    });
+                }
+            }
+            if (raids.Count == 0)
+                return raids;
+
+            var metas = new List<RaidMeta>();
+            var timings = new List<TimingEvent>();
+            var gameTimes = new List<KeyValuePair<DateTime, DateTime>>();
+            string mode = "";
+
+            foreach (string file in Directory.GetFiles(dir, "*application*.log"))
+            {
+                foreach (string line in SafeReadLines(file))
+                {
+                    Match ps = ProfileStatusPattern.Match(line);
+                    if (ps.Success)
+                    {
+                        Match region = SidRegionPattern.Match(ps.Groups["sid"].Value);
+                        metas.Add(new RaidMeta
+                        {
+                            Time = ParseTime(ps.Groups["time"].Value),
+                            IpPort = ps.Groups["ip"].Value + ":" + ps.Groups["port"].Value,
+                            Map = MapNames.TryGetValue(ps.Groups["map"].Value, out string name) ? name : ps.Groups["map"].Value,
+                            Region = region.Success ? region.Groups[1].Value.ToUpper() : "",
+                            ShortId = ps.Groups["short"].Success ? ps.Groups["short"].Value : "",
+                        });
+                        continue;
+                    }
+                    Match timing = TimingPattern.Match(line);
+                    if (timing.Success)
+                    {
+                        timings.Add(new TimingEvent
+                        {
+                            Time = ParseTime(timing.Groups["time"].Value),
+                            Kind = timing.Groups["kind"].Value,
+                            Real = double.Parse(timing.Groups["real"].Value, CultureInfo.InvariantCulture),
+                        });
+                        continue;
+                    }
+                    Match sessionMode = SessionModePattern.Match(line);
+                    if (sessionMode.Success)
+                        mode = ModeName(sessionMode.Groups[1].Value);
+                }
+            }
+
+            foreach (string file in Directory.GetFiles(dir, "*output*.log"))
+            {
+                foreach (string line in SafeReadLines(file))
+                {
+                    Match gt = GameTimePattern.Match(line);
+                    if (gt.Success)
+                        gameTimes.Add(new KeyValuePair<DateTime, DateTime>(
+                            ParseTime(gt.Groups["time"].Value),
+                            DateTime.ParseExact(gt.Groups["game"].Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
+                }
+            }
+
+            foreach (Entry raid in raids)
+            {
+                raid.Mode = mode;
+
+                string ipPort = raid.Ip + ":" + raid.Port;
+                RaidMeta meta = metas
+                    .Where(m => m.IpPort == ipPort && Math.Abs((m.Time - raid.Time).TotalSeconds) <= 120)
+                    .OrderBy(m => Math.Abs((m.Time - raid.Time).TotalSeconds))
+                    .FirstOrDefault();
+                if (meta != null)
+                {
+                    raid.Map = meta.Map;
+                    raid.Region = meta.Region;
+                    raid.ShortId = meta.ShortId;
+                }
+
+                // matching completes shortly before Connect; loading and start follow it
+                TimingEvent queue = timings.LastOrDefault(t => t.Kind == "MatchingCompleted"
+                    && t.Time <= raid.Time.AddSeconds(5) && t.Time >= raid.Time.AddMinutes(-10));
+                TimingEvent loaded = timings.FirstOrDefault(t => t.Kind == "LocationLoaded"
+                    && t.Time >= raid.Time.AddSeconds(-5) && t.Time <= raid.Time.AddMinutes(15));
+                TimingEvent startedEvent = timings.FirstOrDefault(t => t.Kind == "GameStarted"
+                    && t.Time >= raid.Time.AddSeconds(-5) && t.Time <= raid.Time.AddMinutes(30));
+
+                if (queue != null)
+                    raid.QueueSec = queue.Real;
+                if (loaded != null && queue != null && loaded.Real >= queue.Real)
+                    raid.LoadSec = loaded.Real - queue.Real;
+                if (startedEvent != null)
+                    raid.TotalSec = startedEvent.Real;
+
+                var gameTime = gameTimes.FirstOrDefault(g =>
+                    g.Key >= raid.Time.AddSeconds(-5) && g.Key <= raid.Time.AddMinutes(15));
+                if (gameTime.Key != default(DateTime))
+                    raid.GameTime = gameTime.Value;
+            }
+            return raids;
+        }
+
+        private static string ModeName(string sessionMode)
+        {
+            switch (sessionMode)
+            {
+                case "Regular": return "PvP";
+                case "PvpSeason": return "PvP Season";
+                case "Pve": return "PvE";
+                default: return sessionMode;
+            }
+        }
+
+        private static DateTime ParseTime(string value)
+        {
+            return DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+        // output logs can be large; stream instead of loading whole files
+        private static IEnumerable<string> SafeReadLines(string file)
+        {
+            IEnumerator<string> lines;
+            try { lines = File.ReadLines(file).GetEnumerator(); }
+            catch (IOException) { yield break; }
+            using (lines)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        if (!lines.MoveNext())
+                            yield break;
+                    }
+                    catch (IOException)
+                    {
+                        yield break;
+                    }
+                    yield return lines.Current;
+                }
+            }
         }
     }
 }
