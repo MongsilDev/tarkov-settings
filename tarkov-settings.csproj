@@ -220,6 +220,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\Autostart.cs" />
+    <Compile Include="App\GeoIp.cs" />
+    <Compile Include="App\ServerLog.cs" />
     <Compile Include="App\VolumeController.cs" />
     <Compile Include="App\ColorController.cs" />
     <Compile Include="App\UpdateNotifier.cs">

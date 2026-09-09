@@ -27,5 +27,6 @@ namespace tarkov_settings.Setting
         public double gammaHigh = 1.5;
         // unbound on purpose - the user must opt in
         public string killHotkey = "";
+        public string logsPath = "";
     }
 }
