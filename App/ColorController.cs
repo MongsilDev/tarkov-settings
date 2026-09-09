@@ -20,7 +20,8 @@ namespace tarkov_settings
          * WHY : *I don't know why* set gamma ramp keeps revert soon after modified
          */
         private CancellationTokenSource _canceller;
-        private Task _loopTask;
+        // serialises ramp writes between the apply loop and the UI thread
+        private readonly object _gate = new object();
 
         // true while a custom ramp/DVL is applied; lets callers skip redundant resets
         public bool IsApplied { get; private set; }
@@ -80,30 +81,18 @@ namespace tarkov_settings
 
         public void ChangeColorRamp(double brightness = 0.5, double contrast = 0.5, double gamma = 1.0, bool reset = true)
         {
-            // stop the running apply loop and wait it out, so a stale write can
-            // never land after the ramp written below
-            if (_canceller != null)
-            {
-                _canceller.Cancel();
-                try { _loopTask?.Wait(500); } catch (AggregateException) { }
-                _canceller.Dispose();
-                _canceller = null;
-            }
+            // cancel the running apply loop without waiting for it: a blocking wait on
+            // the UI thread pumps messages, and the focus hook re-enters this method.
+            // the loop re-checks its token under _gate before every write, so once the
+            // reset below holds the lock no stale ramp can land after it
+            _canceller?.Cancel();
+            _canceller = null;
 
             if (reset)
             {
                 IsApplied = false;
-                IntPtr hdc = IntPtr.Zero;
-                try
-                {
-                    hdc = Display.CreateDC(null, Display.Primary, null, IntPtr.Zero);
-                    SetDeviceGammaRamp(hdc, ref originalRamps);
-                }
-                finally
-                {
-                    if (!IntPtr.Zero.Equals(hdc))
-                        Display.DeleteDC(hdc);
-                }
+                lock (_gate)
+                    WriteRamp(Display.Primary, ref originalRamps);
                 return;
             }
 
@@ -111,20 +100,28 @@ namespace tarkov_settings
             ushort[] iArrayValue = CalculateLUT(brightness, contrast, gamma);
             currentRamps.Red = currentRamps.Blue = currentRamps.Green = iArrayValue;
 
-            _canceller = new CancellationTokenSource();
-            CancellationToken token = _canceller.Token;
+            var canceller = new CancellationTokenSource();
+            CancellationToken token = canceller.Token;
             string device = Display.Primary;
-            _loopTask = Task.Run(() =>
+            RAMP ramps = currentRamps;
+            _canceller = canceller;
+            Task.Run(() =>
             {
                 IntPtr hdc = IntPtr.Zero;
                 try
                 {
                     hdc = Display.CreateDC(null, device, null, IntPtr.Zero);
-                    while (!token.IsCancellationRequested)
+                    while (true)
                     {
-                        SetDeviceGammaRamp(hdc, ref currentRamps);
+                        lock (_gate)
+                        {
+                            if (token.IsCancellationRequested)
+                                return;
+                            SetDeviceGammaRamp(hdc, ref ramps);
+                        }
                         // wakes immediately on cancellation instead of sleeping it out
-                        token.WaitHandle.WaitOne(250);
+                        if (token.WaitHandle.WaitOne(250))
+                            return;
                     }
                 }
                 finally
@@ -133,6 +130,21 @@ namespace tarkov_settings
                         Display.DeleteDC(hdc);
                 }
             });
+        }
+
+        private static void WriteRamp(string device, ref RAMP ramp)
+        {
+            IntPtr hdc = IntPtr.Zero;
+            try
+            {
+                hdc = Display.CreateDC(null, device, null, IntPtr.Zero);
+                SetDeviceGammaRamp(hdc, ref ramp);
+            }
+            finally
+            {
+                if (!IntPtr.Zero.Equals(hdc))
+                    Display.DeleteDC(hdc);
+            }
         }
 
         /*
