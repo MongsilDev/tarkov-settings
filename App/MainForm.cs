@@ -355,6 +355,9 @@ namespace tarkov_settings
             minimizeOnStart = appSetting.minimizeOnStart;
             this.minimizeStartCheckBox.Checked = minimizeOnStart;
 
+            this.topMostCheckBox.Checked = appSetting.alwaysOnTop;
+            this.TopMost = appSetting.alwaysOnTop;
+
             this.autostartCheckBox.Checked = appSetting.autostart;
             // handler fires only on change, so force-sync the registry with the saved state
             Autostart.Enabled = appSetting.autostart;
@@ -623,6 +626,12 @@ namespace tarkov_settings
             Autostart.Enabled = this.autostartCheckBox.Checked;
         }
 
+        private void TopMostCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            appSetting.alwaysOnTop = topMostCheckBox.Checked;
+            this.TopMost = topMostCheckBox.Checked;
+        }
+
         private void VolumeLevel_ValueChanged(object sender, EventArgs e)
         {
             appSetting.volumeLow = (int)volumeLowNum.Value;
@@ -735,6 +744,7 @@ namespace tarkov_settings
             browseLogsButton.Enabled = false;
             try
             {
+                serverDetailLabel.Text = "";
                 serverStatusLabel.Text = "Reading logs";
                 string logsPath = appSetting.logsPath;
                 var entries = await Task.Run(() => ServerLog.Read(logsPath, 15, TimeSpan.FromHours(72)));
@@ -763,21 +773,26 @@ namespace tarkov_settings
                 foreach (ServerLog.Entry entry in entries)
                 {
                     geo.TryGetValue(entry.Ip, out GeoIp.Info info);
+                    string wait = entry.QueueSec >= 0 && entry.TotalSec >= 0
+                        ? entry.QueueSec.ToString("F0") + ">" + entry.TotalSec.ToString("F0") + "s"
+                        : "-";
                     serverListView.Items.Add(new ListViewItem(new[]
                     {
                         entry.Time.ToString("MM-dd HH:mm"),
-                        entry.Ip,
-                        info?.country ?? "",
-                        info?.city ?? "",
+                        entry.Map,
+                        entry.Region,
+                        LocationDisplay(info),
+                        wait,
                         "...",
                     })
                     {
-                        ToolTipText = entry.Time.ToString("yyyy-MM-dd HH:mm:ss") + "  " + entry.Ip + ":" + entry.Port
-                            + (info == null ? "" : "  " + info.country + " " + info.city)
-                            + "\nPing is measured now, not at raid time",
+                        Tag = entry,
+                        ToolTipText = BuildRaidDetail(entry, info) + "\nPing is measured now, not at raid time",
                     });
                 }
                 serverListView.EndUpdate();
+                if (serverListView.Items.Count > 0)
+                    serverListView.Items[0].Selected = true;
 
                 // trim to what actually fits so the list never scrolls (row height varies with DPI)
                 if (serverListView.Items.Count > 0)
@@ -794,20 +809,20 @@ namespace tarkov_settings
                     await Task.WhenAll(pingTasks.Values);
                     foreach (ListViewItem item in serverListView.Items)
                     {
-                        long ms = pingTasks[item.SubItems[1].Text].Result;
-                        item.SubItems[4].Text = ms >= 0 ? ms + " ms" : "-";
+                        long ms = pingTasks[((ServerLog.Entry)item.Tag).Ip].Result;
+                        item.SubItems[5].Text = ms >= 0 ? ms + " ms" : "-";
                     }
                 }
                 catch (Exception)
                 {
                     foreach (ListViewItem item in serverListView.Items)
-                        if (item.SubItems[4].Text == "...")
-                            item.SubItems[4].Text = "-";
+                        if (item.SubItems[5].Text == "...")
+                            item.SubItems[5].Text = "-";
                     pingNote = "   (ping failed)";
                 }
 
                 int shown = serverListView.Items.Count;
-                int unique = serverListView.Items.Cast<ListViewItem>().Select(item => item.SubItems[1].Text).Distinct().Count();
+                int unique = serverListView.Items.Cast<ListViewItem>().Select(item => ((ServerLog.Entry)item.Tag).Ip).Distinct().Count();
                 serverStatusLabel.Text = (shown == 0
                     ? "No raids in the last 72 hours"
                     : "Raids (72h): " + shown + (unique > 1 ? "   Servers: " + unique : ""))
@@ -825,6 +840,49 @@ namespace tarkov_settings
             }
         }
         #endregion
+
+        // "Hong Kong" when country and city coincide, "Japan/Tokyo" otherwise
+        private static string LocationDisplay(GeoIp.Info info)
+        {
+            if (info == null || string.IsNullOrEmpty(info.country))
+                return "";
+            if (string.IsNullOrEmpty(info.city) || info.city == info.country)
+                return info.country;
+            return info.country + "/" + info.city;
+        }
+
+        private static string BuildRaidDetail(ServerLog.Entry entry, GeoIp.Info info)
+        {
+            var parts = new System.Collections.Generic.List<string>();
+            if (entry.Mode != "")
+                parts.Add(entry.Mode);
+            if (entry.GameTime != null)
+                parts.Add((entry.GameTime.Value.Hour >= 6 && entry.GameTime.Value.Hour < 22 ? "Day " : "Night ")
+                    + entry.GameTime.Value.ToString("HH:mm"));
+            if (entry.ShortId != "")
+                parts.Add(entry.ShortId);
+            if (entry.QueueSec >= 0)
+            {
+                string timing = "queue " + entry.QueueSec.ToString("F0") + "s";
+                if (entry.LoadSec >= 0)
+                    timing += ", load " + entry.LoadSec.ToString("F0") + "s";
+                if (entry.TotalSec >= 0)
+                    timing += ", total " + entry.TotalSec.ToString("F0") + "s";
+                parts.Add(timing);
+            }
+            parts.Add(entry.Ip + ":" + entry.Port);
+            string location = LocationDisplay(info);
+            if (location != "")
+                parts.Add(location);
+            return string.Join("  |  ", parts);
+        }
+
+        private void ServerListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            serverDetailLabel.Text = serverListView.SelectedItems.Count == 0
+                ? ""
+                : serverListView.SelectedItems[0].ToolTipText.Split('\n')[0];
+        }
 
         // measured now, not the ping at raid time; -1 when ICMP is blocked or times out
         private static async Task<long> PingAsync(string ip)

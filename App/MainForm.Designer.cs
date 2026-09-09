@@ -56,16 +56,19 @@
             this.sideTabPanel = new System.Windows.Forms.Panel();
             this.colorTabButton = new System.Windows.Forms.Button();
             this.serversTabButton = new System.Windows.Forms.Button();
+            this.topMostCheckBox = new System.Windows.Forms.CheckBox();
             this.serversPanel = new System.Windows.Forms.Panel();
             this.logsPathText = new System.Windows.Forms.TextBox();
             this.browseLogsButton = new System.Windows.Forms.Button();
             this.refreshServersButton = new System.Windows.Forms.Button();
             this.serverListView = new System.Windows.Forms.ListView();
             this.serverTimeColumn = new System.Windows.Forms.ColumnHeader();
-            this.serverIpColumn = new System.Windows.Forms.ColumnHeader();
-            this.serverCountryColumn = new System.Windows.Forms.ColumnHeader();
-            this.serverCityColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverMapColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverRegionColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverLocationColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverWaitColumn = new System.Windows.Forms.ColumnHeader();
             this.serverPingColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverDetailLabel = new System.Windows.Forms.Label();
             this.serverStatusLabel = new System.Windows.Forms.Label();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
@@ -124,6 +127,7 @@
             this.sideTabPanel.BackColor = System.Drawing.Color.AliceBlue;
             this.sideTabPanel.Controls.Add(this.colorTabButton);
             this.sideTabPanel.Controls.Add(this.serversTabButton);
+            this.sideTabPanel.Controls.Add(this.topMostCheckBox);
             this.sideTabPanel.Location = new System.Drawing.Point(0, 0);
             this.sideTabPanel.Name = "sideTabPanel";
             this.sideTabPanel.Size = new System.Drawing.Size(76, 374);
@@ -157,12 +161,31 @@
             this.serversTabButton.UseVisualStyleBackColor = false;
             this.serversTabButton.Click += new System.EventHandler(this.ServersTab_Click);
             // 
+            // topMostCheckBox
+            // 
+            this.topMostCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.topMostCheckBox.BackColor = System.Drawing.Color.AliceBlue;
+            this.topMostCheckBox.FlatAppearance.BorderSize = 0;
+            this.topMostCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.LightSteelBlue;
+            this.topMostCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.topMostCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.topMostCheckBox.Location = new System.Drawing.Point(0, 330);
+            this.topMostCheckBox.Name = "topMostCheckBox";
+            this.topMostCheckBox.Size = new System.Drawing.Size(76, 36);
+            this.topMostCheckBox.TabIndex = 2;
+            this.topMostCheckBox.Text = "Always on top";
+            this.topMostCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hintToolTip.SetToolTip(this.topMostCheckBox, "Keep this window above other windows");
+            this.topMostCheckBox.UseVisualStyleBackColor = false;
+            this.topMostCheckBox.CheckedChanged += new System.EventHandler(this.TopMostCheckBox_CheckedChanged);
+            // 
             // serversPanel
             // 
             this.serversPanel.Controls.Add(this.logsPathText);
             this.serversPanel.Controls.Add(this.browseLogsButton);
             this.serversPanel.Controls.Add(this.refreshServersButton);
             this.serversPanel.Controls.Add(this.serverListView);
+            this.serversPanel.Controls.Add(this.serverDetailLabel);
             this.serversPanel.Controls.Add(this.serverStatusLabel);
             this.serversPanel.Location = new System.Drawing.Point(76, 0);
             this.serversPanel.Name = "serversPanel";
@@ -209,9 +232,10 @@
             this.serverListView.BackColor = System.Drawing.SystemColors.Window;
             this.serverListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.serverTimeColumn,
-            this.serverIpColumn,
-            this.serverCountryColumn,
-            this.serverCityColumn,
+            this.serverMapColumn,
+            this.serverRegionColumn,
+            this.serverLocationColumn,
+            this.serverWaitColumn,
             this.serverPingColumn});
             this.serverListView.ForeColor = System.Drawing.SystemColors.WindowText;
             this.serverListView.FullRowSelect = true;
@@ -219,8 +243,10 @@
             this.serverListView.Location = new System.Drawing.Point(8, 38);
             this.serverListView.MultiSelect = false;
             this.serverListView.ShowItemToolTips = true;
+            this.serverListView.HideSelection = false;
+            this.serverListView.SelectedIndexChanged += new System.EventHandler(this.ServerListView_SelectedIndexChanged);
             this.serverListView.Name = "serverListView";
-            this.serverListView.Size = new System.Drawing.Size(496, 300);
+            this.serverListView.Size = new System.Drawing.Size(496, 278);
             this.serverListView.TabIndex = 3;
             this.serverListView.UseCompatibleStateImageBehavior = false;
             this.serverListView.View = System.Windows.Forms.View.Details;
@@ -228,27 +254,42 @@
             // serverTimeColumn
             // 
             this.serverTimeColumn.Text = "Time";
-            this.serverTimeColumn.Width = 108;
+            this.serverTimeColumn.Width = 88;
             // 
-            // serverIpColumn
+            // serverMapColumn
             // 
-            this.serverIpColumn.Text = "IP";
-            this.serverIpColumn.Width = 118;
+            this.serverMapColumn.Text = "Map";
+            this.serverMapColumn.Width = 88;
             // 
-            // serverCountryColumn
+            // serverRegionColumn
             // 
-            this.serverCountryColumn.Text = "Country";
-            this.serverCountryColumn.Width = 92;
+            this.serverRegionColumn.Text = "Region";
+            this.serverRegionColumn.Width = 52;
             // 
-            // serverCityColumn
+            // serverLocationColumn
             // 
-            this.serverCityColumn.Text = "City";
-            this.serverCityColumn.Width = 114;
+            this.serverLocationColumn.Text = "Location";
+            this.serverLocationColumn.Width = 142;
+            // 
+            // serverWaitColumn
+            // 
+            this.serverWaitColumn.Text = "Wait";
+            this.serverWaitColumn.Width = 66;
             // 
             // serverPingColumn
             // 
             this.serverPingColumn.Text = "Ping";
-            this.serverPingColumn.Width = 60;
+            this.serverPingColumn.Width = 56;
+            // 
+            // serverDetailLabel
+            // 
+            this.serverDetailLabel.AutoEllipsis = true;
+            this.serverDetailLabel.BackColor = System.Drawing.Color.Transparent;
+            this.serverDetailLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.serverDetailLabel.Location = new System.Drawing.Point(8, 322);
+            this.serverDetailLabel.Name = "serverDetailLabel";
+            this.serverDetailLabel.Size = new System.Drawing.Size(496, 16);
+            this.serverDetailLabel.TabIndex = 5;
             // 
             // serverStatusLabel
             // 
@@ -897,16 +938,19 @@
         private System.Windows.Forms.Panel sideTabPanel;
         private System.Windows.Forms.Button colorTabButton;
         private System.Windows.Forms.Button serversTabButton;
+        private System.Windows.Forms.CheckBox topMostCheckBox;
         private System.Windows.Forms.Panel serversPanel;
         private System.Windows.Forms.TextBox logsPathText;
         private System.Windows.Forms.Button browseLogsButton;
         private System.Windows.Forms.Button refreshServersButton;
         private System.Windows.Forms.ListView serverListView;
         private System.Windows.Forms.ColumnHeader serverTimeColumn;
-        private System.Windows.Forms.ColumnHeader serverIpColumn;
-        private System.Windows.Forms.ColumnHeader serverCountryColumn;
-        private System.Windows.Forms.ColumnHeader serverCityColumn;
+        private System.Windows.Forms.ColumnHeader serverMapColumn;
+        private System.Windows.Forms.ColumnHeader serverRegionColumn;
+        private System.Windows.Forms.ColumnHeader serverLocationColumn;
+        private System.Windows.Forms.ColumnHeader serverWaitColumn;
         private System.Windows.Forms.ColumnHeader serverPingColumn;
+        private System.Windows.Forms.Label serverDetailLabel;
         private System.Windows.Forms.Label serverStatusLabel;
         
         
