@@ -375,6 +375,16 @@ namespace tarkov_settings
 
             displayFollowTimer.Tick += DisplayFollowTimer_Tick;
 
+            tabFontRegular = colorTabButton.Font;
+            tabFontBold = new Font(colorTabButton.Font, FontStyle.Bold);
+            colorTabButton.FlatAppearance.BorderColor = SystemColors.Highlight;
+            serversTabButton.FlatAppearance.BorderColor = SystemColors.Highlight;
+            colorTabButton.GotFocus += TabButton_GotFocus;
+            colorTabButton.LostFocus += TabButton_LostFocus;
+            serversTabButton.GotFocus += TabButton_GotFocus;
+            serversTabButton.LostFocus += TabButton_LostFocus;
+            SelectTab(servers: false);
+
             // Initialize Process Monitor
             pMonitor.Parent = this;
             foreach (string pTarget in appSetting.pTargets)
@@ -646,6 +656,9 @@ namespace tarkov_settings
 
         #region Servers Tab
         private bool serversLoaded;
+        private bool refreshingServers;
+        private Font tabFontRegular;
+        private Font tabFontBold;
 
         private void SelectTab(bool servers)
         {
@@ -653,6 +666,19 @@ namespace tarkov_settings
             serversPanel.Visible = servers;
             colorTabButton.BackColor = servers ? Color.AliceBlue : Color.White;
             serversTabButton.BackColor = servers ? Color.White : Color.AliceBlue;
+            colorTabButton.Font = servers ? tabFontRegular : tabFontBold;
+            serversTabButton.Font = servers ? tabFontBold : tabFontRegular;
+        }
+
+        // flat buttons draw no focus rectangle, so show keyboard focus with a border
+        private void TabButton_GotFocus(object sender, EventArgs e)
+        {
+            ((Button)sender).FlatAppearance.BorderSize = 1;
+        }
+
+        private void TabButton_LostFocus(object sender, EventArgs e)
+        {
+            ((Button)sender).FlatAppearance.BorderSize = 0;
         }
 
         private void ColorTab_Click(object sender, EventArgs e)
@@ -687,19 +713,26 @@ namespace tarkov_settings
 
         private async Task RefreshServers()
         {
+            if (refreshingServers)
+                return;
             serversLoaded = true;
 
             if (string.IsNullOrEmpty(appSetting.logsPath) || !Directory.Exists(appSetting.logsPath))
                 appSetting.logsPath = ServerLog.DetectLogsPath();
             logsPathText.Text = appSetting.logsPath;
+            hintToolTip.SetToolTip(logsPathText, string.IsNullOrEmpty(appSetting.logsPath) ? "EFT Logs folder" : appSetting.logsPath);
 
             if (string.IsNullOrEmpty(appSetting.logsPath))
             {
-                serverStatusLabel.Text = "Logs folder not found, pick it with ...";
+                // retried automatically the next time the tab is opened
+                serversLoaded = false;
+                serverStatusLabel.Text = "Logs folder not found. Pick it with the ... button, or Refresh to retry";
                 return;
             }
 
+            refreshingServers = true;
             refreshServersButton.Enabled = false;
+            browseLogsButton.Enabled = false;
             try
             {
                 serverStatusLabel.Text = "Reading logs";
@@ -710,6 +743,7 @@ namespace tarkov_settings
                 var pingTasks = entries.Select(entry => entry.Ip).Distinct()
                     .ToDictionary(ip => ip, ip => PingAsync(ip));
 
+                bool geoFailed = false;
                 var geo = new System.Collections.Generic.Dictionary<string, GeoIp.Info>();
                 if (entries.Count > 0)
                 {
@@ -720,7 +754,7 @@ namespace tarkov_settings
                     }
                     catch (Exception)
                     {
-                        serverStatusLabel.Text = "Location lookup failed, showing IPs only";
+                        geoFailed = true;
                     }
                 }
 
@@ -736,7 +770,12 @@ namespace tarkov_settings
                         info?.country ?? "",
                         info?.city ?? "",
                         "...",
-                    }));
+                    })
+                    {
+                        ToolTipText = entry.Time.ToString("yyyy-MM-dd HH:mm:ss") + "  " + entry.Ip + ":" + entry.Port
+                            + (info == null ? "" : "  " + info.country + " " + info.city)
+                            + "\nPing is measured now, not at raid time",
+                    });
                 }
                 serverListView.EndUpdate();
 
@@ -749,18 +788,30 @@ namespace tarkov_settings
                         serverListView.Items.RemoveAt(serverListView.Items.Count - 1);
                 }
 
-                await Task.WhenAll(pingTasks.Values);
-                foreach (ListViewItem item in serverListView.Items)
+                string pingNote = "";
+                try
                 {
-                    long ms = pingTasks[item.SubItems[1].Text].Result;
-                    item.SubItems[4].Text = ms >= 0 ? ms + " ms" : "-";
+                    await Task.WhenAll(pingTasks.Values);
+                    foreach (ListViewItem item in serverListView.Items)
+                    {
+                        long ms = pingTasks[item.SubItems[1].Text].Result;
+                        item.SubItems[4].Text = ms >= 0 ? ms + " ms" : "-";
+                    }
+                }
+                catch (Exception)
+                {
+                    foreach (ListViewItem item in serverListView.Items)
+                        if (item.SubItems[4].Text == "...")
+                            item.SubItems[4].Text = "-";
+                    pingNote = "   (ping failed)";
                 }
 
                 int shown = serverListView.Items.Count;
                 int unique = serverListView.Items.Cast<ListViewItem>().Select(item => item.SubItems[1].Text).Distinct().Count();
-                serverStatusLabel.Text = shown == 0
+                serverStatusLabel.Text = (shown == 0
                     ? "No raids in the last 72 hours"
-                    : "Raids (72h): " + shown + (unique > 1 ? "   Servers: " + unique : "");
+                    : "Raids (72h): " + shown + (unique > 1 ? "   Servers: " + unique : ""))
+                    + (geoFailed ? "   (location lookup failed)" : "") + pingNote;
             }
             catch (Exception e)
             {
@@ -768,7 +819,9 @@ namespace tarkov_settings
             }
             finally
             {
+                refreshingServers = false;
                 refreshServersButton.Enabled = true;
+                browseLogsButton.Enabled = true;
             }
         }
         #endregion
