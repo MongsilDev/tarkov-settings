@@ -850,16 +850,20 @@ namespace tarkov_settings
             return info.country + "/" + info.city;
         }
 
+        // two explicit lines, so values never wrap in the middle
         private static string BuildRaidDetail(ServerLog.Entry entry, GeoIp.Info info)
         {
-            var parts = new System.Collections.Generic.List<string>();
+            var first = new System.Collections.Generic.List<string>();
             if (entry.Mode != "")
-                parts.Add(entry.Mode);
+                first.Add(entry.Mode);
             if (entry.GameTime != null)
-                parts.Add((entry.GameTime.Value.Hour >= 6 && entry.GameTime.Value.Hour < 22 ? "Day " : "Night ")
+                first.Add((entry.GameTime.Value.Hour >= 6 && entry.GameTime.Value.Hour < 22 ? "Day " : "Night ")
                     + entry.GameTime.Value.ToString("HH:mm"));
             if (entry.ShortId != "")
-                parts.Add(entry.ShortId);
+                first.Add(entry.ShortId);
+            first.Add(entry.Ip + ":" + entry.Port);
+
+            var second = new System.Collections.Generic.List<string>();
             if (entry.QueueSec >= 0)
             {
                 string timing = "queue " + entry.QueueSec.ToString("F0") + "s";
@@ -867,20 +871,28 @@ namespace tarkov_settings
                     timing += ", load " + entry.LoadSec.ToString("F0") + "s";
                 if (entry.TotalSec >= 0)
                     timing += ", total " + entry.TotalSec.ToString("F0") + "s";
-                parts.Add(timing);
+                second.Add(timing);
             }
-            parts.Add(entry.Ip + ":" + entry.Port);
             string location = LocationDisplay(info);
             if (location != "")
-                parts.Add(location);
-            return string.Join("  |  ", parts);
+                second.Add(location);
+
+            string detail = string.Join("  |  ", first);
+            if (second.Count > 0)
+                detail += "\n" + string.Join("  |  ", second);
+            return detail;
         }
 
         private void ServerListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            serverDetailLabel.Text = serverListView.SelectedItems.Count == 0
-                ? ""
-                : serverListView.SelectedItems[0].ToolTipText.Split('\n')[0];
+            if (serverListView.SelectedItems.Count == 0)
+            {
+                serverDetailLabel.Text = "";
+                return;
+            }
+            // everything except the trailing ping note
+            string[] lines = serverListView.SelectedItems[0].ToolTipText.Split('\n');
+            serverDetailLabel.Text = string.Join("\n", lines.Take(lines.Length - 1));
         }
 
         // measured now, not the ping at raid time; -1 when ICMP is blocked or times out
