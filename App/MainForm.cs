@@ -378,6 +378,12 @@ namespace tarkov_settings
 
             displayFollowTimer.Tick += DisplayFollowTimer_Tick;
 
+            logsWatcher.SynchronizingObject = this;
+            logsWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size;
+            logsWatcher.Changed += LogsWatcher_Changed;
+            logsWatcher.Created += LogsWatcher_Changed;
+            logsChangedTimer.Tick += LogsChangedTimer_Tick;
+
             tabFontRegular = colorTabButton.Font;
             tabFontBold = new Font(colorTabButton.Font, FontStyle.Bold);
             colorTabButton.FlatAppearance.BorderColor = SystemColors.Highlight;
@@ -609,6 +615,8 @@ namespace tarkov_settings
         // reached only when the form really closes (Exit menu, confirmed shutdown)
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            logsWatcher.Dispose();
+            logsChangedTimer.Stop();
             displayFollowTimer.Stop();
             this.trayIcon.Dispose();
             Console.WriteLine("[mainForm] Closing pMonitor");
@@ -666,6 +674,45 @@ namespace tarkov_settings
         #region Servers Tab
         private bool serversLoaded;
         private bool refreshingServers;
+
+        // kernel change notifications, filtered to raid connection logs - idle cost is zero
+        private readonly FileSystemWatcher logsWatcher = new FileSystemWatcher { IncludeSubdirectories = true };
+        private readonly Timer logsChangedTimer = new Timer { Interval = 2000 };
+
+        private void LogsWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            // the game writes output/application logs constantly; only connection
+            // events (one per raid) matter here
+            if (e.Name == null || e.Name.IndexOf("network-connection", StringComparison.OrdinalIgnoreCase) < 0)
+                return;
+            if (!serversPanel.Visible)
+            {
+                // re-read when the tab is opened instead of working in the background
+                serversLoaded = false;
+                return;
+            }
+            logsChangedTimer.Stop();
+            logsChangedTimer.Start();
+        }
+
+        private async void LogsChangedTimer_Tick(object sender, EventArgs e)
+        {
+            logsChangedTimer.Stop();
+            await RefreshServers();
+        }
+
+        private void WatchLogsFolder(string path)
+        {
+            try
+            {
+                logsWatcher.EnableRaisingEvents = false;
+                if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+                    return;
+                logsWatcher.Path = path;
+                logsWatcher.EnableRaisingEvents = true;
+            }
+            catch (Exception) { }
+        }
         private Font tabFontRegular;
         private Font tabFontBold;
 
@@ -738,6 +785,8 @@ namespace tarkov_settings
                 serverStatusLabel.Text = "Logs folder not found. Pick it with the ... button, or Refresh to retry";
                 return;
             }
+
+            WatchLogsFolder(appSetting.logsPath);
 
             refreshingServers = true;
             refreshServersButton.Enabled = false;
