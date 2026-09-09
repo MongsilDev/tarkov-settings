@@ -773,9 +773,8 @@ namespace tarkov_settings
                 foreach (ServerLog.Entry entry in entries)
                 {
                     geo.TryGetValue(entry.Ip, out GeoIp.Info info);
-                    string wait = entry.QueueSec >= 0 && entry.TotalSec >= 0
-                        ? entry.QueueSec.ToString("F0") + ">" + entry.TotalSec.ToString("F0") + "s"
-                        : "-";
+                    // total entry time only; the queue/load breakdown lives in the detail line
+                    string wait = entry.TotalSec >= 0 ? entry.TotalSec.ToString("F0") + "s" : "-";
                     serverListView.Items.Add(new ListViewItem(new[]
                     {
                         entry.Time.ToString("MM-dd HH:mm"),

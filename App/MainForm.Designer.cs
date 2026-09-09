@@ -254,7 +254,7 @@
             // serverTimeColumn
             // 
             this.serverTimeColumn.Text = "Time";
-            this.serverTimeColumn.Width = 84;
+            this.serverTimeColumn.Width = 96;
             // 
             // serverMapColumn
             // 
@@ -269,12 +269,12 @@
             // serverLocationColumn
             // 
             this.serverLocationColumn.Text = "Location";
-            this.serverLocationColumn.Width = 132;
+            this.serverLocationColumn.Width = 138;
             // 
             // serverWaitColumn
             // 
             this.serverWaitColumn.Text = "Wait";
-            this.serverWaitColumn.Width = 66;
+            this.serverWaitColumn.Width = 50;
             // 
             // serverPingColumn
             // 
