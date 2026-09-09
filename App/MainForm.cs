@@ -732,8 +732,8 @@ namespace tarkov_settings
                 item.SubItems[4].Text = updated.TotalSec >= 0 ? updated.TotalSec.ToString("F0") + "s" : "-";
                 item.Tag = updated;
                 item.ToolTipText = BuildRaidDetail(updated, liveRaidGeo) + "\nLive raid, ping updates every 5 s";
-                if (item.Selected)
-                    ServerListView_SelectedIndexChanged(serverListView, EventArgs.Empty);
+                if (item.Selected || (serverListView.SelectedItems.Count == 0 && item.Index == 0))
+                    ShowDetail();
             }
             finally
             {
@@ -934,9 +934,6 @@ namespace tarkov_settings
                     liveRaidTimer.Start();
                     LiveRaidTimer_Tick(liveRaidTimer, EventArgs.Empty);
                 }
-                if (serverListView.Items.Count > 0)
-                    serverListView.Items[0].Selected = true;
-
                 // trim to what actually fits so the list never scrolls (row height varies with DPI)
                 if (serverListView.Items.Count > 0)
                 {
@@ -945,6 +942,7 @@ namespace tarkov_settings
                     while (serverListView.Items.Count > capacity)
                         serverListView.Items.RemoveAt(serverListView.Items.Count - 1);
                 }
+                ShowDetail();
 
                 int shown = serverListView.Items.Count;
                 int unique = serverListView.Items.Cast<ListViewItem>().Select(item => ((ServerLog.Entry)item.Tag).Ip).Distinct().Count();
@@ -1012,13 +1010,22 @@ namespace tarkov_settings
 
         private void ServerListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (serverListView.SelectedItems.Count == 0)
+            ShowDetail();
+        }
+
+        // the selected row, else the first one: nothing is selected by default, so the
+        // live row keeps its own colour instead of the selection highlight
+        private void ShowDetail()
+        {
+            ListViewItem item = serverListView.SelectedItems.Count > 0 ? serverListView.SelectedItems[0]
+                : serverListView.Items.Count > 0 ? serverListView.Items[0] : null;
+            if (item == null)
             {
                 serverDetailLabel.Text = "";
                 return;
             }
             // everything except the trailing ping note
-            string[] lines = serverListView.SelectedItems[0].ToolTipText.Split('\n');
+            string[] lines = item.ToolTipText.Split('\n');
             serverDetailLabel.Text = string.Join("\n", lines.Take(lines.Length - 1));
         }
 
