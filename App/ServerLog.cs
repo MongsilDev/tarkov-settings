@@ -129,18 +129,13 @@ namespace tarkov_settings
             DateTime since = DateTime.Now - window;
             var entries = new List<Entry>();
             // session folder names sort chronologically: log_2026.08.28_12-49-01_<version>
-            foreach (string dir in Directory.GetDirectories(logsPath, "log_*").OrderByDescending(d => d, StringComparer.OrdinalIgnoreCase))
+            // parsed folder time, not name order: single-digit hours break lexicographic sort
+            foreach (string dir in Directory.GetDirectories(logsPath, "log_*").OrderByDescending(FolderTime))
             {
                 // a session started well before the window cannot contain raids inside it
-                Match folderTime = FolderTimePattern.Match(Path.GetFileName(dir));
-                if (folderTime.Success)
-                {
-                    var started = new DateTime(
-                        int.Parse(folderTime.Groups[1].Value), int.Parse(folderTime.Groups[2].Value), int.Parse(folderTime.Groups[3].Value),
-                        int.Parse(folderTime.Groups[4].Value), int.Parse(folderTime.Groups[5].Value), int.Parse(folderTime.Groups[6].Value));
-                    if (started < since - TimeSpan.FromHours(24))
-                        break;
-                }
+                DateTime started = FolderTime(dir);
+                if (started != DateTime.MinValue && started < since - TimeSpan.FromHours(24))
+                    break;
 
                 entries.AddRange(ReadSession(dir));
 
@@ -156,7 +151,7 @@ namespace tarkov_settings
             foreach (string file in Directory.GetFiles(dir, "*network-connection*.log"))
             {
                 string text;
-                try { text = File.ReadAllText(file); }
+                try { text = ReadAllTextShared(file); }
                 catch (IOException) { continue; }
 
                 foreach (Match m in ConnectPattern.Matches(text))
@@ -274,16 +269,59 @@ namespace tarkov_settings
             }
         }
 
+        private static DateTime FolderTime(string dir)
+        {
+            Match m = FolderTimePattern.Match(Path.GetFileName(dir));
+            if (!m.Success)
+                return DateTime.MinValue;
+            return new DateTime(
+                int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value), int.Parse(m.Groups[3].Value),
+                int.Parse(m.Groups[4].Value), int.Parse(m.Groups[5].Value), int.Parse(m.Groups[6].Value));
+        }
+
         private static DateTime ParseTime(string value)
         {
             return DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+        // FileShare.ReadWrite: the game keeps the current session log open for writing
+        private static string ReadAllTextShared(string file)
+        {
+            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+            using (var reader = new StreamReader(stream))
+                return reader.ReadToEnd();
+        }
+
+        private static IEnumerable<string> ReadLinesShared(string file)
+        {
+            FileStream stream;
+            try { stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete); }
+            catch (IOException) { yield break; }
+            using (var reader = new StreamReader(stream))
+            {
+                while (true)
+                {
+                    string line;
+                    try
+                    {
+                        line = reader.ReadLine();
+                    }
+                    catch (IOException)
+                    {
+                        yield break;
+                    }
+                    if (line == null)
+                        yield break;
+                    yield return line;
+                }
+            }
         }
 
         // output logs can be large; stream instead of loading whole files
         private static IEnumerable<string> SafeReadLines(string file)
         {
             IEnumerator<string> lines;
-            try { lines = File.ReadLines(file).GetEnumerator(); }
+            try { lines = ReadLinesShared(file).GetEnumerator(); }
             catch (IOException) { yield break; }
             using (lines)
             {
