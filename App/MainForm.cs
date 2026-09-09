@@ -819,17 +819,12 @@ namespace tarkov_settings
                 string logsPath = appSetting.logsPath;
                 var entries = await Task.Run(() => ServerLog.Read(logsPath, 15, TimeSpan.FromHours(72)));
 
-                // newest raid with no end marker + game still running = live raid
+                // live = newest raid, started within the last hour, no session rtt yet,
+                // no end marker, and the game process still running
                 ServerLog.Entry newest = entries.FirstOrDefault();
-                bool hasLive = newest != null && !newest.Ended
-                    && DateTime.Now - newest.Time < TimeSpan.FromHours(2)
+                bool hasLive = newest != null && !newest.Ended && newest.SessionRtt < 0
+                    && DateTime.Now - newest.Time < TimeSpan.FromHours(1)
                     && await Task.Run(() => pMonitor.AnyTargetRunning());
-
-                // one-shot pings only where the log has no measured session rtt
-                var pingTasks = entries
-                    .Where(entry => entry.SessionRtt < 0 && !(hasLive && entry == newest))
-                    .Select(entry => entry.Ip).Distinct()
-                    .ToDictionary(ip => ip, ip => PingAsync(ip));
 
                 bool geoFailed = false;
                 var geo = new System.Collections.Generic.Dictionary<string, GeoIp.Info>();
@@ -862,7 +857,7 @@ namespace tarkov_settings
                         ? "Live raid, ping updates every 5 s"
                         : entry.SessionRtt >= 0
                             ? "Ping is the session average measured by the game"
-                            : "Ping is measured now, not at raid time";
+                            : "No session ping in the log";
                     var item = new ListViewItem(new[]
                     {
                         entry.Time.ToString("MM-dd HH:mm"),
@@ -870,7 +865,7 @@ namespace tarkov_settings
                         entry.Region,
                         LocationDisplay(info),
                         wait,
-                        entry.SessionRtt >= 0 ? entry.SessionRtt.ToString("F0") + " ms" : "...",
+                        live ? "..." : entry.SessionRtt >= 0 ? entry.SessionRtt.ToString("F0") + " ms" : "-",
                     })
                     {
                         Tag = entry,
@@ -899,36 +894,12 @@ namespace tarkov_settings
                         serverListView.Items.RemoveAt(serverListView.Items.Count - 1);
                 }
 
-                string pingNote = "";
-                try
-                {
-                    await Task.WhenAll(pingTasks.Values);
-                    foreach (ListViewItem item in serverListView.Items)
-                    {
-                        if (item == liveRaidItem)
-                            continue;
-                        var rowEntry = (ServerLog.Entry)item.Tag;
-                        if (pingTasks.TryGetValue(rowEntry.Ip, out Task<long> ping) && rowEntry.SessionRtt < 0)
-                        {
-                            long ms = ping.Result;
-                            item.SubItems[5].Text = ms >= 0 ? ms + " ms" : "-";
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    foreach (ListViewItem item in serverListView.Items)
-                        if (item.SubItems[5].Text == "...")
-                            item.SubItems[5].Text = "-";
-                    pingNote = "   (ping failed)";
-                }
-
                 int shown = serverListView.Items.Count;
                 int unique = serverListView.Items.Cast<ListViewItem>().Select(item => ((ServerLog.Entry)item.Tag).Ip).Distinct().Count();
                 serverStatusLabel.Text = (shown == 0
                     ? "No raids in the last 72 hours"
                     : "Raids (72h): " + shown + (unique > 1 ? "   Servers: " + unique : ""))
-                    + (geoFailed ? "   (location lookup failed)" : "") + pingNote;
+                    + (geoFailed ? "   (location lookup failed)" : "");
             }
             catch (Exception e)
             {
