@@ -324,6 +324,28 @@ namespace tarkov_settings
             }
         }
 
+        // length of the newest session's connection log, -1 when there is none.
+        // read through a shared handle, so it is current even when the change
+        // notification for the game's open file is late
+        public static long ConnectionLogLength(string logsPath)
+        {
+            try
+            {
+                string dir = Directory.GetDirectories(logsPath, "log_*").OrderByDescending(FolderTime).FirstOrDefault();
+                if (dir == null)
+                    return -1;
+                string file = Directory.GetFiles(dir, "*network-connection*.log").FirstOrDefault();
+                if (file == null)
+                    return -1;
+                using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+                    return stream.Length;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
         private static DateTime FolderTime(string dir)
         {
             Match m = FolderTimePattern.Match(Path.GetFileName(dir));

@@ -384,6 +384,8 @@ namespace tarkov_settings
             logsWatcher.Created += LogsWatcher_Changed;
             logsChangedTimer.Tick += LogsChangedTimer_Tick;
             liveRaidTimer.Tick += LiveRaidTimer_Tick;
+            logsPollTimer.Tick += LogsPollTimer_Tick;
+            logsPollTimer.Start();
 
             tabFontRegular = colorTabButton.Font;
             tabFontBold = new Font(colorTabButton.Font, FontStyle.Bold);
@@ -619,6 +621,7 @@ namespace tarkov_settings
             logsWatcher.Dispose();
             logsChangedTimer.Stop();
             liveRaidTimer.Stop();
+            logsPollTimer.Stop();
             displayFollowTimer.Stop();
             this.trayIcon.Dispose();
             Console.WriteLine("[mainForm] Closing pMonitor");
@@ -767,6 +770,23 @@ namespace tarkov_settings
             await RefreshServers();
         }
 
+        // the game's open log file does not always raise a change notification
+        // promptly, so the connection log length is also polled while the tab is open
+        private readonly Timer logsPollTimer = new Timer { Interval = 10000 };
+        private long connectionLogLength = -1;
+
+        private void LogsPollTimer_Tick(object sender, EventArgs e)
+        {
+            if (!serversPanel.Visible || refreshingServers || string.IsNullOrEmpty(appSetting.logsPath))
+                return;
+            long length = ServerLog.ConnectionLogLength(appSetting.logsPath);
+            if (length == connectionLogLength)
+                return;
+            connectionLogLength = length;
+            logsChangedTimer.Stop();
+            logsChangedTimer.Start();
+        }
+
         private void WatchLogsFolder(string path)
         {
             try
@@ -863,6 +883,7 @@ namespace tarkov_settings
                 serverStatusLabel.Text = "Reading logs";
                 string logsPath = appSetting.logsPath;
                 var entries = await Task.Run(() => ServerLog.Read(logsPath, 15, TimeSpan.FromHours(72)));
+                connectionLogLength = await Task.Run(() => ServerLog.ConnectionLogLength(logsPath));
 
                 // live = newest raid, started within the last hour, no session rtt yet,
                 // no end marker, and the game process still running
