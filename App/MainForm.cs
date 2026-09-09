@@ -704,7 +704,7 @@ namespace tarkov_settings
             {
                 serverStatusLabel.Text = "Reading logs";
                 string logsPath = appSetting.logsPath;
-                var entries = await Task.Run(() => ServerLog.Read(logsPath, 15));
+                var entries = await Task.Run(() => ServerLog.Read(logsPath, 15, TimeSpan.FromHours(72)));
 
                 // pings run while the location lookup is in flight
                 var pingTasks = entries.Select(entry => entry.Ip).Distinct()
@@ -740,6 +740,15 @@ namespace tarkov_settings
                 }
                 serverListView.EndUpdate();
 
+                // trim to what actually fits so the list never scrolls (row height varies with DPI)
+                if (serverListView.Items.Count > 0)
+                {
+                    var first = serverListView.GetItemRect(0);
+                    int capacity = Math.Max(1, (serverListView.ClientSize.Height - first.Top) / Math.Max(1, first.Height));
+                    while (serverListView.Items.Count > capacity)
+                        serverListView.Items.RemoveAt(serverListView.Items.Count - 1);
+                }
+
                 await Task.WhenAll(pingTasks.Values);
                 foreach (ListViewItem item in serverListView.Items)
                 {
@@ -747,10 +756,11 @@ namespace tarkov_settings
                     item.SubItems[4].Text = ms >= 0 ? ms + " ms" : "-";
                 }
 
-                int unique = entries.Select(entry => entry.Ip).Distinct().Count();
-                serverStatusLabel.Text = entries.Count == 0
-                    ? "No raids found in the logs"
-                    : "Recent raids: " + entries.Count + (unique > 1 ? "   Servers: " + unique : "");
+                int shown = serverListView.Items.Count;
+                int unique = serverListView.Items.Cast<ListViewItem>().Select(item => item.SubItems[1].Text).Distinct().Count();
+                serverStatusLabel.Text = shown == 0
+                    ? "No raids in the last 72 hours"
+                    : "Raids (72h): " + shown + (unique > 1 ? "   Servers: " + unique : "");
             }
             catch (Exception e)
             {

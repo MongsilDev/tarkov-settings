@@ -65,12 +65,27 @@ namespace tarkov_settings
             return path;
         }
 
-        public static List<Entry> Read(string logsPath, int max)
+        // log_2026.08.28_12-49-01_<version>; hours may lack a leading zero
+        private static readonly Regex FolderTimePattern = new Regex(
+            @"log_(\d{4})\.(\d{2})\.(\d{2})_(\d{1,2})-(\d{1,2})-(\d{1,2})", RegexOptions.Compiled);
+
+        public static List<Entry> Read(string logsPath, int max, TimeSpan window)
         {
+            DateTime since = DateTime.Now - window;
             var entries = new List<Entry>();
             // session folder names sort chronologically: log_2026.08.28_12-49-01_<version>
             foreach (string dir in Directory.GetDirectories(logsPath, "log_*").OrderByDescending(d => d, StringComparer.OrdinalIgnoreCase))
             {
+                // a session started well before the window cannot contain raids inside it
+                Match folderTime = FolderTimePattern.Match(Path.GetFileName(dir));
+                if (folderTime.Success)
+                {
+                    var started = new DateTime(
+                        int.Parse(folderTime.Groups[1].Value), int.Parse(folderTime.Groups[2].Value), int.Parse(folderTime.Groups[3].Value),
+                        int.Parse(folderTime.Groups[4].Value), int.Parse(folderTime.Groups[5].Value), int.Parse(folderTime.Groups[6].Value));
+                    if (started < since - TimeSpan.FromHours(24))
+                        break;
+                }
                 foreach (string file in Directory.GetFiles(dir, "*network-connection*.log"))
                 {
                     string text;
@@ -87,10 +102,10 @@ namespace tarkov_settings
                         });
                     }
                 }
-                if (entries.Count >= max)
+                if (entries.Count(e => e.Time >= since) >= max)
                     break;
             }
-            return entries.OrderByDescending(e => e.Time).Take(max).ToList();
+            return entries.Where(e => e.Time >= since).OrderByDescending(e => e.Time).Take(max).ToList();
         }
     }
 }
