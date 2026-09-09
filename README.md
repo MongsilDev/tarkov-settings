@@ -1,4 +1,4 @@
-# tarkov-settings
+﻿# tarkov-settings
 
 [![English](https://img.shields.io/badge/README-English-555555?style=flat-square)](README.en.md)
 [![Hits](https://hits.sh/github.com/MongsilDev/tarkov-settings.svg?style=flat-square&label=hits&color=8c8c8c&labelColor=555555)](https://hits.sh)
@@ -16,6 +16,8 @@ Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는
 - 핫키 3종: 감마 두 값 전환, 게임 볼륨 두 값 전환, 게임 즉시 종료. 게임 포커스 중에만 동작
 - 게임 창이 있는 모니터 자동 추적
 - 윈도우 시작 시 실행, 트레이 최소화 시작
+- Servers 탭: 최근 72시간 레이드 목록. 시간, 맵, 지역, 서버 위치, 진입 시간, 핑. 진행 중 레이드는 LIVE 표시와 5초 간격 핑, 종료 후 게임이 기록한 평균 핑
+- Always on top: 창을 항상 위에 표시
 
 ## 사용법
 1. exe 다운로드 후 우클릭 > 속성 > 차단 해제, 실행
@@ -23,6 +25,8 @@ Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는
 3. Arena에도 적용하려면 Apply to Arena 체크
 4. Hotkeys에서 값 두 개와 키 지정. Key 칸을 클릭하고 키 입력, Esc 취소, Backspace 해제. 기본 키는 Gamma PageUp, Game volume PageDown. Kill game은 Ctrl/Alt/Shift 조합만 가능하고 지정할 때 한 번 확인
 5. 필요하면 Start with Windows, Start minimized 체크
+6. Servers 탭은 EFT 로그 폴더를 자동 탐지. 못 찾으면 `...` 버튼으로 게임 폴더 지정
+7. 창을 항상 위에 두려면 왼쪽 아래 Always on top
 
 설정 파일: `%LOCALAPPDATA%\tarkov-settings\settings.json`, 앱이 닫힐 때 저장.
 

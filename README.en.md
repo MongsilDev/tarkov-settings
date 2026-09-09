@@ -1,4 +1,4 @@
-# tarkov-settings
+﻿# tarkov-settings
 
 [![한국어](https://img.shields.io/badge/README-한국어-555555?style=flat-square)](README.md)
 [![Hits](https://hits.sh/github.com/MongsilDev/tarkov-settings.svg?style=flat-square&label=hits&color=8c8c8c&labelColor=555555)](https://hits.sh)
@@ -16,6 +16,8 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 - Three hotkeys: toggle gamma between two values, toggle game volume between two values, kill the game. Active only while the game is focused
 - Follows the game window to whichever monitor it is on
 - Start with Windows, start minimized to the tray
+- Servers tab: raids from the last 72 hours with time, map, region, server location, entry time and ping. A raid in progress shows LIVE with a ping every 5 seconds, then the average ping the game logged once it ends
+- Always on top: keeps the window above other windows
 
 ## How to use
 1. Download the exe, right-click > Properties > Unblock, then run
@@ -23,6 +25,8 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 3. Check Apply to Arena to use the same colors in Arena
 4. In Hotkeys, set the two values and a key. Click the Key box and press a key, Esc cancels, Backspace clears. Defaults: Gamma PageUp, Game volume PageDown. Kill game needs Ctrl/Alt/Shift and asks once when you bind it
 5. Check Start with Windows and Start minimized if you want them
+6. The Servers tab finds the EFT log folder on its own. If it cannot, pick the game folder with the `...` button
+7. Always on top at the bottom left keeps the window above the game
 
 Settings file: `%LOCALAPPDATA%\tarkov-settings\settings.json`, saved when the app closes.
 
