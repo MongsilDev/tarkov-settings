@@ -28,6 +28,6 @@ namespace tarkov_settings.Setting
         // unbound on purpose - the user must opt in
         public string killHotkey = "";
         public string logsPath = "";
-        public bool alwaysOnTop = false;
+        public bool alwaysOnTop = true;
     }
 }
