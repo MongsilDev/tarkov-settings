@@ -194,7 +194,10 @@ namespace tarkov_settings
         public bool AnyTargetRunning()
         {
             bool running = false;
-            foreach (Process process in Process.GetProcesses())
+            Process[] processes;
+            try { processes = Process.GetProcesses(); }
+            catch (Exception) { return true; } // cannot tell - do not block the live view
+            foreach (Process process in processes)
             {
                 using (process)
                 {

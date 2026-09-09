@@ -677,23 +677,67 @@ namespace tarkov_settings
         private bool serversLoaded;
         private bool refreshingServers;
 
-        // live raid: current ping refreshed while the raid is running
+        // live raid: ping every 5 s, re-read its session folder every 10 s so Wait,
+        // map and the end of the raid show up without pressing Refresh
         private readonly Timer liveRaidTimer = new Timer { Interval = 5000 };
-        private string liveRaidIp;
+        private ServerLog.Entry liveRaid;
         private ListViewItem liveRaidItem;
+        private GeoIp.Info liveRaidGeo;
+        private int liveTicks;
+        private bool liveBusy;
+
+        private static readonly Color LiveColor = Color.FromArgb(0, 110, 0);
 
         private async void LiveRaidTimer_Tick(object sender, EventArgs e)
         {
-            string ip = liveRaidIp;
+            if (liveBusy)
+                return;
+            ServerLog.Entry raid = liveRaid;
             ListViewItem item = liveRaidItem;
-            if (ip == null || item == null || item.ListView == null)
+            if (raid == null || item == null || item.ListView == null)
             {
                 liveRaidTimer.Stop();
                 return;
             }
-            long ms = await PingAsync(ip);
-            if (item.ListView != null)
-                item.SubItems[5].Text = ms >= 0 ? ms + " ms" : "-";
+
+            liveBusy = true;
+            try
+            {
+                long ms = await PingAsync(raid.Ip);
+                if (item.ListView != null)
+                    item.SubItems[5].Text = ms >= 0 ? ms + " ms" : "-";
+
+                liveTicks++;
+                if (liveTicks % 2 != 0 || item.ListView == null)
+                    return;
+
+                string dir = raid.SessionDir;
+                var session = await Task.Run(() => ServerLog.ReadSession(dir));
+                ServerLog.Entry updated = session.FirstOrDefault(x =>
+                    x.Ip == raid.Ip && x.Port == raid.Port && Math.Abs((x.Time - raid.Time).TotalSeconds) < 5);
+                if (updated == null || item.ListView == null)
+                    return;
+
+                if (updated.Ended || DateTime.Now - updated.Time >= TimeSpan.FromHours(1))
+                {
+                    // raid is over: rebuild so the row gets its session rtt and loses the live style
+                    await RefreshServers();
+                    return;
+                }
+
+                liveRaid = updated;
+                item.SubItems[1].Text = updated.Map;
+                item.SubItems[2].Text = updated.Region;
+                item.SubItems[4].Text = updated.TotalSec >= 0 ? updated.TotalSec.ToString("F0") + "s" : "-";
+                item.Tag = updated;
+                item.ToolTipText = BuildRaidDetail(updated, liveRaidGeo) + "\nLive raid, ping updates every 5 s";
+                if (item.Selected)
+                    ServerListView_SelectedIndexChanged(serverListView, EventArgs.Empty);
+            }
+            finally
+            {
+                liveBusy = false;
+            }
         }
 
         // kernel change notifications, filtered to raid connection logs - idle cost is zero
@@ -842,8 +886,10 @@ namespace tarkov_settings
                 }
 
                 liveRaidTimer.Stop();
-                liveRaidIp = null;
+                liveRaid = null;
                 liveRaidItem = null;
+                liveRaidGeo = null;
+                liveTicks = 0;
 
                 serverListView.BeginUpdate();
                 serverListView.Items.Clear();
@@ -860,7 +906,7 @@ namespace tarkov_settings
                             : "No session ping in the log";
                     var item = new ListViewItem(new[]
                     {
-                        entry.Time.ToString("MM-dd HH:mm"),
+                        live ? "LIVE " + entry.Time.ToString("HH:mm") : entry.Time.ToString("MM-dd HH:mm"),
                         entry.Map,
                         entry.Region,
                         LocationDisplay(info),
@@ -869,19 +915,24 @@ namespace tarkov_settings
                     })
                     {
                         Tag = entry,
-                        ToolTipText = BuildRaidDetail(entry, info, live) + "\n" + pingNote2,
+                        ToolTipText = BuildRaidDetail(entry, info) + "\n" + pingNote2,
                     };
                     if (live)
                     {
                         item.Font = tabFontBold;
-                        liveRaidIp = entry.Ip;
+                        item.ForeColor = LiveColor;
+                        liveRaid = entry;
                         liveRaidItem = item;
+                        liveRaidGeo = info;
                     }
                     serverListView.Items.Add(item);
                 }
                 serverListView.EndUpdate();
                 if (liveRaidItem != null)
+                {
                     liveRaidTimer.Start();
+                    LiveRaidTimer_Tick(liveRaidTimer, EventArgs.Empty);
+                }
                 if (serverListView.Items.Count > 0)
                     serverListView.Items[0].Selected = true;
 
@@ -899,7 +950,8 @@ namespace tarkov_settings
                 serverStatusLabel.Text = (shown == 0
                     ? "No raids in the last 72 hours"
                     : "Raids (72h): " + shown + (unique > 1 ? "   Servers: " + unique : ""))
-                    + (geoFailed ? "   (location lookup failed)" : "");
+                    + (geoFailed ? "   (location lookup failed)" : "")
+                    + (liveRaidItem != null ? "   Live raid" : "");
             }
             catch (Exception e)
             {
@@ -925,11 +977,9 @@ namespace tarkov_settings
         }
 
         // two explicit lines, so values never wrap in the middle
-        private static string BuildRaidDetail(ServerLog.Entry entry, GeoIp.Info info, bool live)
+        private static string BuildRaidDetail(ServerLog.Entry entry, GeoIp.Info info)
         {
             var first = new System.Collections.Generic.List<string>();
-            if (live)
-                first.Add("LIVE");
             if (entry.Mode != "")
                 first.Add(entry.Mode);
             if (entry.GameTime != null)

@@ -72,6 +72,7 @@ namespace tarkov_settings
             public double TotalSec = -1;
             public double SessionRtt = -1;
             public bool Ended;
+            public string SessionDir = "";
         }
 
         private class RaidMeta
@@ -161,7 +162,7 @@ namespace tarkov_settings
             return entries.Where(e => e.Time >= since).OrderByDescending(e => e.Time).Take(max).ToList();
         }
 
-        private static List<Entry> ReadSession(string dir)
+        public static List<Entry> ReadSession(string dir)
         {
             var raids = new List<Entry>();
             var ends = new List<EndEvent>();
@@ -188,6 +189,7 @@ namespace tarkov_settings
                         Time = ParseTime(m.Groups["time"].Value),
                         Ip = m.Groups["ip"].Value,
                         Port = int.Parse(m.Groups["port"].Value),
+                        SessionDir = dir,
                     });
                 }
             }
