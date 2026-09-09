@@ -704,7 +704,7 @@ namespace tarkov_settings
             {
                 serverStatusLabel.Text = "Reading logs";
                 string logsPath = appSetting.logsPath;
-                var entries = await Task.Run(() => ServerLog.Read(logsPath, 5));
+                var entries = await Task.Run(() => ServerLog.Read(logsPath, 15));
 
                 // pings run while the location lookup is in flight
                 var pingTasks = entries.Select(entry => entry.Ip).Distinct()
