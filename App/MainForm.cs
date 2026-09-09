@@ -949,7 +949,7 @@ namespace tarkov_settings
                 int unique = serverListView.Items.Cast<ListViewItem>().Select(item => ((ServerLog.Entry)item.Tag).Ip).Distinct().Count();
                 serverStatusLabel.Text = (shown == 0
                     ? "No raids in the last 72 hours"
-                    : "Raids (72h): " + shown + (unique > 1 ? "   Servers: " + unique : ""))
+                    : "Raids (72h): " + shown + (unique < shown ? "   Servers: " + unique : ""))
                     + (geoFailed ? "   (location lookup failed)" : "")
                     + (liveRaidItem != null ? "   Live raid" : "");
             }
