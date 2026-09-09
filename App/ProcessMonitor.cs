@@ -40,7 +40,7 @@ namespace tarkov_settings
         public static extern IntPtr UnhookWinEvent(IntPtr hWinEventHook);
 
         [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
+        public static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
@@ -148,6 +148,12 @@ namespace tarkov_settings
 
             // Init ColorController
             cController.Init();
+
+            // a game already focused at startup (autostart, or a restart while playing)
+            // raises no foreground event, so handle the current window once
+            IntPtr focused = NativeMethods.GetForegroundWindow();
+            if (focused != IntPtr.Zero)
+                WinEventProc(IntPtr.Zero, 0, focused, 0, 0, 0, 0);
         }
 
         /**
