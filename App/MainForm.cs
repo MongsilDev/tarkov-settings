@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -705,6 +706,10 @@ namespace tarkov_settings
                 string logsPath = appSetting.logsPath;
                 var entries = await Task.Run(() => ServerLog.Read(logsPath, 5));
 
+                // pings run while the location lookup is in flight
+                var pingTasks = entries.Select(entry => entry.Ip).Distinct()
+                    .ToDictionary(ip => ip, ip => PingAsync(ip));
+
                 var geo = new System.Collections.Generic.Dictionary<string, GeoIp.Info>();
                 if (entries.Count > 0)
                 {
@@ -730,10 +735,17 @@ namespace tarkov_settings
                         entry.Ip,
                         info?.country ?? "",
                         info?.city ?? "",
-                        info?.timezone ?? "",
+                        "...",
                     }));
                 }
                 serverListView.EndUpdate();
+
+                await Task.WhenAll(pingTasks.Values);
+                foreach (ListViewItem item in serverListView.Items)
+                {
+                    long ms = pingTasks[item.SubItems[1].Text].Result;
+                    item.SubItems[4].Text = ms >= 0 ? ms + " ms" : "-";
+                }
 
                 int unique = entries.Select(entry => entry.Ip).Distinct().Count();
                 serverStatusLabel.Text = entries.Count == 0
@@ -750,6 +762,22 @@ namespace tarkov_settings
             }
         }
         #endregion
+
+        // measured now, not the ping at raid time; -1 when ICMP is blocked or times out
+        private static async Task<long> PingAsync(string ip)
+        {
+            try
+            {
+                using (var ping = new Ping())
+                {
+                    PingReply reply = await ping.SendPingAsync(ip, 1500);
+                    if (reply.Status == IPStatus.Success)
+                        return reply.RoundtripTime;
+                }
+            }
+            catch (Exception) { }
+            return -1;
+        }
 
         private void RecommendButton_Click(object sender, EventArgs e)
         {

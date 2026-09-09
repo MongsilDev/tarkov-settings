@@ -65,7 +65,7 @@
             this.serverIpColumn = new System.Windows.Forms.ColumnHeader();
             this.serverCountryColumn = new System.Windows.Forms.ColumnHeader();
             this.serverCityColumn = new System.Windows.Forms.ColumnHeader();
-            this.serverTimezoneColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverPingColumn = new System.Windows.Forms.ColumnHeader();
             this.serverStatusLabel = new System.Windows.Forms.Label();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
@@ -212,7 +212,7 @@
             this.serverIpColumn,
             this.serverCountryColumn,
             this.serverCityColumn,
-            this.serverTimezoneColumn});
+            this.serverPingColumn});
             this.serverListView.ForeColor = System.Drawing.SystemColors.WindowText;
             this.serverListView.FullRowSelect = true;
             this.serverListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -242,12 +242,12 @@
             // serverCityColumn
             // 
             this.serverCityColumn.Text = "City";
-            this.serverCityColumn.Width = 82;
+            this.serverCityColumn.Width = 114;
             // 
-            // serverTimezoneColumn
+            // serverPingColumn
             // 
-            this.serverTimezoneColumn.Text = "Timezone";
-            this.serverTimezoneColumn.Width = 92;
+            this.serverPingColumn.Text = "Ping";
+            this.serverPingColumn.Width = 60;
             // 
             // serverStatusLabel
             // 
@@ -901,7 +901,7 @@
         private System.Windows.Forms.ColumnHeader serverIpColumn;
         private System.Windows.Forms.ColumnHeader serverCountryColumn;
         private System.Windows.Forms.ColumnHeader serverCityColumn;
-        private System.Windows.Forms.ColumnHeader serverTimezoneColumn;
+        private System.Windows.Forms.ColumnHeader serverPingColumn;
         private System.Windows.Forms.Label serverStatusLabel;
         
         
