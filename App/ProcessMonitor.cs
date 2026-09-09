@@ -190,6 +190,25 @@ namespace tarkov_settings
             }
         }
 
+        // one snapshot per call; used only on manual/auto refresh
+        public bool AnyTargetRunning()
+        {
+            bool running = false;
+            foreach (Process process in Process.GetProcesses())
+            {
+                using (process)
+                {
+                    try
+                    {
+                        if (this.pTargets.Contains(process.ProcessName.ToLower()))
+                            running = true;
+                    }
+                    catch (Exception) { }
+                }
+            }
+            return running;
+        }
+
         /**
          * True only if pid still exists, carries the expected name (guards against pid
          * reuse after the game exited) and that name is a target.

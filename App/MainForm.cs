@@ -383,6 +383,7 @@ namespace tarkov_settings
             logsWatcher.Changed += LogsWatcher_Changed;
             logsWatcher.Created += LogsWatcher_Changed;
             logsChangedTimer.Tick += LogsChangedTimer_Tick;
+            liveRaidTimer.Tick += LiveRaidTimer_Tick;
 
             tabFontRegular = colorTabButton.Font;
             tabFontBold = new Font(colorTabButton.Font, FontStyle.Bold);
@@ -617,6 +618,7 @@ namespace tarkov_settings
         {
             logsWatcher.Dispose();
             logsChangedTimer.Stop();
+            liveRaidTimer.Stop();
             displayFollowTimer.Stop();
             this.trayIcon.Dispose();
             Console.WriteLine("[mainForm] Closing pMonitor");
@@ -674,6 +676,25 @@ namespace tarkov_settings
         #region Servers Tab
         private bool serversLoaded;
         private bool refreshingServers;
+
+        // live raid: current ping refreshed while the raid is running
+        private readonly Timer liveRaidTimer = new Timer { Interval = 5000 };
+        private string liveRaidIp;
+        private ListViewItem liveRaidItem;
+
+        private async void LiveRaidTimer_Tick(object sender, EventArgs e)
+        {
+            string ip = liveRaidIp;
+            ListViewItem item = liveRaidItem;
+            if (ip == null || item == null || item.ListView == null)
+            {
+                liveRaidTimer.Stop();
+                return;
+            }
+            long ms = await PingAsync(ip);
+            if (item.ListView != null)
+                item.SubItems[5].Text = ms >= 0 ? ms + " ms" : "-";
+        }
 
         // kernel change notifications, filtered to raid connection logs - idle cost is zero
         private readonly FileSystemWatcher logsWatcher = new FileSystemWatcher { IncludeSubdirectories = true };
@@ -798,8 +819,16 @@ namespace tarkov_settings
                 string logsPath = appSetting.logsPath;
                 var entries = await Task.Run(() => ServerLog.Read(logsPath, 15, TimeSpan.FromHours(72)));
 
-                // pings run while the location lookup is in flight
-                var pingTasks = entries.Select(entry => entry.Ip).Distinct()
+                // newest raid with no end marker + game still running = live raid
+                ServerLog.Entry newest = entries.FirstOrDefault();
+                bool hasLive = newest != null && !newest.Ended
+                    && DateTime.Now - newest.Time < TimeSpan.FromHours(2)
+                    && await Task.Run(() => pMonitor.AnyTargetRunning());
+
+                // one-shot pings only where the log has no measured session rtt
+                var pingTasks = entries
+                    .Where(entry => entry.SessionRtt < 0 && !(hasLive && entry == newest))
+                    .Select(entry => entry.Ip).Distinct()
                     .ToDictionary(ip => ip, ip => PingAsync(ip));
 
                 bool geoFailed = false;
@@ -817,28 +846,47 @@ namespace tarkov_settings
                     }
                 }
 
+                liveRaidTimer.Stop();
+                liveRaidIp = null;
+                liveRaidItem = null;
+
                 serverListView.BeginUpdate();
                 serverListView.Items.Clear();
                 foreach (ServerLog.Entry entry in entries)
                 {
+                    bool live = hasLive && entry == newest;
                     geo.TryGetValue(entry.Ip, out GeoIp.Info info);
                     // total entry time only; the queue/load breakdown lives in the detail line
                     string wait = entry.TotalSec >= 0 ? entry.TotalSec.ToString("F0") + "s" : "-";
-                    serverListView.Items.Add(new ListViewItem(new[]
+                    string pingNote2 = live
+                        ? "Live raid, ping updates every 5 s"
+                        : entry.SessionRtt >= 0
+                            ? "Ping is the session average measured by the game"
+                            : "Ping is measured now, not at raid time";
+                    var item = new ListViewItem(new[]
                     {
                         entry.Time.ToString("MM-dd HH:mm"),
                         entry.Map,
                         entry.Region,
                         LocationDisplay(info),
                         wait,
-                        "...",
+                        entry.SessionRtt >= 0 ? entry.SessionRtt.ToString("F0") + " ms" : "...",
                     })
                     {
                         Tag = entry,
-                        ToolTipText = BuildRaidDetail(entry, info) + "\nPing is measured now, not at raid time",
-                    });
+                        ToolTipText = BuildRaidDetail(entry, info, live) + "\n" + pingNote2,
+                    };
+                    if (live)
+                    {
+                        item.Font = tabFontBold;
+                        liveRaidIp = entry.Ip;
+                        liveRaidItem = item;
+                    }
+                    serverListView.Items.Add(item);
                 }
                 serverListView.EndUpdate();
+                if (liveRaidItem != null)
+                    liveRaidTimer.Start();
                 if (serverListView.Items.Count > 0)
                     serverListView.Items[0].Selected = true;
 
@@ -857,8 +905,14 @@ namespace tarkov_settings
                     await Task.WhenAll(pingTasks.Values);
                     foreach (ListViewItem item in serverListView.Items)
                     {
-                        long ms = pingTasks[((ServerLog.Entry)item.Tag).Ip].Result;
-                        item.SubItems[5].Text = ms >= 0 ? ms + " ms" : "-";
+                        if (item == liveRaidItem)
+                            continue;
+                        var rowEntry = (ServerLog.Entry)item.Tag;
+                        if (pingTasks.TryGetValue(rowEntry.Ip, out Task<long> ping) && rowEntry.SessionRtt < 0)
+                        {
+                            long ms = ping.Result;
+                            item.SubItems[5].Text = ms >= 0 ? ms + " ms" : "-";
+                        }
                     }
                 }
                 catch (Exception)
@@ -900,9 +954,11 @@ namespace tarkov_settings
         }
 
         // two explicit lines, so values never wrap in the middle
-        private static string BuildRaidDetail(ServerLog.Entry entry, GeoIp.Info info)
+        private static string BuildRaidDetail(ServerLog.Entry entry, GeoIp.Info info, bool live)
         {
             var first = new System.Collections.Generic.List<string>();
+            if (live)
+                first.Add("LIVE");
             if (entry.Mode != "")
                 first.Add(entry.Mode);
             if (entry.GameTime != null)

@@ -25,6 +25,13 @@ namespace tarkov_settings
             @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|.*\|(?<kind>MatchingCompleted|LocationLoaded|GameStarted):[^ ]* real:(?<real>[\d.]+)",
             RegexOptions.Compiled);
 
+        // Disconnect (address: ip:port) / Statistics (address: ip:port, rtt: 42.5, lose: 0, ...)
+        private static readonly Regex EndPattern = new Regex(
+            @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|[^|]*\|[^|]*\|network-connection\|(?:Disconnect \(address: (?<ip>[\d.]+):(?<port>\d+)\)|Statistics \(address: (?<ip>[\d.]+):(?<port>\d+), rtt: (?<rtt>[\d.]+), lose: (?<lose>\d+))",
+            RegexOptions.Multiline | RegexOptions.Compiled);
+
+        private static readonly Regex TimePrefixPattern = new Regex(@"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})", RegexOptions.Compiled);
+
         private static readonly Regex SessionModePattern = new Regex(@"Session mode: (\w+)", RegexOptions.Compiled);
 
         // RealDateTime:09/09/2026 04:12:19  GameDateTime:09/09/2026 08:26:14  factor:7
@@ -63,6 +70,8 @@ namespace tarkov_settings
             public double QueueSec = -1;
             public double LoadSec = -1;
             public double TotalSec = -1;
+            public double SessionRtt = -1;
+            public bool Ended;
         }
 
         private class RaidMeta
@@ -72,6 +81,13 @@ namespace tarkov_settings
             public string Map;
             public string Region;
             public string ShortId;
+        }
+
+        private class EndEvent
+        {
+            public DateTime Time;
+            public string IpPort;
+            public double Rtt = -1;
         }
 
         private class TimingEvent
@@ -148,11 +164,22 @@ namespace tarkov_settings
         private static List<Entry> ReadSession(string dir)
         {
             var raids = new List<Entry>();
+            var ends = new List<EndEvent>();
             foreach (string file in Directory.GetFiles(dir, "*network-connection*.log"))
             {
                 string text;
                 try { text = ReadAllTextShared(file); }
                 catch (IOException) { continue; }
+
+                foreach (Match m in EndPattern.Matches(text))
+                {
+                    ends.Add(new EndEvent
+                    {
+                        Time = ParseTime(m.Groups["time"].Value),
+                        IpPort = m.Groups["ip"].Value + ":" + m.Groups["port"].Value,
+                        Rtt = m.Groups["rtt"].Success ? double.Parse(m.Groups["rtt"].Value, CultureInfo.InvariantCulture) : -1,
+                    });
+                }
 
                 foreach (Match m in ConnectPattern.Matches(text))
                 {
@@ -170,6 +197,7 @@ namespace tarkov_settings
             var metas = new List<RaidMeta>();
             var timings = new List<TimingEvent>();
             var gameTimes = new List<KeyValuePair<DateTime, DateTime>>();
+            var mapUnloads = new List<DateTime>();
             string mode = "";
 
             foreach (string file in Directory.GetFiles(dir, "*application*.log"))
@@ -213,9 +241,19 @@ namespace tarkov_settings
                 {
                     Match gt = GameTimePattern.Match(line);
                     if (gt.Success)
+                    {
                         gameTimes.Add(new KeyValuePair<DateTime, DateTime>(
                             ParseTime(gt.Groups["time"].Value),
                             DateTime.ParseExact(gt.Groups["game"].Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
+                        continue;
+                    }
+                    // map unload marks the raid end when Disconnect was not logged
+                    if (line.Contains("Disabling AcousticMap"))
+                    {
+                        Match prefix = TimePrefixPattern.Match(line);
+                        if (prefix.Success)
+                            mapUnloads.Add(ParseTime(prefix.Groups[1].Value));
+                    }
                 }
             }
 
@@ -249,6 +287,19 @@ namespace tarkov_settings
                     raid.LoadSec = loaded.Real - queue.Real;
                 if (startedEvent != null)
                     raid.TotalSec = startedEvent.Real;
+
+                EndEvent end = ends.Where(x => x.IpPort == ipPort && x.Time >= raid.Time)
+                    .OrderBy(x => x.Time).FirstOrDefault();
+                if (end != null)
+                {
+                    raid.Ended = true;
+                    if (end.Rtt >= 0)
+                        raid.SessionRtt = end.Rtt;
+                }
+                else if (mapUnloads.Any(u => u >= raid.Time.AddSeconds(30)))
+                {
+                    raid.Ended = true;
+                }
 
                 var gameTime = gameTimes.FirstOrDefault(g =>
                     g.Key >= raid.Time.AddSeconds(-5) && g.Key <= raid.Time.AddMinutes(15));
