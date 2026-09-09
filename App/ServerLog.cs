@@ -26,8 +26,9 @@ namespace tarkov_settings
             RegexOptions.Compiled);
 
         // Disconnect (address: ip:port) / Statistics (address: ip:port, rtt: 42.5, lose: 0, ...)
+        // lose is sometimes a float or -5.8E-11, so the match stops at rtt
         private static readonly Regex EndPattern = new Regex(
-            @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|[^|]*\|[^|]*\|network-connection\|(?:Disconnect \(address: (?<ip>[\d.]+):(?<port>\d+)\)|Statistics \(address: (?<ip>[\d.]+):(?<port>\d+), rtt: (?<rtt>[\d.]+), lose: (?<lose>\d+))",
+            @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|[^|]*\|[^|]*\|network-connection\|(?:Disconnect \(address: (?<ip>[\d.]+):(?<port>\d+)\)|Statistics \(address: (?<ip>[\d.]+):(?<port>\d+), rtt: (?<rtt>[\d.]+))",
             RegexOptions.Multiline | RegexOptions.Compiled);
 
         private static readonly Regex TimePrefixPattern = new Regex(@"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})", RegexOptions.Compiled);
