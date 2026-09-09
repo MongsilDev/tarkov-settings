@@ -20,6 +20,7 @@ namespace tarkov_settings
          * WHY : *I don't know why* set gamma ramp keeps revert soon after modified
          */
         private CancellationTokenSource _canceller;
+        private Task _loopTask;
 
         // true while a custom ramp/DVL is applied; lets callers skip redundant resets
         public bool IsApplied { get; private set; }
@@ -77,63 +78,61 @@ namespace tarkov_settings
             }
         }
 
-        public async void ChangeColorRamp(double brightness = 0.5, double contrast = 0.5, double gamma = 1.0, bool reset = true)
+        public void ChangeColorRamp(double brightness = 0.5, double contrast = 0.5, double gamma = 1.0, bool reset = true)
         {
-            var hdc = IntPtr.Zero;
-            try
+            // stop the running apply loop and wait it out, so a stale write can
+            // never land after the ramp written below
+            if (_canceller != null)
             {
-                hdc = Display.CreateDC(null, Display.Primary, null, IntPtr.Zero);
+                _canceller.Cancel();
+                try { _loopTask?.Wait(500); } catch (AggregateException) { }
+                _canceller.Dispose();
+                _canceller = null;
+            }
 
+            if (reset)
+            {
+                IsApplied = false;
+                IntPtr hdc = IntPtr.Zero;
                 try
                 {
-                    if (_canceller != null)
-                    {
-                        _canceller.Cancel();
-                        _canceller.Dispose();
-                    }
+                    hdc = Display.CreateDC(null, Display.Primary, null, IntPtr.Zero);
+                    SetDeviceGammaRamp(hdc, ref originalRamps);
                 }
-                catch (ObjectDisposedException) { }
-
-                if (reset)
+                finally
                 {
-                   IsApplied = false;
-                   SetDeviceGammaRamp(hdc, ref originalRamps);
+                    if (!IntPtr.Zero.Equals(hdc))
+                        Display.DeleteDC(hdc);
                 }
-                else
-                {
-                    IsApplied = true;
-                    ushort[] iArrayValue = CalculateLUT(brightness, contrast, gamma);
-                    currentRamps.Red = currentRamps.Blue = currentRamps.Green = iArrayValue;
-
-                    _canceller = new CancellationTokenSource();
-                    CancellationToken token;
-                    try
-                    {
-                        token = _canceller.Token;
-                    }
-                    catch (ObjectDisposedException) { }
-
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            do
-                            {
-                                SetDeviceGammaRamp(hdc, ref currentRamps);
-                                Thread.Sleep(250);
-                                if (token.IsCancellationRequested)
-                                    break;
-                            } while (true);
-                        }
-                        catch (ObjectDisposedException) { }
-                    });
-                }
+                return;
             }
-            finally
+
+            IsApplied = true;
+            ushort[] iArrayValue = CalculateLUT(brightness, contrast, gamma);
+            currentRamps.Red = currentRamps.Blue = currentRamps.Green = iArrayValue;
+
+            _canceller = new CancellationTokenSource();
+            CancellationToken token = _canceller.Token;
+            string device = Display.Primary;
+            _loopTask = Task.Run(() =>
             {
-                if (!IntPtr.Zero.Equals(hdc))
-                    Display.DeleteDC(hdc);
-            }
+                IntPtr hdc = IntPtr.Zero;
+                try
+                {
+                    hdc = Display.CreateDC(null, device, null, IntPtr.Zero);
+                    while (!token.IsCancellationRequested)
+                    {
+                        SetDeviceGammaRamp(hdc, ref currentRamps);
+                        // wakes immediately on cancellation instead of sleeping it out
+                        token.WaitHandle.WaitOne(250);
+                    }
+                }
+                finally
+                {
+                    if (!IntPtr.Zero.Equals(hdc))
+                        Display.DeleteDC(hdc);
+                }
+            });
         }
 
         /*
@@ -183,15 +182,6 @@ namespace tarkov_settings
             ResetDVL();
             ChangeColorRamp(reset: true);
 
-            try
-            {
-                if (_canceller != null)
-                {
-                    _canceller.Cancel();
-                    _canceller.Dispose();
-                }
-            }
-            catch (ObjectDisposedException) { }
         }
 
     }
