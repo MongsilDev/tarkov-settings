@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using tarkov_settings.Setting;
 using tarkov_settings.GPU;
@@ -640,6 +642,114 @@ namespace tarkov_settings
             Gamma = 1.0;
             DVL = 0;
         }
+
+        #region Servers Tab
+        private bool serversLoaded;
+
+        private void SelectTab(bool servers)
+        {
+            ColorPanel.Visible = !servers;
+            serversPanel.Visible = servers;
+            colorTabButton.BackColor = servers ? Color.AliceBlue : Color.White;
+            serversTabButton.BackColor = servers ? Color.White : Color.AliceBlue;
+        }
+
+        private void ColorTab_Click(object sender, EventArgs e)
+        {
+            SelectTab(servers: false);
+        }
+
+        private async void ServersTab_Click(object sender, EventArgs e)
+        {
+            SelectTab(servers: true);
+            if (!serversLoaded)
+                await RefreshServers();
+        }
+
+        private async void RefreshServersButton_Click(object sender, EventArgs e)
+        {
+            await RefreshServers();
+        }
+
+        private async void BrowseLogsButton_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog { Description = "Select the EFT Logs folder" })
+            {
+                if (Directory.Exists(appSetting.logsPath))
+                    dialog.SelectedPath = appSetting.logsPath;
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+                appSetting.logsPath = ServerLog.NormalizeLogsPath(dialog.SelectedPath);
+            }
+            await RefreshServers();
+        }
+
+        private async Task RefreshServers()
+        {
+            serversLoaded = true;
+
+            if (string.IsNullOrEmpty(appSetting.logsPath) || !Directory.Exists(appSetting.logsPath))
+                appSetting.logsPath = ServerLog.DetectLogsPath();
+            logsPathText.Text = appSetting.logsPath;
+
+            if (string.IsNullOrEmpty(appSetting.logsPath))
+            {
+                serverStatusLabel.Text = "Logs folder not found, pick it with ...";
+                return;
+            }
+
+            refreshServersButton.Enabled = false;
+            try
+            {
+                serverStatusLabel.Text = "Reading logs";
+                string logsPath = appSetting.logsPath;
+                var entries = await Task.Run(() => ServerLog.Read(logsPath, 5));
+
+                var geo = new System.Collections.Generic.Dictionary<string, GeoIp.Info>();
+                if (entries.Count > 0)
+                {
+                    serverStatusLabel.Text = "Looking up locations";
+                    try
+                    {
+                        geo = await GeoIp.LookupAsync(entries.Select(entry => entry.Ip));
+                    }
+                    catch (Exception)
+                    {
+                        serverStatusLabel.Text = "Location lookup failed, showing IPs only";
+                    }
+                }
+
+                serverListView.BeginUpdate();
+                serverListView.Items.Clear();
+                foreach (ServerLog.Entry entry in entries)
+                {
+                    geo.TryGetValue(entry.Ip, out GeoIp.Info info);
+                    serverListView.Items.Add(new ListViewItem(new[]
+                    {
+                        entry.Time.ToString("MM-dd HH:mm"),
+                        entry.Ip,
+                        info?.country ?? "",
+                        info?.city ?? "",
+                        info?.timezone ?? "",
+                    }));
+                }
+                serverListView.EndUpdate();
+
+                int unique = entries.Select(entry => entry.Ip).Distinct().Count();
+                serverStatusLabel.Text = entries.Count == 0
+                    ? "No raids found in the logs"
+                    : "Recent raids: " + entries.Count + (unique > 1 ? "   Servers: " + unique : "");
+            }
+            catch (Exception e)
+            {
+                serverStatusLabel.Text = "Failed to read logs: " + e.Message;
+            }
+            finally
+            {
+                refreshServersButton.Enabled = true;
+            }
+        }
+        #endregion
 
         private void RecommendButton_Click(object sender, EventArgs e)
         {

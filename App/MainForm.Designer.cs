@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.layoutTablePanel = new System.Windows.Forms.TableLayoutPanel();
             this.ColorPanel = new System.Windows.Forms.Panel();
             this.minimizeStartCheckBox = new System.Windows.Forms.CheckBox();
             this.autostartCheckBox = new System.Windows.Forms.CheckBox();
@@ -54,6 +53,20 @@
             this.defaultButton = new System.Windows.Forms.Button();
             this.buttonPanel = new System.Windows.Forms.Panel();
             this.hotkeyGroupBox = new System.Windows.Forms.GroupBox();
+            this.sideTabPanel = new System.Windows.Forms.Panel();
+            this.colorTabButton = new System.Windows.Forms.Button();
+            this.serversTabButton = new System.Windows.Forms.Button();
+            this.serversPanel = new System.Windows.Forms.Panel();
+            this.logsPathText = new System.Windows.Forms.TextBox();
+            this.browseLogsButton = new System.Windows.Forms.Button();
+            this.refreshServersButton = new System.Windows.Forms.Button();
+            this.serverListView = new System.Windows.Forms.ListView();
+            this.serverTimeColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverIpColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverCountryColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverCityColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverTimezoneColumn = new System.Windows.Forms.ColumnHeader();
+            this.serverStatusLabel = new System.Windows.Forms.Label();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
             this.DVLLabel = new System.Windows.Forms.Label();
@@ -83,8 +96,9 @@
             this.contrastToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.gammaToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dvlToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.layoutTablePanel.SuspendLayout();
             this.ColorPanel.SuspendLayout();
+            this.sideTabPanel.SuspendLayout();
+            this.serversPanel.SuspendLayout();
             this.hotkeyGroupBox.SuspendLayout();
             this.DVLGroupBox.SuspendLayout();
             this.DVLPanel.SuspendLayout();
@@ -105,21 +119,147 @@
             this.trayMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // layoutTablePanel
+            // sideTabPanel
             // 
-            this.layoutTablePanel.ColumnCount = 1;
-            this.layoutTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.layoutTablePanel.Controls.Add(this.ColorPanel, 0, 0);
-            this.layoutTablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutTablePanel.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.layoutTablePanel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.layoutTablePanel.Location = new System.Drawing.Point(0, 0);
-            this.layoutTablePanel.Name = "layoutTablePanel";
-            this.layoutTablePanel.RowCount = 1;
-            this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.4669F));
-            this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.5331F));
-            this.layoutTablePanel.Size = new System.Drawing.Size(516, 374);
-            this.layoutTablePanel.TabIndex = 0;
+            this.sideTabPanel.BackColor = System.Drawing.Color.AliceBlue;
+            this.sideTabPanel.Controls.Add(this.colorTabButton);
+            this.sideTabPanel.Controls.Add(this.serversTabButton);
+            this.sideTabPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.sideTabPanel.Location = new System.Drawing.Point(0, 0);
+            this.sideTabPanel.Name = "sideTabPanel";
+            this.sideTabPanel.Size = new System.Drawing.Size(62, 374);
+            this.sideTabPanel.TabIndex = 0;
+            // 
+            // colorTabButton
+            // 
+            this.colorTabButton.BackColor = System.Drawing.Color.White;
+            this.colorTabButton.FlatAppearance.BorderSize = 0;
+            this.colorTabButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.colorTabButton.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.colorTabButton.Location = new System.Drawing.Point(0, 8);
+            this.colorTabButton.Name = "colorTabButton";
+            this.colorTabButton.Size = new System.Drawing.Size(62, 36);
+            this.colorTabButton.TabIndex = 0;
+            this.colorTabButton.Text = "Color";
+            this.colorTabButton.UseVisualStyleBackColor = false;
+            this.colorTabButton.Click += new System.EventHandler(this.ColorTab_Click);
+            // 
+            // serversTabButton
+            // 
+            this.serversTabButton.BackColor = System.Drawing.Color.AliceBlue;
+            this.serversTabButton.FlatAppearance.BorderSize = 0;
+            this.serversTabButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.serversTabButton.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.serversTabButton.Location = new System.Drawing.Point(0, 44);
+            this.serversTabButton.Name = "serversTabButton";
+            this.serversTabButton.Size = new System.Drawing.Size(62, 36);
+            this.serversTabButton.TabIndex = 1;
+            this.serversTabButton.Text = "Servers";
+            this.serversTabButton.UseVisualStyleBackColor = false;
+            this.serversTabButton.Click += new System.EventHandler(this.ServersTab_Click);
+            // 
+            // serversPanel
+            // 
+            this.serversPanel.Controls.Add(this.logsPathText);
+            this.serversPanel.Controls.Add(this.browseLogsButton);
+            this.serversPanel.Controls.Add(this.refreshServersButton);
+            this.serversPanel.Controls.Add(this.serverListView);
+            this.serversPanel.Controls.Add(this.serverStatusLabel);
+            this.serversPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serversPanel.Location = new System.Drawing.Point(62, 0);
+            this.serversPanel.Name = "serversPanel";
+            this.serversPanel.Size = new System.Drawing.Size(512, 374);
+            this.serversPanel.TabIndex = 2;
+            this.serversPanel.Visible = false;
+            // 
+            // logsPathText
+            // 
+            this.logsPathText.BackColor = System.Drawing.SystemColors.Control;
+            this.logsPathText.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.logsPathText.Location = new System.Drawing.Point(8, 8);
+            this.logsPathText.Name = "logsPathText";
+            this.logsPathText.ReadOnly = true;
+            this.logsPathText.Size = new System.Drawing.Size(380, 22);
+            this.logsPathText.TabIndex = 0;
+            this.logsPathText.TabStop = false;
+            this.hintToolTip.SetToolTip(this.logsPathText, "EFT Logs folder");
+            // 
+            // browseLogsButton
+            // 
+            this.browseLogsButton.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.browseLogsButton.Location = new System.Drawing.Point(394, 7);
+            this.browseLogsButton.Name = "browseLogsButton";
+            this.browseLogsButton.Size = new System.Drawing.Size(32, 24);
+            this.browseLogsButton.TabIndex = 1;
+            this.browseLogsButton.Text = "...";
+            this.browseLogsButton.UseVisualStyleBackColor = true;
+            this.browseLogsButton.Click += new System.EventHandler(this.BrowseLogsButton_Click);
+            // 
+            // refreshServersButton
+            // 
+            this.refreshServersButton.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.refreshServersButton.Location = new System.Drawing.Point(430, 7);
+            this.refreshServersButton.Name = "refreshServersButton";
+            this.refreshServersButton.Size = new System.Drawing.Size(74, 24);
+            this.refreshServersButton.TabIndex = 2;
+            this.refreshServersButton.Text = "Refresh";
+            this.refreshServersButton.UseVisualStyleBackColor = true;
+            this.refreshServersButton.Click += new System.EventHandler(this.RefreshServersButton_Click);
+            // 
+            // serverListView
+            // 
+            this.serverListView.BackColor = System.Drawing.SystemColors.Window;
+            this.serverListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.serverTimeColumn,
+            this.serverIpColumn,
+            this.serverCountryColumn,
+            this.serverCityColumn,
+            this.serverTimezoneColumn});
+            this.serverListView.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.serverListView.FullRowSelect = true;
+            this.serverListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.serverListView.Location = new System.Drawing.Point(8, 38);
+            this.serverListView.MultiSelect = false;
+            this.serverListView.Name = "serverListView";
+            this.serverListView.Size = new System.Drawing.Size(496, 152);
+            this.serverListView.TabIndex = 3;
+            this.serverListView.UseCompatibleStateImageBehavior = false;
+            this.serverListView.View = System.Windows.Forms.View.Details;
+            // 
+            // serverTimeColumn
+            // 
+            this.serverTimeColumn.Text = "Time";
+            this.serverTimeColumn.Width = 108;
+            // 
+            // serverIpColumn
+            // 
+            this.serverIpColumn.Text = "IP";
+            this.serverIpColumn.Width = 118;
+            // 
+            // serverCountryColumn
+            // 
+            this.serverCountryColumn.Text = "Country";
+            this.serverCountryColumn.Width = 92;
+            // 
+            // serverCityColumn
+            // 
+            this.serverCityColumn.Text = "City";
+            this.serverCityColumn.Width = 82;
+            // 
+            // serverTimezoneColumn
+            // 
+            this.serverTimezoneColumn.Text = "Timezone";
+            this.serverTimezoneColumn.Width = 92;
+            // 
+            // serverStatusLabel
+            // 
+            this.serverStatusLabel.AutoSize = true;
+            this.serverStatusLabel.BackColor = System.Drawing.Color.Transparent;
+            this.serverStatusLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.serverStatusLabel.Location = new System.Drawing.Point(8, 198);
+            this.serverStatusLabel.Name = "serverStatusLabel";
+            this.serverStatusLabel.Size = new System.Drawing.Size(0, 14);
+            this.serverStatusLabel.TabIndex = 4;
             // 
             // ColorPanel
             // 
@@ -703,10 +843,14 @@
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(516, 374);
-            this.Controls.Add(this.layoutTablePanel);
+            this.ClientSize = new System.Drawing.Size(574, 374);
+            this.Controls.Add(this.ColorPanel);
+            this.Controls.Add(this.serversPanel);
+            this.Controls.Add(this.sideTabPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -714,9 +858,11 @@
             this.Text = "Tarkov Settings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.layoutTablePanel.ResumeLayout(false);
             this.ColorPanel.ResumeLayout(false);
             this.ColorPanel.PerformLayout();
+            this.sideTabPanel.ResumeLayout(false);
+            this.serversPanel.ResumeLayout(false);
+            this.serversPanel.PerformLayout();
             this.hotkeyGroupBox.ResumeLayout(false);
             this.hotkeyGroupBox.PerformLayout();
             this.DVLGroupBox.ResumeLayout(false);
@@ -745,8 +891,21 @@
         }
 
         #endregion
-        private System.Windows.Forms.TableLayoutPanel layoutTablePanel;
         private System.Windows.Forms.Panel ColorPanel;
+        private System.Windows.Forms.Panel sideTabPanel;
+        private System.Windows.Forms.Button colorTabButton;
+        private System.Windows.Forms.Button serversTabButton;
+        private System.Windows.Forms.Panel serversPanel;
+        private System.Windows.Forms.TextBox logsPathText;
+        private System.Windows.Forms.Button browseLogsButton;
+        private System.Windows.Forms.Button refreshServersButton;
+        private System.Windows.Forms.ListView serverListView;
+        private System.Windows.Forms.ColumnHeader serverTimeColumn;
+        private System.Windows.Forms.ColumnHeader serverIpColumn;
+        private System.Windows.Forms.ColumnHeader serverCountryColumn;
+        private System.Windows.Forms.ColumnHeader serverCityColumn;
+        private System.Windows.Forms.ColumnHeader serverTimezoneColumn;
+        private System.Windows.Forms.Label serverStatusLabel;
         
         
 
