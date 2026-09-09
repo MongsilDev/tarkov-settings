@@ -218,6 +218,7 @@
             this.serverListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.serverListView.Location = new System.Drawing.Point(8, 38);
             this.serverListView.MultiSelect = false;
+            this.serverListView.ShowItemToolTips = true;
             this.serverListView.Name = "serverListView";
             this.serverListView.Size = new System.Drawing.Size(496, 300);
             this.serverListView.TabIndex = 3;
@@ -316,6 +317,7 @@
             this.buttonPanel.Controls.Add(this.defaultButton);
             this.buttonPanel.Controls.Add(this.recommendButton);
             this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonPanel.Margin = new System.Windows.Forms.Padding(0);
             this.buttonPanel.Location = new System.Drawing.Point(3, 228);
             this.buttonPanel.Name = "buttonPanel";
             this.buttonPanel.Size = new System.Drawing.Size(338, 30);
@@ -329,7 +331,7 @@
             this.defaultButton.Size = new System.Drawing.Size(90, 25);
             this.defaultButton.TabIndex = 0;
             this.defaultButton.Text = "Default";
-            this.hintToolTip.SetToolTip(this.defaultButton, "Windows default: no color change");
+            this.hintToolTip.SetToolTip(this.defaultButton, "Windows default: no color change, DVL 0");
             this.defaultButton.UseVisualStyleBackColor = true;
             this.defaultButton.Click += new System.EventHandler(this.DefaultButton_Click);
             // 
@@ -341,7 +343,7 @@
             this.recommendButton.Size = new System.Drawing.Size(110, 25);
             this.recommendButton.TabIndex = 1;
             this.recommendButton.Text = "Recommended";
-            this.hintToolTip.SetToolTip(this.recommendButton, "Apply the recommended color values");
+            this.hintToolTip.SetToolTip(this.recommendButton, "Apply recommended color and DVL values");
             this.recommendButton.UseVisualStyleBackColor = true;
             this.recommendButton.Click += new System.EventHandler(this.RecommendButton_Click);
             // 
@@ -362,7 +364,7 @@
             this.hotkeyGroupBox.Controls.Add(this.killLabel);
             this.hotkeyGroupBox.Controls.Add(this.killKeyLabel);
             this.hotkeyGroupBox.Controls.Add(this.killHotkeyTextBox);
-            this.hotkeyGroupBox.Location = new System.Drawing.Point(3, 256);
+            this.hotkeyGroupBox.Location = new System.Drawing.Point(5, 260);
             this.hotkeyGroupBox.Name = "hotkeyGroupBox";
             this.hotkeyGroupBox.Size = new System.Drawing.Size(501, 104);
             this.hotkeyGroupBox.TabIndex = 20;
@@ -424,7 +426,7 @@
             this.hotkeyTextBox.Name = "hotkeyTextBox";
             this.hotkeyTextBox.ReadOnly = true;
             this.hotkeyTextBox.ShortcutsEnabled = false;
-            this.hotkeyTextBox.Size = new System.Drawing.Size(158, 22);
+            this.hotkeyTextBox.Size = new System.Drawing.Size(150, 22);
             this.hotkeyTextBox.TabIndex = 5;
             this.hotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.hintToolTip.SetToolTip(this.hotkeyTextBox, "Click, then press a key. Esc cancels, Backspace clears");
@@ -498,7 +500,7 @@
             this.gammaHotkeyTextBox.Name = "gammaHotkeyTextBox";
             this.gammaHotkeyTextBox.ReadOnly = true;
             this.gammaHotkeyTextBox.ShortcutsEnabled = false;
-            this.gammaHotkeyTextBox.Size = new System.Drawing.Size(158, 22);
+            this.gammaHotkeyTextBox.Size = new System.Drawing.Size(150, 22);
             this.gammaHotkeyTextBox.TabIndex = 2;
             this.gammaHotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.hintToolTip.SetToolTip(this.gammaHotkeyTextBox, "Click, then press a key. Esc cancels, Backspace clears");
@@ -534,7 +536,7 @@
             this.killHotkeyTextBox.Name = "killHotkeyTextBox";
             this.killHotkeyTextBox.ReadOnly = true;
             this.killHotkeyTextBox.ShortcutsEnabled = false;
-            this.killHotkeyTextBox.Size = new System.Drawing.Size(158, 22);
+            this.killHotkeyTextBox.Size = new System.Drawing.Size(150, 22);
             this.killHotkeyTextBox.TabIndex = 6;
             this.killHotkeyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.hintToolTip.SetToolTip(this.killHotkeyTextBox, "Ends the game process immediately. Needs Ctrl/Alt/Shift");
@@ -546,7 +548,7 @@
             // DVLGroupBox
             // 
             this.DVLGroupBox.Controls.Add(this.DVLPanel);
-            this.DVLGroupBox.Location = new System.Drawing.Point(359, 9);
+            this.DVLGroupBox.Location = new System.Drawing.Point(361, 9);
             this.DVLGroupBox.Name = "DVLGroupBox";
             this.DVLGroupBox.Size = new System.Drawing.Size(145, 210);
             this.DVLGroupBox.TabIndex = 13;
@@ -569,7 +571,7 @@
             this.DVLLabel.AutoSize = true;
             this.DVLLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DVLLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.DVLLabel.Location = new System.Drawing.Point(13, 11);
+            this.DVLLabel.Location = new System.Drawing.Point(10, 11);
             this.DVLLabel.Name = "DVLLabel";
             this.DVLLabel.Size = new System.Drawing.Size(170, 44);
             this.DVLLabel.TabIndex = 10;
@@ -580,18 +582,18 @@
             // 
             // DVLBar
             // 
-            this.DVLBar.Location = new System.Drawing.Point(56, 44);
+            this.DVLBar.Location = new System.Drawing.Point(47, 44);
             this.DVLBar.Maximum = 63;
             this.DVLBar.Name = "DVLBar";
             this.DVLBar.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.DVLBar.Size = new System.Drawing.Size(69, 96);
+            this.DVLBar.Size = new System.Drawing.Size(45, 96);
             this.DVLBar.TabIndex = 9;
             this.DVLBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.DVLBar.ValueChanged += new System.EventHandler(this.TrackBar_ValueChanged);
             // 
             // DVLText
             // 
-            this.DVLText.Location = new System.Drawing.Point(46, 146);
+            this.DVLText.Location = new System.Drawing.Point(49, 146);
             this.DVLText.Name = "DVLText";
             this.DVLText.ReadOnly = true;
             this.DVLText.Size = new System.Drawing.Size(41, 29);
@@ -603,7 +605,7 @@
             // colorGroupBox
             // 
             this.colorGroupBox.Controls.Add(this.colorTablePanel);
-            this.colorGroupBox.Location = new System.Drawing.Point(3, 9);
+            this.colorGroupBox.Location = new System.Drawing.Point(5, 9);
             this.colorGroupBox.Name = "colorGroupBox";
             this.colorGroupBox.Size = new System.Drawing.Size(350, 210);
             this.colorGroupBox.TabIndex = 12;
@@ -635,6 +637,7 @@
             this.brightnessPanel.Controls.Add(this.BrightnessLabel);
             this.brightnessPanel.Controls.Add(this.BrightnessText);
             this.brightnessPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.brightnessPanel.Margin = new System.Windows.Forms.Padding(0);
             this.brightnessPanel.Location = new System.Drawing.Point(3, 3);
             this.brightnessPanel.Name = "brightnessPanel";
             this.brightnessPanel.Size = new System.Drawing.Size(338, 50);
@@ -681,6 +684,7 @@
             this.contrastPanel.Controls.Add(this.ContrastText);
             this.contrastPanel.Controls.Add(this.ContrastLabel);
             this.contrastPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.contrastPanel.Margin = new System.Windows.Forms.Padding(0);
             this.contrastPanel.Location = new System.Drawing.Point(3, 96);
             this.contrastPanel.Name = "contrastPanel";
             this.contrastPanel.Size = new System.Drawing.Size(338, 50);
@@ -727,6 +731,7 @@
             this.gammaPanel.Controls.Add(this.GammaBar);
             this.gammaPanel.Controls.Add(this.GammaLabel);
             this.gammaPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gammaPanel.Margin = new System.Windows.Forms.Padding(0);
             this.gammaPanel.Location = new System.Drawing.Point(3, 189);
             this.gammaPanel.Name = "gammaPanel";
             this.gammaPanel.Size = new System.Drawing.Size(338, 50);
