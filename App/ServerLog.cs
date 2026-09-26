@@ -155,7 +155,7 @@ namespace tarkov_settings
                 if (started != DateTime.MinValue && started < since - TimeSpan.FromHours(24))
                     break;
 
-                entries.AddRange(ReadSession(dir));
+                entries.AddRange(ReadSession(dir, since));
 
                 if (entries.Count(e => e.Time >= since) >= max)
                     break;
@@ -163,7 +163,8 @@ namespace tarkov_settings
             return entries.Where(e => e.Time >= since).OrderByDescending(e => e.Time).Take(max).ToList();
         }
 
-        public static List<Entry> ReadSession(string dir)
+        // raids before `since` are dropped before the large application/output logs are read
+        public static List<Entry> ReadSession(string dir, DateTime since = default(DateTime))
         {
             var raids = new List<Entry>();
             var ends = new List<EndEvent>();
@@ -194,8 +195,8 @@ namespace tarkov_settings
                     });
                 }
             }
-            if (raids.Count == 0)
-                return raids;
+            if (!raids.Any(r => r.Time >= since))
+                return new List<Entry>();
 
             var metas = new List<RaidMeta>();
             var timings = new List<TimingEvent>();
