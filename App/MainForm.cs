@@ -33,6 +33,9 @@ namespace tarkov_settings
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+        [DllImport("user32.dll")]
+        private static extern bool IsWindow(IntPtr hWnd);
+
         // "Ctrl+Alt+PageDown" style, key names follow the WinForms Keys enum
         private static bool TryParseHotkey(string hotkey, out uint modifiers, out uint vk)
         {
@@ -118,7 +121,16 @@ namespace tarkov_settings
         private void DisplayFollowTimer_Tick(object sender, EventArgs e)
         {
             IntPtr hWnd = pMonitor.FocusedTargetHwnd;
-            if (hWnd == IntPtr.Zero || Screen.FromHandle(hWnd).DeviceName == Display.Primary)
+            if (hWnd == IntPtr.Zero)
+                return;
+            // the game window is gone but no foreground event followed (nothing else took
+            // focus): re-evaluate the current window so the ramp and hotkeys are released
+            if (!IsWindow(hWnd))
+            {
+                pMonitor.WinEventProc(IntPtr.Zero, 0, NativeMethods.GetForegroundWindow(), 0, 0, 0, 0);
+                return;
+            }
+            if (Screen.FromHandle(hWnd).DeviceName == Display.Primary)
                 return;
             FollowWindowDisplay(hWnd);
             // switching Display.Primary resets IsApplied, so apply unconditionally
