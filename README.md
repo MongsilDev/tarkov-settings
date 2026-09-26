@@ -11,12 +11,12 @@ Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는
 [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings) 포크에 기능과 수정을 더한 버전.
 
 ## 기능
-- 밝기, 대비, 감마, Digital Vibrance를 게임 창이 포커스일 때만 적용. 알트탭 시 화면 번쩍임 없음
+- 밝기, 대비, 감마, Digital Vibrance를 게임 창이 포커스일 때만 적용. 알트탭하면 원래 색상
 - Escape from Tarkov와 Arena 지원, Arena는 체크박스로 켜고 끔
 - 핫키 3종: 감마 두 값 전환, 게임 볼륨 두 값 전환, 게임 즉시 종료. 게임 포커스 중에만 동작
 - 게임 창이 있는 모니터 자동 추적
 - 윈도우 시작 시 실행, 트레이 최소화 시작
-- Servers 탭: 최근 72시간 레이드 목록. 시간, 맵, 지역, 서버 위치, 진입 시간, 핑. 진행 중 레이드는 LIVE 표시와 5초 간격 핑, 종료 후 게임이 기록한 평균 핑
+- Servers 탭: 최근 72시간 레이드 목록. 시간, 맵, 지역, 서버 위치, 진입 시간(Wait), 핑. 진행 중 레이드는 LIVE 표시와 5초 간격 핑, 종료 후 게임이 기록한 평균 핑
 - Always on top: 창을 항상 위에 표시
 
 ## 사용법

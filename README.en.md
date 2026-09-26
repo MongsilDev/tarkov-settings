@@ -11,12 +11,12 @@ Changes display colors only while Escape from Tarkov or Arena is focused.
 Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings) with additional features and fixes.
 
 ## Features
-- Brightness, Contrast, Gamma and Digital Vibrance applied only while the game window is focused, so no flash when alt-tabbing
+- Brightness, Contrast, Gamma and Digital Vibrance applied only while the game window is focused. Alt-tabbing out restores the normal colors
 - Escape from Tarkov and Arena, with a checkbox for Arena
 - Three hotkeys: toggle gamma between two values, toggle game volume between two values, kill the game. Active only while the game is focused
 - Follows the game window to whichever monitor it is on
 - Start with Windows, start minimized to the tray
-- Servers tab: raids from the last 72 hours with time, map, region, server location, entry time and ping. A raid in progress shows LIVE with a ping every 5 seconds, then the average ping the game logged once it ends
+- Servers tab: raids from the last 72 hours with time, map, region, server location, entry time (Wait) and ping. A raid in progress shows LIVE with a ping every 5 seconds, then the average ping the game logged once it ends
 - Always on top: keeps the window above other windows
 
 ## How to use
