@@ -277,8 +277,15 @@ namespace tarkov_settings
                 }
             }
 
-            foreach (Entry raid in raids)
+            raids = raids.OrderBy(r => r.Time).ToList();
+            for (int i = 0; i < raids.Count; i++)
             {
+                Entry raid = raids[i];
+                // a transit or reconnect starts a new Connect without its own matching,
+                // so timing searches must not reach into the neighbouring raids
+                DateTime after = i > 0 ? raids[i - 1].Time.AddSeconds(5) : DateTime.MinValue;
+                DateTime before = i + 1 < raids.Count ? raids[i + 1].Time.AddSeconds(-5) : DateTime.MaxValue;
+
                 raid.Mode = ModeAt(modes, raid.Time);
 
                 string ipPort = raid.Ip + ":" + raid.Port;
@@ -295,11 +302,11 @@ namespace tarkov_settings
 
                 // matching completes shortly before Connect; loading and start follow it
                 TimingEvent queue = timings.LastOrDefault(t => t.Kind == "MatchingCompleted"
-                    && t.Time <= raid.Time.AddSeconds(5) && t.Time >= raid.Time.AddMinutes(-10));
+                    && t.Time <= raid.Time.AddSeconds(5) && t.Time >= raid.Time.AddMinutes(-10) && t.Time > after);
                 TimingEvent loaded = timings.FirstOrDefault(t => t.Kind == "LocationLoaded"
-                    && t.Time >= raid.Time.AddSeconds(-5) && t.Time <= raid.Time.AddMinutes(15));
+                    && t.Time >= raid.Time.AddSeconds(-5) && t.Time <= raid.Time.AddMinutes(15) && t.Time < before);
                 TimingEvent startedEvent = timings.FirstOrDefault(t => t.Kind == "GameStarted"
-                    && t.Time >= raid.Time.AddSeconds(-5) && t.Time <= raid.Time.AddMinutes(30));
+                    && t.Time >= raid.Time.AddSeconds(-5) && t.Time <= raid.Time.AddMinutes(30) && t.Time < before);
 
                 if (queue != null)
                     raid.QueueSec = queue.Real;
@@ -323,7 +330,7 @@ namespace tarkov_settings
                 }
 
                 var gameTime = gameTimes.FirstOrDefault(g =>
-                    g.Key >= raid.Time.AddSeconds(-5) && g.Key <= raid.Time.AddMinutes(15));
+                    g.Key >= raid.Time.AddSeconds(-5) && g.Key <= raid.Time.AddMinutes(15) && g.Key < before);
                 if (gameTime.Key != default(DateTime))
                     raid.GameTime = gameTime.Value;
             }
