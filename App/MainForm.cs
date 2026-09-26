@@ -1000,11 +1000,13 @@ namespace tarkov_settings
                     liveRaidTimer.Start();
                     LiveRaidTimer_Tick(liveRaidTimer, EventArgs.Empty);
                 }
-                // trim to what actually fits so the list never scrolls (row height varies with DPI)
+                // trim to what actually fits so the list never scrolls (row height varies with DPI).
+                // measured without scrollbars: ClientSize already lost their space while overfull
                 if (serverListView.Items.Count > 0)
                 {
                     var first = serverListView.GetItemRect(0);
-                    int capacity = Math.Max(1, (serverListView.ClientSize.Height - first.Top) / Math.Max(1, first.Height));
+                    int inner = serverListView.Height - 2 * SystemInformation.Border3DSize.Height;
+                    int capacity = Math.Max(1, (inner - first.Top) / Math.Max(1, first.Height));
                     while (serverListView.Items.Count > capacity)
                         serverListView.Items.RemoveAt(serverListView.Items.Count - 1);
                 }
