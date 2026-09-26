@@ -665,6 +665,8 @@ namespace tarkov_settings
             if (e.CloseReason == CloseReason.UserClosing && !exitRequested)
             {
                 e.Cancel = true;
+                // end a hotkey capture now: hidden, the box would stay on "Press a key"
+                this.ActiveControl = null;
                 this.Hide();
             }
         }
