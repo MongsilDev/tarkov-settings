@@ -44,8 +44,8 @@ namespace tarkov_settings
             } catch (NotImplementedException)
             {
                 System.Windows.Forms.MessageBox.Show(
-                        "Intel/Nvidia Optimus/Etc Device Detected - Will be supported soon",
-                        "Nvidia GPU is not found!",
+                        "Intel and other GPUs are not supported.",
+                        "NVIDIA GPU not found",
                         System.Windows.Forms.MessageBoxButtons.OK,
                         System.Windows.Forms.MessageBoxIcon.Error
                     );
