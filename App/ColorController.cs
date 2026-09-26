@@ -202,6 +202,10 @@ namespace tarkov_settings
 
         internal void Close()
         {
+            // nothing of ours is on screen: leave whatever was set meanwhile (night light,
+            // driver panel) alone instead of forcing the startup values back
+            if (!IsApplied)
+                return;
             ResetDVL();
             ChangeColorRamp(reset: true);
 
