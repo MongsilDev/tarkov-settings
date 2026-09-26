@@ -597,12 +597,8 @@ namespace tarkov_settings
         {
             if (m.Msg == Program.WM_ALREADY_RUNNING)
             {
-                this.trayIcon.ShowBalloonTip(
-                    2500,
-                    "Tarkov Settings is already running",
-                    "Double-click the tray icon to open settings",
-                    ToolTipIcon.Info
-                    );
+                // launching the exe again means "open it"; the tray icon is often hidden in the overflow
+                ShowForm(this, EventArgs.Empty);
             }
             else if (m.Msg == WM_HOTKEY)
             {
