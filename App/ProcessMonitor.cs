@@ -46,6 +46,10 @@ namespace tarkov_settings
         static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         private const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+        private const uint PROCESS_TERMINATE = 0x0001;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool TerminateProcess(IntPtr hProcess, uint uExitCode);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
@@ -56,6 +60,28 @@ namespace tarkov_settings
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         static extern bool QueryFullProcessImageName(IntPtr hProcess, int dwFlags, StringBuilder lpExeName, ref int lpdwSize);
         #endregion
+
+        // one handle for the name check and the kill: the pid cannot be reused while it is open
+        public static bool TerminateIfNamed(int pid, string expectedName)
+        {
+            IntPtr process = OpenProcess(PROCESS_TERMINATE | PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
+            if (process == IntPtr.Zero)
+                return false;
+            try
+            {
+                var path = new StringBuilder(1024);
+                int size = path.Capacity;
+                if (!QueryFullProcessImageName(process, 0, path, ref size))
+                    return false;
+                if (!Path.GetFileNameWithoutExtension(path.ToString()).Equals(expectedName, StringComparison.OrdinalIgnoreCase))
+                    return false;
+                return TerminateProcess(process, unchecked((uint)-1));
+            }
+            finally
+            {
+                CloseHandle(process);
+            }
+        }
 
         public static int GetWindowProcessId(IntPtr hWnd)
         {
@@ -283,21 +309,14 @@ namespace tarkov_settings
                 Console.WriteLine("[pMonitor] Refusing to kill pid {0}: not the expected target", pid);
                 return false;
             }
-            try
+            if (NativeMethods.TerminateIfNamed(pid, name))
             {
-                using (Process process = Process.GetProcessById(pid))
-                {
-                    process.Kill();
-                }
                 Console.WriteLine("[pMonitor] Killed {0} ({1})", name, pid);
                 return true;
             }
-            catch (Exception e)
-            {
-                // already exited, or access denied (e.g. game running elevated)
-                Console.WriteLine("[pMonitor] Kill failed: {0}", e.Message);
-                return false;
-            }
+            // already exited, or access denied (e.g. game running elevated)
+            Console.WriteLine("[pMonitor] Kill failed for {0} ({1})", name, pid);
+            return false;
         }
 
         /**
