@@ -124,6 +124,8 @@ namespace tarkov_settings
         public MainForm Parent { get; set; }
 
         private bool closed;
+        // Close before Init would write a ramp that was never backed up
+        private bool initialized;
 
         private ProcessMonitor() { }
 
@@ -150,6 +152,7 @@ namespace tarkov_settings
 
             // Init ColorController
             cController.Init();
+            initialized = true;
 
             // a game already focused at startup (autostart, or a restart while playing)
             // raises no foreground event, so handle the current window once
@@ -301,6 +304,9 @@ namespace tarkov_settings
          */
         public void Close()
         {
+            // idempotent: reached from OnFormClosed and again from the process exit safety net
+            if (closed || !initialized)
+                return;
             closed = true;
             Console.WriteLine("[pMonitor] Remove Delegates");
             NativeMethods.dele -= processHook;

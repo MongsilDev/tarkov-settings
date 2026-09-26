@@ -63,15 +63,30 @@ namespace tarkov_settings
                 return;
             }
 
+            // exit paths that skip OnFormClosed (unhandled exception, Quit in the crash dialog)
+            // still put the display back
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => RestoreDisplay();
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => RestoreDisplay();
+
             // Open Main Form
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             mForm = new MainForm();
             Application.Run(mForm);
+            RestoreDisplay();
 
             // Unload NvAPI dll after Application.Exit()
             if(gpu != null)
                 gpu.Close();
+        }
+
+        private static void RestoreDisplay()
+        {
+            try
+            {
+                ProcessMonitor.Instance.Close();
+            }
+            catch (Exception) { }
         }
     }
 }
