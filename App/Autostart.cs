@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using System;
+using Microsoft.Win32;
 using System.Windows.Forms;
 
 namespace tarkov_settings
@@ -12,18 +13,31 @@ namespace tarkov_settings
         {
             get
             {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RUN_KEY))
-                    return key?.GetValue(VALUE_NAME) != null;
+                try
+                {
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RUN_KEY))
+                        return key?.GetValue(VALUE_NAME) != null;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
+            // an antivirus or policy blocking the Run key must not crash every start;
+            // callers read Enabled back to see what actually happened
             set
             {
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(RUN_KEY))
+                try
                 {
-                    if (value)
-                        key.SetValue(VALUE_NAME, $"\"{Application.ExecutablePath}\"");
-                    else
-                        key.DeleteValue(VALUE_NAME, false);
+                    using (RegistryKey key = Registry.CurrentUser.CreateSubKey(RUN_KEY))
+                    {
+                        if (value)
+                            key.SetValue(VALUE_NAME, $"\"{Application.ExecutablePath}\"");
+                        else
+                            key.DeleteValue(VALUE_NAME, false);
+                    }
                 }
+                catch (Exception) { }
             }
         }
     }

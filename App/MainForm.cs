@@ -392,6 +392,7 @@ namespace tarkov_settings
             this.autostartCheckBox.Checked = appSetting.autostart;
             // handler fires only on change, so force-sync the registry with the saved state
             Autostart.Enabled = appSetting.autostart;
+            this.autostartCheckBox.Checked = Autostart.Enabled;
             #endregion
             
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -684,6 +685,9 @@ namespace tarkov_settings
         private void CheckOnAutostart(object sender, EventArgs e)
         {
             Autostart.Enabled = this.autostartCheckBox.Checked;
+            // blocked write: show the real state instead of a checked box that does nothing
+            if (Autostart.Enabled != this.autostartCheckBox.Checked)
+                this.autostartCheckBox.Checked = Autostart.Enabled;
         }
 
         private void TopMostCheckBox_CheckedChanged(object sender, EventArgs e)
