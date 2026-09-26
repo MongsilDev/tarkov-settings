@@ -197,7 +197,6 @@ namespace tarkov_settings
             // null when the focused process exited mid-switch
             string pName = NativeMethods.GetActiveWindowTitle();
 
-            Console.WriteLine("Running Tasks : {0}", GetWorkingThreads());
             Console.WriteLine("Focused Process : {0}", pName);
 
             if (pName != null && this.pTargets.Contains(pName.ToLower()) && Parent.IsEnabled)
@@ -338,13 +337,6 @@ namespace tarkov_settings
 
             Console.WriteLine("[pMonitor] Resetting Color");
             cController.Close();
-        }
-
-        private static int GetWorkingThreads()
-        {
-            System.Threading.ThreadPool.GetMaxThreads(out int maxThreads, out int _);
-            System.Threading.ThreadPool.GetAvailableThreads(out int availableThreads, out _);
-            return maxThreads - availableThreads;
         }
     }
 }
