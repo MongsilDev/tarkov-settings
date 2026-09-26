@@ -170,6 +170,30 @@ namespace tarkov_settings
             if (closed || Parent == null || Parent.IsDisposed)
                 return;
 
+            // this runs straight from the message pump, outside WinForms' exception handling:
+            // an exception here would end the process with the ramp still applied
+            try
+            {
+                HandleFocus(hWnd);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[pMonitor] focus handling failed: {0}", e.Message);
+                FocusedTargetPid = 0;
+                FocusedTargetName = null;
+                FocusedTargetHwnd = IntPtr.Zero;
+                try
+                {
+                    Parent.SetHotkeysActive(false);
+                    cController.ChangeColorRamp(reset: true);
+                    cController.ResetDVL();
+                }
+                catch (Exception) { }
+            }
+        }
+
+        private void HandleFocus(IntPtr hWnd)
+        {
             // null when the focused process exited mid-switch
             string pName = NativeMethods.GetActiveWindowTitle();
 
