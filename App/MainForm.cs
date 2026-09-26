@@ -889,10 +889,16 @@ namespace tarkov_settings
             await RefreshServers();
         }
 
+        // a request arriving mid-refresh runs once more afterwards instead of being dropped
+        private bool refreshPending;
+
         private async Task RefreshServers()
         {
             if (refreshingServers)
+            {
+                refreshPending = true;
                 return;
+            }
             serversLoaded = true;
 
             if (string.IsNullOrEmpty(appSetting.logsPath) || !Directory.Exists(appSetting.logsPath))
@@ -918,8 +924,9 @@ namespace tarkov_settings
                 serverDetailLabel.Text = "";
                 serverStatusLabel.Text = "Reading logs";
                 string logsPath = appSetting.logsPath;
-                var entries = await Task.Run(() => ServerLog.Read(logsPath, 15, TimeSpan.FromHours(72)));
+                // measured before reading, so a Connect logged meanwhile still counts as a change
                 connectionLogLength = await Task.Run(() => ServerLog.ConnectionLogLength(logsPath));
+                var entries = await Task.Run(() => ServerLog.Read(logsPath, 15, TimeSpan.FromHours(72)));
 
                 // live = newest raid, started within the last hour, no session rtt yet,
                 // no end marker, and the game process still running
@@ -1020,6 +1027,12 @@ namespace tarkov_settings
                 refreshingServers = false;
                 refreshServersButton.Enabled = true;
                 browseLogsButton.Enabled = true;
+                if (refreshPending)
+                {
+                    refreshPending = false;
+                    logsChangedTimer.Stop();
+                    logsChangedTimer.Start();
+                }
             }
         }
         #endregion
