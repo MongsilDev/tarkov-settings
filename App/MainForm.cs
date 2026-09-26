@@ -379,6 +379,8 @@ namespace tarkov_settings
             displayFollowTimer.Tick += DisplayFollowTimer_Tick;
 
             logsWatcher.SynchronizingObject = this;
+            // filtered in the watcher, so output/backend writes never reach the UI thread
+            logsWatcher.Filter = "*network-connection*";
             logsWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size;
             logsWatcher.Changed += LogsWatcher_Changed;
             logsWatcher.Created += LogsWatcher_Changed;
@@ -819,6 +821,10 @@ namespace tarkov_settings
         {
             try
             {
+                // already watching this folder: restarting would only risk missing an event
+                if (logsWatcher.EnableRaisingEvents
+                    && string.Equals(logsWatcher.Path, path, StringComparison.OrdinalIgnoreCase))
+                    return;
                 logsWatcher.EnableRaisingEvents = false;
                 if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
                     return;
