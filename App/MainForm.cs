@@ -396,7 +396,7 @@ namespace tarkov_settings
             #endregion
             
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            this.Text = String.Format("Tarkov Settings {0}", version);
+            this.Text = String.Format("Tarkov Settings {0}", version.ToString(3));
             _ = new UpdateNotifier(version, ExitApp);
 
             // Saturation Initialize
