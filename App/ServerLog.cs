@@ -54,6 +54,7 @@ namespace tarkov_settings
             { "factory4_night", "Factory" },
             { "RezervBase", "Reserve" },
             { "laboratory", "Labs" },
+            { "laboratory_dark", "Labs" },
             { "Sandbox", "Ground Zero" },
             { "Sandbox_high", "Ground Zero" },
             { "TarkovStreets", "Streets" },
