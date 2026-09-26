@@ -24,7 +24,7 @@ Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는
 2. 슬라이더로 색상 조절. Recommended는 추천값, Default는 윈도우 기본값, 라벨 더블클릭은 항목별 기본값
 3. Apply to Arena는 기본으로 켜짐. Arena를 빼려면 해제
 4. Hotkeys에서 값 두 개와 키 지정. Key 칸을 클릭하고 키 입력, Esc 취소, Backspace 해제. 기본 키는 Gamma PageUp, Game volume PageDown. Kill game은 Ctrl/Alt/Shift 조합만 가능하고 지정할 때 한 번 확인
-5. Start minimized는 기본으로 켜짐. 필요하면 Start with Windows 체크
+5. Start in tray는 기본으로 켜짐. 필요하면 Start with Windows 체크
 6. Servers 탭은 EFT 로그 폴더를 자동 탐지. 못 찾으면 `...` 버튼으로 게임 폴더 지정
 7. 왼쪽 아래 Always on top은 기본으로 켜짐. 끄려면 한 번 클릭
 8. 창을 닫으면 트레이로 숨음. 완전히 끄려면 트레이 아이콘 우클릭 > Exit

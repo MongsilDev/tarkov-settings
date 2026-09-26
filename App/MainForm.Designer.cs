@@ -335,9 +335,9 @@
             this.minimizeStartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.minimizeStartCheckBox.Location = new System.Drawing.Point(166, 231);
             this.minimizeStartCheckBox.Name = "minimizeStartCheckBox";
-            this.minimizeStartCheckBox.Size = new System.Drawing.Size(129, 17);
+            this.minimizeStartCheckBox.Size = new System.Drawing.Size(115, 17);
             this.minimizeStartCheckBox.TabIndex = 16;
-            this.minimizeStartCheckBox.Text = "Start minimized";
+            this.minimizeStartCheckBox.Text = "Start in tray";
             this.minimizeStartCheckBox.UseVisualStyleBackColor = false;
             this.minimizeStartCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnMinimizeToTray);
             // 
@@ -346,7 +346,7 @@
             this.arenaCheckBox.AutoSize = true;
             this.arenaCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.arenaCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.arenaCheckBox.Location = new System.Drawing.Point(303, 231);
+            this.arenaCheckBox.Location = new System.Drawing.Point(289, 231);
             this.arenaCheckBox.Name = "arenaCheckBox";
             this.arenaCheckBox.Size = new System.Drawing.Size(122, 17);
             this.arenaCheckBox.TabIndex = 17;
