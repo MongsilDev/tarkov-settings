@@ -14,6 +14,7 @@ namespace tarkov_settings.GPU
     {
         private GPUVendor _vendor;
         private DisplayHandle displayHandle;
+        private string loadedDisplay;
 
         private int _maxSaturation;
         private int _minSaturation;
@@ -56,13 +57,24 @@ namespace tarkov_settings.GPU
                 if (value < this.MinSaturation)
                     value = this.MinSaturation;
 
-                // handle goes stale on RDP switch / monitor sleep; recovered by the next Load
+                // the handle goes stale on an RDP switch or monitor sleep while the display name
+                // stays the same, so no Load follows: fetch a fresh handle and retry once.
+                // the init level is not re-read - it may already hold the applied value
                 try
                 {
                     DisplayApi.SetDVCLevel(displayHandle, value);
                     this.currentSaturation = value;
                 }
-                catch (Exception e) when (IsNvApiError(e)) { }
+                catch (Exception e) when (IsNvApiError(e))
+                {
+                    try
+                    {
+                        displayHandle = DisplayApi.GetAssociatedNvidiaDisplayHandle(loadedDisplay);
+                        DisplayApi.SetDVCLevel(displayHandle, value);
+                        this.currentSaturation = value;
+                    }
+                    catch (Exception retry) when (IsNvApiError(retry)) { }
+                }
             }
         }
 
@@ -92,6 +104,7 @@ namespace tarkov_settings.GPU
                 DisplayHandle handle = DisplayApi.GetAssociatedNvidiaDisplayHandle(display);
                 PrivateDisplayDVCInfo dvcInfo = DisplayApi.GetDVCInfo(handle);
                 this.displayHandle = handle;
+                this.loadedDisplay = display;
                 this._maxSaturation = dvcInfo.MaximumLevel;
                 this._minSaturation = dvcInfo.MinimumLevel;
                 this._initSaturation = this.currentSaturation = dvcInfo.CurrentLevel;
