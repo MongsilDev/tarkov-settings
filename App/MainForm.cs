@@ -384,6 +384,12 @@ namespace tarkov_settings
             logsWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size;
             logsWatcher.Changed += LogsWatcher_Changed;
             logsWatcher.Created += LogsWatcher_Changed;
+            // the column widths add up to the list width exactly; a dragged divider would bring a scrollbar
+            serverListView.ColumnWidthChanging += (s, e) =>
+            {
+                e.Cancel = true;
+                e.NewWidth = serverListView.Columns[e.ColumnIndex].Width;
+            };
             // long messages (error text with a path) end in "..."; the full text is in the tooltip
             serverStatusLabel.TextChanged += (s, e) => hintToolTip.SetToolTip(serverStatusLabel, serverStatusLabel.Text);
             logsChangedTimer.Tick += LogsChangedTimer_Tick;
