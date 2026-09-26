@@ -50,20 +50,20 @@ namespace tarkov_settings
             // currentLabel
             // 
             this.currentLabel.AutoSize = true;
-            this.currentLabel.Location = new System.Drawing.Point(57, 9);
+            this.currentLabel.Location = new System.Drawing.Point(64, 9);
             this.currentLabel.Name = "currentLabel";
-            this.currentLabel.Size = new System.Drawing.Size(70, 14);
+            this.currentLabel.Size = new System.Drawing.Size(63, 14);
             this.currentLabel.TabIndex = 0;
-            this.currentLabel.Text = "Current :";
+            this.currentLabel.Text = "Current:";
             // 
             // latestLabel
             // 
             this.latestLabel.AutoSize = true;
-            this.latestLabel.Location = new System.Drawing.Point(64, 29);
+            this.latestLabel.Location = new System.Drawing.Point(71, 29);
             this.latestLabel.Name = "latestLabel";
-            this.latestLabel.Size = new System.Drawing.Size(63, 14);
+            this.latestLabel.Size = new System.Drawing.Size(56, 14);
             this.latestLabel.TabIndex = 1;
-            this.latestLabel.Text = "Latest :";
+            this.latestLabel.Text = "Latest:";
             // 
             // UpdateButton
             // 
@@ -112,7 +112,7 @@ namespace tarkov_settings
             this.UpdateNotifyLabel.Name = "UpdateNotifyLabel";
             this.UpdateNotifyLabel.Size = new System.Drawing.Size(257, 52);
             this.UpdateNotifyLabel.TabIndex = 6;
-            this.UpdateNotifyLabel.Text = "Tarkov Settings\r\nUpdate is Available!";
+            this.UpdateNotifyLabel.Text = "Tarkov Settings\r\nUpdate available";
             this.UpdateNotifyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel1
@@ -179,7 +179,7 @@ namespace tarkov_settings
             this.MinimizeBox = false;
             this.Name = "UpdateNotifier";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Update Available";
+            this.Text = "Update available";
             this.TopMost = true;
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
