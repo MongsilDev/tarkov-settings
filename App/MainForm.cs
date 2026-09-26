@@ -706,8 +706,9 @@ namespace tarkov_settings
 
         private void VolumeLevel_ValueChanged(object sender, EventArgs e)
         {
-            appSetting.volumeLow = (int)volumeLowNum.Value;
-            appSetting.volumeHigh = (int)volumeHighNum.Value;
+            // a typed 5.5 shows as 6; store what is shown
+            appSetting.volumeLow = (int)Math.Round(volumeLowNum.Value);
+            appSetting.volumeHigh = (int)Math.Round(volumeHighNum.Value);
         }
 
         private void GammaLevel_ValueChanged(object sender, EventArgs e)
