@@ -213,6 +213,7 @@
             this.browseLogsButton.Size = new System.Drawing.Size(32, 24);
             this.browseLogsButton.TabIndex = 1;
             this.browseLogsButton.Text = "...";
+            this.hintToolTip.SetToolTip(this.browseLogsButton, "Select Logs folder");
             this.browseLogsButton.UseVisualStyleBackColor = true;
             this.browseLogsButton.Click += new System.EventHandler(this.BrowseLogsButton_Click);
             // 
