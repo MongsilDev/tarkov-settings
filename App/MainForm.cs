@@ -145,6 +145,16 @@ namespace tarkov_settings
                 SetHotkeysActive(true);
         }
 
+        // the focus hook skips this process, so switching from the game to this window raises
+        // no event: drop the game's hotkeys here or PageUp/PageDown never reach the sliders.
+        // the colors stay applied for the live preview; returning to the game re-registers
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            if (hotkeysActive)
+                SetHotkeysActive(false);
+        }
+
         protected override void OnHandleDestroyed(EventArgs e)
         {
             foreach (int id in HOTKEY_IDS)
