@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
@@ -98,6 +99,18 @@ namespace tarkov_settings
             public string Kind;
             public double Real;
         }
+
+        // output logs only grow and reach tens of MB, so each file is parsed once and
+        // later reads (the live raid re-reads every 10 s) pick up only the appended part
+        private class OutputScan
+        {
+            public long Offset;
+            public readonly List<KeyValuePair<DateTime, DateTime>> GameTimes = new List<KeyValuePair<DateTime, DateTime>>();
+            public readonly List<DateTime> MapUnloads = new List<DateTime>();
+        }
+
+        private static readonly Dictionary<string, OutputScan> outputScans =
+            new Dictionary<string, OutputScan>(StringComparer.OrdinalIgnoreCase);
 
         public static string DetectLogsPath()
         {
@@ -250,23 +263,17 @@ namespace tarkov_settings
 
             foreach (string file in Directory.GetFiles(dir, "*output*.log"))
             {
-                foreach (string line in SafeReadLines(file))
+                OutputScan scan;
+                lock (outputScans)
                 {
-                    Match gt = GameTimePattern.Match(line);
-                    if (gt.Success)
-                    {
-                        gameTimes.Add(new KeyValuePair<DateTime, DateTime>(
-                            ParseTime(gt.Groups["time"].Value),
-                            DateTime.ParseExact(gt.Groups["game"].Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
-                        continue;
-                    }
-                    // map unload marks the raid end when Disconnect was not logged
-                    if (line.Contains("Disabling AcousticMap"))
-                    {
-                        Match prefix = TimePrefixPattern.Match(line);
-                        if (prefix.Success)
-                            mapUnloads.Add(ParseTime(prefix.Groups[1].Value));
-                    }
+                    if (!outputScans.TryGetValue(file, out scan))
+                        outputScans[file] = scan = new OutputScan();
+                }
+                lock (scan)
+                {
+                    ScanOutput(file, scan);
+                    gameTimes.AddRange(scan.GameTimes);
+                    mapUnloads.AddRange(scan.MapUnloads);
                 }
             }
 
@@ -330,6 +337,72 @@ namespace tarkov_settings
                 return "";
             var before = modes.Where(m => m.Key <= time).ToList();
             return before.Count > 0 ? before[before.Count - 1].Value : modes[0].Value;
+        }
+
+        // parses complete lines appended since the last call; a trailing partial line waits
+        // for the next read. A newline byte never occurs inside a UTF-8 multi-byte sequence,
+        // so byte chunks cut at a newline decode cleanly
+        private static void ScanOutput(string file, OutputScan scan)
+        {
+            try
+            {
+                using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+                {
+                    if (stream.Length < scan.Offset)
+                    {
+                        scan.Offset = 0;
+                        scan.GameTimes.Clear();
+                        scan.MapUnloads.Clear();
+                    }
+                    stream.Seek(scan.Offset, SeekOrigin.Begin);
+
+                    byte[] buffer = new byte[1 << 20];
+                    int carry = 0;
+                    while (true)
+                    {
+                        if (carry == buffer.Length)
+                            Array.Resize(ref buffer, buffer.Length * 2);
+                        int read = stream.Read(buffer, carry, buffer.Length - carry);
+                        if (read == 0)
+                            break;
+                        int total = carry + read;
+                        int lastNewline = Array.LastIndexOf(buffer, (byte)'\n', total - 1);
+                        if (lastNewline < 0)
+                        {
+                            carry = total;
+                            continue;
+                        }
+                        ParseOutputLines(Encoding.UTF8.GetString(buffer, 0, lastNewline + 1), scan);
+                        scan.Offset += lastNewline + 1;
+                        carry = total - (lastNewline + 1);
+                        Buffer.BlockCopy(buffer, lastNewline + 1, buffer, 0, carry);
+                    }
+                }
+            }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+        }
+
+        private static void ParseOutputLines(string text, OutputScan scan)
+        {
+            foreach (string line in text.Split('\n'))
+            {
+                Match gt = GameTimePattern.Match(line);
+                if (gt.Success)
+                {
+                    scan.GameTimes.Add(new KeyValuePair<DateTime, DateTime>(
+                        ParseTime(gt.Groups["time"].Value),
+                        DateTime.ParseExact(gt.Groups["game"].Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)));
+                    continue;
+                }
+                // map unload marks the raid end when Disconnect was not logged
+                if (line.Contains("Disabling AcousticMap"))
+                {
+                    Match prefix = TimePrefixPattern.Match(line);
+                    if (prefix.Success)
+                        scan.MapUnloads.Add(ParseTime(prefix.Groups[1].Value));
+                }
+            }
         }
 
         private static string ModeName(string sessionMode)
