@@ -1082,15 +1082,16 @@ namespace tarkov_settings
             first.Add(entry.Ip + ":" + entry.Port);
 
             var second = new System.Collections.Generic.List<string>();
+            // transits and reconnects have no queue of their own but still a total
+            var timings = new System.Collections.Generic.List<string>();
             if (entry.QueueSec >= 0)
-            {
-                string timing = "queue " + entry.QueueSec.ToString("F0") + "s";
-                if (entry.LoadSec >= 0)
-                    timing += ", load " + entry.LoadSec.ToString("F0") + "s";
-                if (entry.TotalSec >= 0)
-                    timing += ", total " + entry.TotalSec.ToString("F0") + "s";
-                second.Add(timing);
-            }
+                timings.Add("queue " + entry.QueueSec.ToString("F0") + "s");
+            if (entry.LoadSec >= 0)
+                timings.Add("load " + entry.LoadSec.ToString("F0") + "s");
+            if (entry.TotalSec >= 0)
+                timings.Add("total " + entry.TotalSec.ToString("F0") + "s");
+            if (timings.Count > 0)
+                second.Add(string.Join(", ", timings));
             string location = LocationDisplay(info);
             if (location != "")
                 second.Add(location);
