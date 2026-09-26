@@ -293,12 +293,12 @@
             // 
             // serverStatusLabel
             // 
-            this.serverStatusLabel.AutoSize = true;
+            this.serverStatusLabel.AutoEllipsis = true;
             this.serverStatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.serverStatusLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.serverStatusLabel.Location = new System.Drawing.Point(8, 350);
             this.serverStatusLabel.Name = "serverStatusLabel";
-            this.serverStatusLabel.Size = new System.Drawing.Size(0, 14);
+            this.serverStatusLabel.Size = new System.Drawing.Size(496, 14);
             this.serverStatusLabel.TabIndex = 4;
             // 
             // ColorPanel

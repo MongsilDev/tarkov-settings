@@ -384,6 +384,8 @@ namespace tarkov_settings
             logsWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size;
             logsWatcher.Changed += LogsWatcher_Changed;
             logsWatcher.Created += LogsWatcher_Changed;
+            // long messages (error text with a path) end in "..."; the full text is in the tooltip
+            serverStatusLabel.TextChanged += (s, e) => hintToolTip.SetToolTip(serverStatusLabel, serverStatusLabel.Text);
             logsChangedTimer.Tick += LogsChangedTimer_Tick;
             liveRaidTimer.Tick += LiveRaidTimer_Tick;
             logsPollTimer.Tick += LogsPollTimer_Tick;
@@ -916,7 +918,7 @@ namespace tarkov_settings
             {
                 // retried automatically the next time the tab is opened
                 serversLoaded = false;
-                serverStatusLabel.Text = "Logs folder not found. Pick it with the ... button, or Refresh to retry";
+                serverStatusLabel.Text = "Logs folder not found. Pick it with ... or press Refresh";
                 return;
             }
 
