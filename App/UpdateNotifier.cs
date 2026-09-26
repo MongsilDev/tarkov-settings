@@ -59,7 +59,15 @@ namespace tarkov_settings
 
         private void UpdateButton_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(downloadUrl);
+            try
+            {
+                System.Diagnostics.Process.Start(downloadUrl);
+            }
+            catch (Exception)
+            {
+                // no default browser: stay open instead of exiting with nothing downloaded
+                return;
+            }
             this.DialogResult = DialogResult.OK;
         }
     }
