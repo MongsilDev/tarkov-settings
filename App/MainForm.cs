@@ -909,7 +909,9 @@ namespace tarkov_settings
                     serverStatusLabel.Text = "Looking up locations";
                     try
                     {
-                        geo = await GeoIp.LookupAsync(entries.Select(entry => entry.Ip));
+                        var lookup = await GeoIp.LookupAsync(entries.Select(entry => entry.Ip));
+                        geo = lookup.Map;
+                        geoFailed = lookup.Failed;
                     }
                     catch (Exception)
                     {

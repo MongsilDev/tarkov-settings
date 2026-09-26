@@ -39,11 +39,14 @@ namespace tarkov_settings
          * Resolve country/city/timezone for the given IPs. Cached to disk, so only
          * unseen IPs hit the API (ip-api.com batch endpoint, 100 per request).
          */
-        public static async Task<Dictionary<string, Info>> LookupAsync(IEnumerable<string> ips)
+        // Failed is true when a lookup did not go through; cached IPs are returned regardless
+        public static async Task<(Dictionary<string, Info> Map, bool Failed)> LookupAsync(IEnumerable<string> ips)
         {
             if (cache == null)
                 cache = LoadCache();
 
+            bool failed = false;
+            int before = cache.Count;
             List<string> missing = ips.Distinct().Where(ip => !cache.ContainsKey(ip)).ToList();
             for (int i = 0; i < missing.Count; i += 100)
             {
@@ -51,20 +54,28 @@ namespace tarkov_settings
                     .Select(ip => new { query = ip, fields = "status,query,country,city,timezone" });
                 var body = new StringContent(JsonConvert.SerializeObject(chunk), Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await client.PostAsync("http://ip-api.com/batch", body);
-                response.EnsureSuccessStatusCode();
-                var rows = JsonConvert.DeserializeObject<List<ApiRow>>(await response.Content.ReadAsStringAsync());
-
-                foreach (ApiRow row in rows)
+                try
                 {
-                    if (row.status == "success" && row.query != null)
-                        cache[row.query] = new Info { country = row.country, city = row.city, timezone = row.timezone };
+                    HttpResponseMessage response = await client.PostAsync("http://ip-api.com/batch", body);
+                    response.EnsureSuccessStatusCode();
+                    var rows = JsonConvert.DeserializeObject<List<ApiRow>>(await response.Content.ReadAsStringAsync());
+
+                    foreach (ApiRow row in rows ?? new List<ApiRow>())
+                    {
+                        if (row.status == "success" && row.query != null)
+                            cache[row.query] = new Info { country = row.country, city = row.city, timezone = row.timezone };
+                    }
+                }
+                catch (Exception)
+                {
+                    // offline, rate limited or a bad response
+                    failed = true;
                 }
             }
 
-            if (missing.Count > 0)
+            if (cache.Count > before)
                 SaveCache();
-            return cache;
+            return (cache, failed);
         }
 
         private static Dictionary<string, Info> LoadCache()
