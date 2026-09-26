@@ -582,9 +582,19 @@ namespace tarkov_settings
             this.Activate();
         }
 
+        private bool exitRequested;
+
+        // Application.Exit skips a form missing from OpenForms, and ShowInTaskbar toggling
+        // drops it there - so close the form itself to reach the save, unhook and color reset
+        public void ExitApp()
+        {
+            exitRequested = true;
+            Close();
+        }
+
         private void ExitFormClicked(object sender, EventArgs e)
         {
-            Application.Exit();
+            ExitApp();
         }
 
         private void SaveSettings()
@@ -608,7 +618,7 @@ namespace tarkov_settings
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
-            if (e.CloseReason == CloseReason.UserClosing)
+            if (e.CloseReason == CloseReason.UserClosing && !exitRequested)
             {
                 e.Cancel = true;
                 this.Hide();
