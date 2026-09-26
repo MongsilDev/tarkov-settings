@@ -27,9 +27,9 @@ namespace tarkov_settings
             RegexOptions.Compiled);
 
         // Disconnect (address: ip:port) / Statistics (address: ip:port, rtt: 42.5, lose: 0, ...)
-        // lose is sometimes a float or -5.8E-11, so the match stops at rtt
+        // lose is sometimes a float or -5.8E-11, so it is skipped rather than parsed
         private static readonly Regex EndPattern = new Regex(
-            @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|[^|]*\|[^|]*\|network-connection\|(?:Disconnect \(address: (?<ip>[\d.]+):(?<port>\d+)\)|Statistics \(address: (?<ip>[\d.]+):(?<port>\d+), rtt: (?<rtt>[\d.]+))",
+            @"^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\.\d+\|[^|]*\|[^|]*\|network-connection\|(?:Disconnect \(address: (?<ip>[\d.]+):(?<port>\d+)\)|Statistics \(address: (?<ip>[\d.]+):(?<port>\d+), rtt: (?<rtt>[\d.]+)(?:, lose: [^,]*, sent: \d+, received: (?<received>\d+))?)",
             RegexOptions.Multiline | RegexOptions.Compiled);
 
         private static readonly Regex TimePrefixPattern = new Regex(@"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})", RegexOptions.Compiled);
@@ -91,6 +91,7 @@ namespace tarkov_settings
             public DateTime Time;
             public string IpPort;
             public double Rtt = -1;
+            public long Received = -1;
         }
 
         private class TimingEvent
@@ -197,6 +198,7 @@ namespace tarkov_settings
                         Time = ParseTime(m.Groups["time"].Value),
                         IpPort = m.Groups["ip"].Value + ":" + m.Groups["port"].Value,
                         Rtt = m.Groups["rtt"].Success ? double.Parse(m.Groups["rtt"].Value, CultureInfo.InvariantCulture) : -1,
+                        Received = m.Groups["received"].Success ? long.Parse(m.Groups["received"].Value) : -1,
                     });
                 }
 
@@ -278,6 +280,7 @@ namespace tarkov_settings
             }
 
             raids = raids.OrderBy(r => r.Time).ToList();
+            var failed = new HashSet<Entry>();
             for (int i = 0; i < raids.Count; i++)
             {
                 Entry raid = raids[i];
@@ -323,6 +326,9 @@ namespace tarkov_settings
                     EndEvent withRtt = endsAfter.Where(x => x.Rtt >= 0).OrderBy(x => x.Time).FirstOrDefault();
                     if (withRtt != null)
                         raid.SessionRtt = withRtt.Rtt;
+                    // nothing ever came back: the connection timed out and there was no raid
+                    if (withRtt != null && withRtt.Received == 0)
+                        failed.Add(raid);
                 }
                 else if (mapUnloads.Any(u => u >= raid.Time.AddSeconds(30)))
                 {
@@ -338,7 +344,7 @@ namespace tarkov_settings
             // a dropped connection rejoining the same raid logs a second Connect to the same
             // server with the same shortId; keep one row carrying the rejoined state
             var merged = new List<Entry>();
-            foreach (Entry raid in raids)
+            foreach (Entry raid in raids.Where(r => !failed.Contains(r)))
             {
                 Entry first = raid.ShortId == "" ? null
                     : merged.LastOrDefault(m => m.Ip == raid.Ip && m.Port == raid.Port && m.ShortId == raid.ShortId);
