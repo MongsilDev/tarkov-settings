@@ -347,6 +347,10 @@ namespace tarkov_settings
             #region Load App Settings
             // Load Settings
             appSetting = AppSetting.Load();
+            // "pTargets": null or null items in a hand-edited file would crash every start
+            if (appSetting.pTargets == null)
+                appSetting.pTargets = new AppSetting().pTargets;
+            appSetting.pTargets.RemoveWhere(string.IsNullOrWhiteSpace);
             // a hand-edited settings file must not bypass the modifier rule for the kill key.
             // checked before the focus hook starts, which registers hotkeys for a focused game
             if (!TryParseHotkey(appSetting.killHotkey, out uint killModifiers, out _)
