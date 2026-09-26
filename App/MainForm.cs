@@ -732,6 +732,13 @@ namespace tarkov_settings
                 if (liveTicks % 2 != 0 || item.ListView == null)
                     return;
 
+                // the game exited or crashed without logging the end of the raid
+                if (!await Task.Run(() => pMonitor.AnyTargetRunning()))
+                {
+                    await RefreshServers();
+                    return;
+                }
+
                 string dir = raid.SessionDir;
                 var session = await Task.Run(() => ServerLog.ReadSession(dir));
                 ServerLog.Entry updated = session.FirstOrDefault(x =>
@@ -754,6 +761,10 @@ namespace tarkov_settings
                 item.ToolTipText = BuildRaidDetail(updated, liveRaidGeo) + "\nLive raid, ping updates every 5 s";
                 if (item.Selected || (serverListView.SelectedItems.Count == 0 && item.Index == 0))
                     ShowDetail();
+            }
+            catch (Exception)
+            {
+                // session folder gone or unreadable; the next tick or refresh retries
             }
             finally
             {
