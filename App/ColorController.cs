@@ -70,7 +70,10 @@ namespace tarkov_settings
                 hdc = Display.CreateDC(null, Display.Primary, null, IntPtr.Zero);
                 currentRamps = new RAMP();
                 originalRamps = new RAMP();
-                GetDeviceGammaRamp(hdc, ref originalRamps);
+                // a failed read (display not ready yet at autostart) would leave an all-zero
+                // ramp as the restore target; fall back to the Windows default instead
+                if (hdc == IntPtr.Zero || !GetDeviceGammaRamp(hdc, ref originalRamps))
+                    originalRamps = IdentityRamp();
             }
             finally
             {
@@ -130,6 +133,14 @@ namespace tarkov_settings
                         Display.DeleteDC(hdc);
                 }
             });
+        }
+
+        private static RAMP IdentityRamp()
+        {
+            var ramp = new RAMP { Red = new ushort[256], Green = new ushort[256], Blue = new ushort[256] };
+            for (int i = 0; i < 256; i++)
+                ramp.Red[i] = ramp.Green[i] = ramp.Blue[i] = (ushort)(i * 257);
+            return ramp;
         }
 
         private static void WriteRamp(string device, ref RAMP ramp)
