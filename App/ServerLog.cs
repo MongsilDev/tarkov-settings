@@ -334,7 +334,29 @@ namespace tarkov_settings
                 if (gameTime.Key != default(DateTime))
                     raid.GameTime = gameTime.Value;
             }
-            return raids;
+
+            // a dropped connection rejoining the same raid logs a second Connect to the same
+            // server with the same shortId; keep one row carrying the rejoined state
+            var merged = new List<Entry>();
+            foreach (Entry raid in raids)
+            {
+                Entry first = raid.ShortId == "" ? null
+                    : merged.LastOrDefault(m => m.Ip == raid.Ip && m.Port == raid.Port && m.ShortId == raid.ShortId);
+                if (first == null)
+                {
+                    merged.Add(raid);
+                    continue;
+                }
+                first.Ended = raid.Ended;
+                // still running: no rtt yet (live). ended without Statistics: keep the earlier one
+                if (raid.SessionRtt >= 0 || !raid.Ended)
+                    first.SessionRtt = raid.SessionRtt;
+                if (raid.GameTime != null)
+                    first.GameTime = raid.GameTime;
+                if (raid.TotalSec >= 0)
+                    first.TotalSec = raid.TotalSec;
+            }
+            return merged;
         }
 
         // the last mode set before the raid; the first one when the raid precedes them all
