@@ -64,12 +64,11 @@ namespace tarkov_settings
         }
         // direct handle query: Process.ProcessName would parse a full system
         // snapshot on every foreground switch
-        public static string GetActiveWindowTitle()
+        public static string GetWindowProcessName(IntPtr hWnd)
         {
             try
             {
-                IntPtr handle = GetForegroundWindow();
-                GetWindowThreadProcessId(handle, out uint processID);
+                GetWindowThreadProcessId(hWnd, out uint processID);
                 if (processID == 0)
                     return null;
 
@@ -195,7 +194,9 @@ namespace tarkov_settings
         private void HandleFocus(IntPtr hWnd)
         {
             // null when the focused process exited mid-switch
-            string pName = NativeMethods.GetActiveWindowTitle();
+            // the event's window, not a fresh GetForegroundWindow: during a fast switch that may
+            // already be another window, pairing its name with this window's pid
+            string pName = NativeMethods.GetWindowProcessName(hWnd);
 
             Console.WriteLine("Focused Process : {0}", pName);
 
