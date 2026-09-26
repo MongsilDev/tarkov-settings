@@ -201,7 +201,8 @@ namespace tarkov_settings
             var timings = new List<TimingEvent>();
             var gameTimes = new List<KeyValuePair<DateTime, DateTime>>();
             var mapUnloads = new List<DateTime>();
-            string mode = "";
+            // the mode can switch between raids of one session (PvP <-> PvE)
+            var modes = new List<KeyValuePair<DateTime, string>>();
 
             foreach (string file in Directory.GetFiles(dir, "*application*.log"))
             {
@@ -234,7 +235,12 @@ namespace tarkov_settings
                     }
                     Match sessionMode = SessionModePattern.Match(line);
                     if (sessionMode.Success)
-                        mode = ModeName(sessionMode.Groups[1].Value);
+                    {
+                        Match prefix = TimePrefixPattern.Match(line);
+                        if (prefix.Success)
+                            modes.Add(new KeyValuePair<DateTime, string>(
+                                ParseTime(prefix.Groups[1].Value), ModeName(sessionMode.Groups[1].Value)));
+                    }
                 }
             }
 
@@ -262,7 +268,7 @@ namespace tarkov_settings
 
             foreach (Entry raid in raids)
             {
-                raid.Mode = mode;
+                raid.Mode = ModeAt(modes, raid.Time);
 
                 string ipPort = raid.Ip + ":" + raid.Port;
                 RaidMeta meta = metas
@@ -311,6 +317,15 @@ namespace tarkov_settings
                     raid.GameTime = gameTime.Value;
             }
             return raids;
+        }
+
+        // the last mode set before the raid; the first one when the raid precedes them all
+        private static string ModeAt(List<KeyValuePair<DateTime, string>> modes, DateTime time)
+        {
+            if (modes.Count == 0)
+                return "";
+            var before = modes.Where(m => m.Key <= time).ToList();
+            return before.Count > 0 ? before[before.Count - 1].Value : modes[0].Value;
         }
 
         private static string ModeName(string sessionMode)
