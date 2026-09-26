@@ -148,12 +148,15 @@ namespace tarkov_settings
             var entries = new List<Entry>();
             // session folder names sort chronologically: log_2026.08.28_12-49-01_<version>
             // parsed folder time, not name order: single-digit hours break lexicographic sort
+            bool newest = true;
             foreach (string dir in Directory.GetDirectories(logsPath, "log_*").OrderByDescending(FolderTime))
             {
-                // a session started well before the window cannot contain raids inside it
+                // a session started well before the window cannot contain raids inside it,
+                // except the newest one: the game may have been running for days
                 DateTime started = FolderTime(dir);
-                if (started != DateTime.MinValue && started < since - TimeSpan.FromHours(24))
+                if (!newest && started != DateTime.MinValue && started < since - TimeSpan.FromHours(24))
                     break;
+                newest = false;
 
                 entries.AddRange(ReadSession(dir, since));
 
