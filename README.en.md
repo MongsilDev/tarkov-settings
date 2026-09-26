@@ -22,11 +22,12 @@ Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-sett
 ## How to use
 1. Download the exe, right-click > Properties > Unblock, then run
 2. Set colors with the sliders. Recommended applies the suggested values, Default the Windows values, double-clicking a label resets that one
-3. Check Apply to Arena to use the same colors in Arena
+3. Apply to Arena is on by default. Uncheck it to leave Arena out
 4. In Hotkeys, set the two values and a key. Click the Key box and press a key, Esc cancels, Backspace clears. Defaults: Gamma PageUp, Game volume PageDown. Kill game needs Ctrl/Alt/Shift and asks once when you bind it
-5. Check Start with Windows and Start minimized if you want them
+5. Start minimized is on by default. Check Start with Windows if you want it
 6. The Servers tab finds the EFT log folder on its own. If it cannot, pick the game folder with the `...` button
-7. Always on top at the bottom left keeps the window above the game
+7. Always on top at the bottom left is on by default. Click it to turn it off
+8. Closing the window hides it to the tray. To quit, right-click the tray icon > Exit
 
 Settings file: `%LOCALAPPDATA%\tarkov-settings\settings.json`, saved when the app closes.
 
