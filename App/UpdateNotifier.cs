@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace tarkov_settings
@@ -36,6 +37,9 @@ namespace tarkov_settings
                     latest = new Version(version);
                     if(latest > current)
                     {
+                        // a dialog popping up would take focus from the game; wait until it is left
+                        while (ProcessMonitor.Instance.FocusedTargetPid != 0)
+                            await Task.Delay(5000);
                         // exit after the dialog is gone, not from inside its modal loop
                         if (this.ShowDialog() == DialogResult.OK)
                             exit();
