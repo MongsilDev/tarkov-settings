@@ -41,16 +41,6 @@ namespace tarkov_settings
             try
             {
                 gpu = GPUDevice.Instance;
-                if(gpu.Vendor == GPUVendor.AMD)
-                {
-                    /* AMD Saturation (equals to Digital Vibrance of Nvidia) is not supported yet. */
-                    System.Windows.Forms.MessageBox.Show(
-                            "AMD Device Detected - Saturation is not supported yet.",
-                            "Warning",
-                            System.Windows.Forms.MessageBoxButtons.OK,
-                            System.Windows.Forms.MessageBoxIcon.Warning
-                        );
-                }
             } catch (NotImplementedException)
             {
                 System.Windows.Forms.MessageBox.Show(

@@ -402,6 +402,13 @@ namespace tarkov_settings
             // Saturation Initialize
             if (gpu.Vendor != GPUVendor.NVIDIA)
                 DVLGroupBox.Enabled = false;
+            // said once on a fresh install, not on every autostart (the group is disabled anyway)
+            if (gpu.Vendor == GPUVendor.AMD && AppSetting.FirstRun)
+                MessageBox.Show(
+                    "AMD GPU detected. Saturation is not supported.",
+                    "Warning",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
 
             #region Initialize Display
             // last used display; overridden whenever a game window gains focus
