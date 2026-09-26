@@ -347,6 +347,11 @@ namespace tarkov_settings
             #region Load App Settings
             // Load Settings
             appSetting = AppSetting.Load();
+            // a hand-edited settings file must not bypass the modifier rule for the kill key.
+            // checked before the focus hook starts, which registers hotkeys for a focused game
+            if (!TryParseHotkey(appSetting.killHotkey, out uint killModifiers, out _)
+                || (killModifiers & (MOD_CONTROL | MOD_ALT | MOD_SHIFT)) == 0)
+                appSetting.killHotkey = "";
 
             Brightness = appSetting.brightness;
             Contrast = appSetting.contrast;
@@ -427,10 +432,6 @@ namespace tarkov_settings
             appSetting.volumeHigh = volumeHigh;
 
             this.gammaHotkeyTextBox.Text = HotkeyDisplay(appSetting.gammaToggleHotkey);
-            // a hand-edited settings file must not bypass the modifier rule for the kill key
-            if (!TryParseHotkey(appSetting.killHotkey, out uint killModifiers, out _)
-                || (killModifiers & (MOD_CONTROL | MOD_ALT | MOD_SHIFT)) == 0)
-                appSetting.killHotkey = "";
             this.killHotkeyTextBox.Text = HotkeyDisplay(appSetting.killHotkey);
             decimal gammaLow = ClampToNum(gammaLowNum, appSetting.gammaLow);
             decimal gammaHigh = ClampToNum(gammaHighNum, appSetting.gammaHigh);
