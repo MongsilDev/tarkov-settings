@@ -1146,8 +1146,8 @@ namespace tarkov_settings
             var timings = new System.Collections.Generic.List<string>();
             if (entry.QueueSec >= 0)
                 timings.Add("queue " + entry.QueueSec.ToString("F0") + "s");
-            if (entry.LoadSec >= 0)
-                timings.Add("load " + entry.LoadSec.ToString("F0") + "s");
+            if (entry.MapSec >= 0)
+                timings.Add("map " + entry.MapSec.ToString("F0") + "s");
             if (entry.TotalSec >= 0)
                 timings.Add("total " + entry.TotalSec.ToString("F0") + "s");
             if (timings.Count > 0)

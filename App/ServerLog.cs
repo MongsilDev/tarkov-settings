@@ -71,7 +71,8 @@ namespace tarkov_settings
             public string Mode = "";
             public DateTime? GameTime;
             public double QueueSec = -1;
-            public double LoadSec = -1;
+            // seconds from the start of matching; the map often finishes loading before matching does
+            public double MapSec = -1;
             public double TotalSec = -1;
             public double SessionRtt = -1;
             public bool Ended;
@@ -307,15 +308,18 @@ namespace tarkov_settings
                 // matching completes shortly before Connect; loading and start follow it
                 TimingEvent queue = timings.LastOrDefault(t => t.Kind == "MatchingCompleted"
                     && t.Time <= raid.Time.AddSeconds(5) && t.Time >= raid.Time.AddMinutes(-10) && t.Time > after);
+                // since 1.x the map usually finishes loading during matching, before Connect;
+                // search from this raid's matching start (completion time minus its real seconds)
+                DateTime matchingStart = queue != null ? queue.Time.AddSeconds(-queue.Real - 2) : raid.Time.AddSeconds(-5);
                 TimingEvent loaded = timings.FirstOrDefault(t => t.Kind == "LocationLoaded"
-                    && t.Time >= raid.Time.AddSeconds(-5) && t.Time <= raid.Time.AddMinutes(15) && t.Time < before);
+                    && t.Time >= matchingStart && t.Time > after && t.Time <= raid.Time.AddMinutes(15) && t.Time < before);
                 TimingEvent startedEvent = timings.FirstOrDefault(t => t.Kind == "GameStarted"
                     && t.Time >= raid.Time.AddSeconds(-5) && t.Time <= raid.Time.AddMinutes(30) && t.Time < before);
 
                 if (queue != null)
                     raid.QueueSec = queue.Real;
-                if (loaded != null && queue != null && loaded.Real >= queue.Real)
-                    raid.LoadSec = loaded.Real - queue.Real;
+                if (loaded != null)
+                    raid.MapSec = loaded.Real;
                 if (startedEvent != null)
                     raid.TotalSec = startedEvent.Real;
 
@@ -362,6 +366,8 @@ namespace tarkov_settings
                     first.GameTime = raid.GameTime;
                 if (raid.TotalSec >= 0)
                     first.TotalSec = raid.TotalSec;
+                if (first.MapSec < 0)
+                    first.MapSec = raid.MapSec;
             }
             return merged;
         }
