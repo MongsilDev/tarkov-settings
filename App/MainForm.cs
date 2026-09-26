@@ -935,6 +935,9 @@ namespace tarkov_settings
                 // measured before reading, so a Connect logged meanwhile still counts as a change
                 connectionLogLength = await Task.Run(() => ServerLog.ConnectionLogLength(logsPath));
                 var entries = await Task.Run(() => ServerLog.Read(logsPath, 15, TimeSpan.FromHours(72)));
+                // a wrongly picked folder should not read as "no recent raids"
+                bool noLogs = entries.Count == 0
+                    && await Task.Run(() => Directory.GetDirectories(logsPath, "log_*").Length == 0);
 
                 // live = newest raid, started within the last hour, no session rtt yet,
                 // no end marker, and the game process still running
@@ -1022,7 +1025,9 @@ namespace tarkov_settings
 
                 int shown = serverListView.Items.Count;
                 int unique = serverListView.Items.Cast<ListViewItem>().Select(item => ((ServerLog.Entry)item.Tag).Ip).Distinct().Count();
-                serverStatusLabel.Text = (shown == 0
+                serverStatusLabel.Text = (noLogs
+                    ? "No EFT logs in this folder"
+                    : shown == 0
                     ? "No raids in the last 72 hours"
                     : "Raids (72h): " + shown + (unique < shown ? "   Servers: " + unique : ""))
                     + (geoFailed ? "   (location lookup failed)" : "")
