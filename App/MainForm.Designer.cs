@@ -296,7 +296,7 @@
             // 
             this.serverStatusLabel.AutoEllipsis = true;
             this.serverStatusLabel.BackColor = System.Drawing.Color.Transparent;
-            this.serverStatusLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.serverStatusLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.serverStatusLabel.Location = new System.Drawing.Point(8, 350);
             this.serverStatusLabel.Name = "serverStatusLabel";
             this.serverStatusLabel.Size = new System.Drawing.Size(496, 14);
@@ -319,7 +319,7 @@
             // 
             this.autostartCheckBox.AutoSize = true;
             this.autostartCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.autostartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.autostartCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.autostartCheckBox.Location = new System.Drawing.Point(8, 231);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(150, 17);
@@ -332,7 +332,7 @@
             // 
             this.minimizeStartCheckBox.AutoSize = true;
             this.minimizeStartCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.minimizeStartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.minimizeStartCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.minimizeStartCheckBox.Location = new System.Drawing.Point(166, 231);
             this.minimizeStartCheckBox.Name = "minimizeStartCheckBox";
             this.minimizeStartCheckBox.Size = new System.Drawing.Size(115, 17);
@@ -345,7 +345,7 @@
             // 
             this.arenaCheckBox.AutoSize = true;
             this.arenaCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.arenaCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.arenaCheckBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.arenaCheckBox.Location = new System.Drawing.Point(289, 231);
             this.arenaCheckBox.Name = "arenaCheckBox";
             this.arenaCheckBox.Size = new System.Drawing.Size(122, 17);
@@ -417,7 +417,7 @@
             // 
             this.volumeLevelLabel.AutoSize = true;
             this.volumeLevelLabel.BackColor = System.Drawing.Color.Transparent;
-            this.volumeLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.volumeLevelLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.volumeLevelLabel.Location = new System.Drawing.Point(12, 51);
             this.volumeLevelLabel.Name = "volumeLevelLabel";
             this.volumeLevelLabel.Size = new System.Drawing.Size(98, 14);
@@ -436,7 +436,7 @@
             // 
             this.volumeSepLabel.AutoSize = true;
             this.volumeSepLabel.BackColor = System.Drawing.Color.Transparent;
-            this.volumeSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.volumeSepLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.volumeSepLabel.Location = new System.Drawing.Point(180, 51);
             this.volumeSepLabel.Name = "volumeSepLabel";
             this.volumeSepLabel.Size = new System.Drawing.Size(14, 14);
@@ -455,7 +455,7 @@
             // 
             this.hotkeyLabel.AutoSize = true;
             this.hotkeyLabel.BackColor = System.Drawing.Color.Transparent;
-            this.hotkeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.hotkeyLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.hotkeyLabel.Location = new System.Drawing.Point(300, 51);
             this.hotkeyLabel.Name = "hotkeyLabel";
             this.hotkeyLabel.Size = new System.Drawing.Size(28, 14);
@@ -481,7 +481,7 @@
             // 
             this.gammaLevelLabel.AutoSize = true;
             this.gammaLevelLabel.BackColor = System.Drawing.Color.Transparent;
-            this.gammaLevelLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaLevelLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.gammaLevelLabel.Location = new System.Drawing.Point(12, 25);
             this.gammaLevelLabel.Name = "gammaLevelLabel";
             this.gammaLevelLabel.Size = new System.Drawing.Size(42, 14);
@@ -505,7 +505,7 @@
             // 
             this.gammaSepLabel.AutoSize = true;
             this.gammaSepLabel.BackColor = System.Drawing.Color.Transparent;
-            this.gammaSepLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaSepLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.gammaSepLabel.Location = new System.Drawing.Point(180, 25);
             this.gammaSepLabel.Name = "gammaSepLabel";
             this.gammaSepLabel.Size = new System.Drawing.Size(14, 14);
@@ -529,7 +529,7 @@
             // 
             this.gammaKeyLabel.AutoSize = true;
             this.gammaKeyLabel.BackColor = System.Drawing.Color.Transparent;
-            this.gammaKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.gammaKeyLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.gammaKeyLabel.Location = new System.Drawing.Point(300, 25);
             this.gammaKeyLabel.Name = "gammaKeyLabel";
             this.gammaKeyLabel.Size = new System.Drawing.Size(28, 14);
@@ -555,7 +555,7 @@
             // 
             this.killLabel.AutoSize = true;
             this.killLabel.BackColor = System.Drawing.Color.Transparent;
-            this.killLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.killLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.killLabel.Location = new System.Drawing.Point(12, 77);
             this.killLabel.Name = "killLabel";
             this.killLabel.Size = new System.Drawing.Size(70, 14);
@@ -565,7 +565,7 @@
             // 
             this.killKeyLabel.AutoSize = true;
             this.killKeyLabel.BackColor = System.Drawing.Color.Transparent;
-            this.killKeyLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.killKeyLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.killKeyLabel.Location = new System.Drawing.Point(300, 77);
             this.killKeyLabel.Name = "killKeyLabel";
             this.killKeyLabel.Size = new System.Drawing.Size(28, 14);
@@ -612,7 +612,7 @@
             // 
             this.DVLLabel.AutoSize = true;
             this.DVLLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.DVLLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.DVLLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.DVLLabel.Location = new System.Drawing.Point(10, 11);
             this.DVLLabel.Name = "DVLLabel";
             this.DVLLabel.Size = new System.Drawing.Size(170, 44);
@@ -700,7 +700,7 @@
             // 
             this.BrightnessLabel.AutoSize = true;
             this.BrightnessLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BrightnessLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.BrightnessLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.BrightnessLabel.Location = new System.Drawing.Point(8, 12);
             this.BrightnessLabel.Name = "BrightnessLabel";
             this.BrightnessLabel.Size = new System.Drawing.Size(110, 22);
@@ -758,7 +758,7 @@
             // 
             this.ContrastLabel.AutoSize = true;
             this.ContrastLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ContrastLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.ContrastLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ContrastLabel.Location = new System.Drawing.Point(8, 12);
             this.ContrastLabel.Name = "ContrastLabel";
             this.ContrastLabel.Size = new System.Drawing.Size(90, 22);
@@ -806,7 +806,7 @@
             // 
             this.GammaLabel.AutoSize = true;
             this.GammaLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.GammaLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.GammaLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.GammaLabel.Location = new System.Drawing.Point(8, 12);
             this.GammaLabel.Name = "GammaLabel";
             this.GammaLabel.Size = new System.Drawing.Size(60, 22);
@@ -888,7 +888,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(588, 374);
