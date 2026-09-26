@@ -67,7 +67,6 @@ namespace tarkov_settings
             // 
             // UpdateButton
             // 
-            this.UpdateButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.UpdateButton.Location = new System.Drawing.Point(99, 5);
             this.UpdateButton.Name = "UpdateButton";
             this.UpdateButton.Size = new System.Drawing.Size(75, 23);
@@ -167,7 +166,6 @@ namespace tarkov_settings
             // 
             // UpdateNotifier
             // 
-            this.AcceptButton = this.UpdateButton;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.UpdateCancelButton;
             this.ClientSize = new System.Drawing.Size(263, 155);
