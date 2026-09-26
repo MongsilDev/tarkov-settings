@@ -37,44 +37,42 @@ namespace tarkov_settings
                     }
                 }
 
-                var targets = new List<SimpleAudioVolume>();
+                // two passes: the direction comes from the loudest session on any device, so a
+                // game split across two outputs never ends up toggled both ways
                 float loudest = -1f;
+                ForEachTargetSession(names, volume => loudest = Math.Max(loudest, volume.Volume));
+                if (loudest < 0f)
+                    return;
 
-                using (var enumerator = new MMDeviceEnumerator())
-                {
-                    foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
-                    {
-                        using (device)
-                        {
-                            var sessions = device.AudioSessionManager.Sessions;
-                            for (int i = 0; i < sessions.Count; i++)
-                            {
-                                var session = sessions[i];
-                                if (!names.TryGetValue((int)session.GetProcessID, out string pName)
-                                    || !ProcessMonitor.Instance.IsTarget(pName))
-                                    continue;
-
-                                targets.Add(session.SimpleAudioVolume);
-                                loudest = Math.Max(loudest, session.SimpleAudioVolume.Volume);
-                            }
-
-                            if (targets.Count == 0)
-                                continue;
-
-                            float level = loudest > low + 0.005f ? low : high;
-                            foreach (var volume in targets)
-                                volume.Volume = level;
-                            Console.WriteLine("[volume] {0} -> {1:P0}", device.FriendlyName, level);
-                            targets.Clear();
-                            loudest = -1f;
-                        }
-                    }
-                }
+                float level = loudest > low + 0.005f ? low : high;
+                ForEachTargetSession(names, volume => volume.Volume = level);
+                Console.WriteLine("[volume] -> {0:P0}", level);
             }
             catch (Exception e)
             {
                 // no audio device or session enumeration failure - ignore
                 Console.WriteLine("[volume] {0}", e.Message);
+            }
+        }
+
+        private static void ForEachTargetSession(Dictionary<int, string> names, Action<SimpleAudioVolume> action)
+        {
+            using (var enumerator = new MMDeviceEnumerator())
+            {
+                foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+                {
+                    using (device)
+                    {
+                        var sessions = device.AudioSessionManager.Sessions;
+                        for (int i = 0; i < sessions.Count; i++)
+                        {
+                            var session = sessions[i];
+                            if (names.TryGetValue((int)session.GetProcessID, out string pName)
+                                && ProcessMonitor.Instance.IsTarget(pName))
+                                action(session.SimpleAudioVolume);
+                        }
+                    }
+                }
             }
         }
     }
