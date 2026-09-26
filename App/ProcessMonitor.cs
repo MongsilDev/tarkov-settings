@@ -123,6 +123,8 @@ namespace tarkov_settings
 
         public MainForm Parent { get; set; }
 
+        private bool closed;
+
         private ProcessMonitor() { }
 
         public void Add(string process)
@@ -161,6 +163,10 @@ namespace tarkov_settings
          */
         public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
+            // a foreground event queued before UnHook can still arrive while the form is being disposed
+            if (closed || Parent == null || Parent.IsDisposed)
+                return;
+
             // null when the focused process exited mid-switch
             string pName = NativeMethods.GetActiveWindowTitle();
 
@@ -295,6 +301,7 @@ namespace tarkov_settings
          */
         public void Close()
         {
+            closed = true;
             Console.WriteLine("[pMonitor] Remove Delegates");
             NativeMethods.dele -= processHook;
             NativeMethods.UnHook();
