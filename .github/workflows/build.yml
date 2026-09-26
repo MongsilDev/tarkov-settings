@@ -3,8 +3,12 @@ name: build
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -19,6 +23,10 @@ jobs:
 
       - name: Build
         run: msbuild tarkov-settings.sln /p:Configuration=Release "/p:Platform=Any CPU" /m
+
+      - name: Hash
+        shell: pwsh
+        run: Get-FileHash bin/Release/tarkov-settings.exe -Algorithm SHA256 | Format-List
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
