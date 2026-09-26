@@ -712,6 +712,13 @@ namespace tarkov_settings
                 liveRaidTimer.Stop();
                 return;
             }
+            // other tab or window in the tray: stop, and re-read once the list is shown again
+            if (!serversPanel.Visible)
+            {
+                liveRaidTimer.Stop();
+                serversLoaded = false;
+                return;
+            }
 
             liveBusy = true;
             try
@@ -842,6 +849,14 @@ namespace tarkov_settings
         {
             SelectTab(servers: true);
             if (!serversLoaded)
+                await RefreshServers();
+        }
+
+        // back from the tray with the Servers tab open: catch up on what was skipped while hidden
+        protected override async void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (Visible && serversPanel.Visible && !serversLoaded)
                 await RefreshServers();
         }
 
