@@ -782,8 +782,11 @@ namespace tarkov_settings
                 if (liveTicks % 2 != 0 || item.ListView == null)
                     return;
 
-                // the game exited or crashed without logging the end of the raid
-                if (!await Task.Run(() => pMonitor.AnyTargetRunning()))
+                // the game exited or crashed without logging the end of the raid, or restarted
+                // into a new session folder
+                string logsPath = appSetting.logsPath;
+                if (!await Task.Run(() => pMonitor.AnyTargetRunning())
+                    || !string.Equals(raid.SessionDir, await Task.Run(() => ServerLog.NewestSession(logsPath)), StringComparison.OrdinalIgnoreCase))
                 {
                     await RefreshServers();
                     return;
@@ -1001,10 +1004,12 @@ namespace tarkov_settings
                     && await Task.Run(() => Directory.GetDirectories(logsPath, "log_*").Length == 0);
 
                 // live = newest raid, started within the last hour, no session rtt yet,
-                // no end marker, and the game process still running
+                // no end marker, logged by the current game session (a raid left open by a crash
+                // belongs to an older session folder once the game restarts), and the game running
                 ServerLog.Entry newest = entries.FirstOrDefault();
                 bool hasLive = newest != null && !newest.Ended && newest.SessionRtt < 0
                     && DateTime.Now - newest.Time < TimeSpan.FromHours(1)
+                    && string.Equals(newest.SessionDir, await Task.Run(() => ServerLog.NewestSession(logsPath)), StringComparison.OrdinalIgnoreCase)
                     && await Task.Run(() => pMonitor.AnyTargetRunning());
 
                 bool geoFailed = false;

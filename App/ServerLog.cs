@@ -459,7 +459,7 @@ namespace tarkov_settings
         {
             try
             {
-                string dir = Directory.GetDirectories(logsPath, "log_*").OrderByDescending(FolderTime).FirstOrDefault();
+                string dir = NewestSession(logsPath);
                 if (dir == null)
                     return -1;
                 string file = Directory.GetFiles(dir, "*network-connection*.log").FirstOrDefault();
@@ -471,6 +471,19 @@ namespace tarkov_settings
             catch (Exception)
             {
                 return -1;
+            }
+        }
+
+        // the session folder of the running (or last) game process, null when there is none
+        public static string NewestSession(string logsPath)
+        {
+            try
+            {
+                return Directory.GetDirectories(logsPath, "log_*").OrderByDescending(FolderTime).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
