@@ -7,15 +7,17 @@ namespace tarkov_settings
     public partial class UpdateNotifier : Form
     {
         private Version current, latest;
+        private readonly Action exit;
 
         // Utilize repository's file as version notifier
         // I know it sounds very dangerous. but i am broke as hell.
         private string downloadUrl = @"https://github.com/MongsilDev/tarkov-settings/releases/latest";
         private string checkUrl = @"https://raw.githubusercontent.com/MongsilDev/tarkov-settings/main/version";
-        public UpdateNotifier(Version current)
+        public UpdateNotifier(Version current, Action exit)
         {
             InitializeComponent();
             this.current = current;
+            this.exit = exit;
             this.CurrentVersionLabel.Text = current.ToString();
             CheckUpdate();
         }
@@ -34,7 +36,9 @@ namespace tarkov_settings
                     latest = new Version(version);
                     if(latest > current)
                     {
-                        this.ShowDialog();
+                        // exit after the dialog is gone, not from inside its modal loop
+                        if (this.ShowDialog() == DialogResult.OK)
+                            exit();
                     }
                 }
                 catch (Exception)
@@ -52,7 +56,7 @@ namespace tarkov_settings
         private void UpdateButton_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(downloadUrl);
-            Application.Exit();
+            this.DialogResult = DialogResult.OK;
         }
     }
 }

@@ -365,7 +365,7 @@ namespace tarkov_settings
             
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             this.Text = String.Format("Tarkov Settings {0}", version);
-            _ = new UpdateNotifier(version);
+            _ = new UpdateNotifier(version, ExitApp);
 
             // Saturation Initialize
             if (gpu.Vendor != GPUVendor.NVIDIA)
