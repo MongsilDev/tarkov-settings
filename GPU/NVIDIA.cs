@@ -62,7 +62,7 @@ namespace tarkov_settings.GPU
                     DisplayApi.SetDVCLevel(displayHandle, value);
                     this.currentSaturation = value;
                 }
-                catch (NvAPIWrapper.Native.Exceptions.NVIDIAApiException) { }
+                catch (Exception e) when (IsNvApiError(e)) { }
             }
         }
 
@@ -72,7 +72,7 @@ namespace tarkov_settings.GPU
             { 
                 NvAPIWrapper.NVIDIA.Initialize();
             }
-            catch (NvAPIWrapper.Native.Exceptions.NVIDIAApiException)
+            catch (Exception e) when (IsNvApiError(e))
             {
                 MessageBox.Show("NvAPI Intialize Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -97,13 +97,21 @@ namespace tarkov_settings.GPU
                 this._initSaturation = this.currentSaturation = dvcInfo.CurrentLevel;
                 this.hasDisplay = true;
             }
-            catch (NvAPIWrapper.Native.Exceptions.NVIDIAApiException)
+            catch (Exception e) when (IsNvApiError(e))
             {
                 // this display has no DVC (or NvAPI is unavailable right now): disable
                 // saturation until a later Load succeeds instead of driving the old handle
                 this.hasDisplay = false;
                 this._maxSaturation = this._minSaturation = this._initSaturation = this.currentSaturation = 0;
             }
+        }
+
+        // NvAPIWrapper reports an unsupported call (no DVC on this display or driver) with a
+        // separate exception type, not a subclass of NVIDIAApiException
+        private static bool IsNvApiError(Exception e)
+        {
+            return e is NvAPIWrapper.Native.Exceptions.NVIDIAApiException
+                || e is NvAPIWrapper.Native.Exceptions.NVIDIANotSupportedException;
         }
 
         public void Close() {
