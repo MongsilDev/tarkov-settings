@@ -444,6 +444,9 @@ namespace tarkov_settings
             colorTabButton.LostFocus += TabButton_LostFocus;
             serversTabButton.GotFocus += TabButton_GotFocus;
             serversTabButton.LostFocus += TabButton_LostFocus;
+            topMostCheckBox.FlatAppearance.BorderColor = SystemColors.Highlight;
+            topMostCheckBox.GotFocus += TabButton_GotFocus;
+            topMostCheckBox.LostFocus += TabButton_LostFocus;
             SelectTab(servers: false);
 
             // Initialize Process Monitor
@@ -892,15 +895,30 @@ namespace tarkov_settings
             serversTabButton.Font = servers ? tabFontBold : tabFontRegular;
         }
 
-        // flat buttons draw no focus rectangle, so show keyboard focus with a border
+        // flat buttons draw no focus rectangle, so show keyboard focus with a border - only
+        // while focus cues are on (keyboard use), not for a click or the window opening
+        private void UpdateFocusBorder(ButtonBase button)
+        {
+            button.FlatAppearance.BorderSize = button.Focused && ShowFocusCues ? 1 : 0;
+        }
+
         private void TabButton_GotFocus(object sender, EventArgs e)
         {
-            ((Button)sender).FlatAppearance.BorderSize = 1;
+            UpdateFocusBorder((ButtonBase)sender);
         }
 
         private void TabButton_LostFocus(object sender, EventArgs e)
         {
-            ((Button)sender).FlatAppearance.BorderSize = 0;
+            ((ButtonBase)sender).FlatAppearance.BorderSize = 0;
+        }
+
+        // Tab or arrow keys turn the cues on after focus may already sit on a button
+        protected override void OnChangeUICues(UICuesEventArgs e)
+        {
+            base.OnChangeUICues(e);
+            UpdateFocusBorder(colorTabButton);
+            UpdateFocusBorder(serversTabButton);
+            UpdateFocusBorder(topMostCheckBox);
         }
 
         private void ColorTab_Click(object sender, EventArgs e)
