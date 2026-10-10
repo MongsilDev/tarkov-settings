@@ -5,7 +5,7 @@
 
 ![screenshot](./1.png)
 
-## [->**최신 버전 다운로드**<-](https://github.com/MongsilDev/tarkov-settings/releases/latest)
+## [**최신 버전 다운로드**](https://github.com/MongsilDev/tarkov-settings/releases/latest)
 
 Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는 프로그램.
 [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings) 포크에 기능과 수정을 더한 버전.
@@ -16,7 +16,7 @@ Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는
 - 핫키 3종: 감마 두 값 전환, 게임 볼륨 두 값 전환, 게임 즉시 종료. 게임 포커스 중에만 동작
 - 게임 창이 있는 모니터 자동 추적
 - 윈도우 시작 시 실행, 트레이 최소화 시작
-- Servers 탭: 최근 72시간 레이드 목록. 시간, 맵, 지역, 서버 위치, 진입 시간(Wait), 핑. 진행 중 레이드는 LIVE 표시와 5초 간격 핑, 종료 후 게임이 기록한 평균 핑
+- Servers 탭: 최근 72시간 레이드 목록. 시간, 맵, 지역, 서버 위치, 진입 대기 시간인 Wait, 핑. 진행 중 레이드는 LIVE 표시와 5초 간격 핑, 종료 후 게임이 기록한 평균 핑
 - Always on top: 창을 항상 위에 표시
 
 ## 사용법

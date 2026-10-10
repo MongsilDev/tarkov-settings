@@ -5,7 +5,7 @@
 
 ![screenshot](./1.png)
 
-## [->**DOWNLOAD Latest**<-](https://github.com/MongsilDev/tarkov-settings/releases/latest)
+## [**DOWNLOAD Latest**](https://github.com/MongsilDev/tarkov-settings/releases/latest)
 
 Changes display colors only while Escape from Tarkov or Arena is focused.
 Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings) with additional features and fixes.
