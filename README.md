@@ -7,8 +7,8 @@
 
 ## [**최신 버전 다운로드**](https://github.com/MongsilDev/tarkov-settings/releases/latest)
 
-Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는 프로그램.
-[incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings) 포크에 기능과 수정을 더한 버전.
+Escape from Tarkov와 Arena가 포커스된 동안에만 화면 색상을 바꾸는 프로그램입니다.\
+[incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings)를 포크해 기능을 더하고 문제를 고쳤습니다.
 
 ## 기능
 - 밝기, 대비, 감마, Digital Vibrance를 게임 창이 포커스일 때만 적용. 알트탭하면 원래 색상
@@ -29,7 +29,7 @@ Escape from Tarkov와 Arena가 포커스된 동안만 화면 색상을 바꾸는
 7. 왼쪽 아래 Always on top은 기본으로 켜짐. 끄려면 한 번 클릭
 8. 창을 닫으면 트레이로 숨음. 완전히 끄려면 트레이 아이콘 우클릭 > Exit
 
-설정 파일: `%LOCALAPPDATA%\tarkov-settings\settings.json`, 앱이 닫힐 때 저장.
+설정은 앱을 닫을 때 `%LOCALAPPDATA%\tarkov-settings\settings.json`에 저장됩니다.
 
 ## 주의
 1. 게임 창이 활성화될 때 화면이 한두 번 깜빡일 수 있음
