@@ -11,23 +11,35 @@ Escape from Tarkov와 Arena가 포커스된 동안에만 화면 색상을 바꾸
 [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings)를 포크해 기능을 더하고 문제를 고쳤습니다.
 
 ## 기능
-- 밝기, 대비, 감마, Digital Vibrance를 게임 창이 포커스일 때만 적용. 알트탭하면 원래 색상
+- 밝기, 대비, 감마, Digital Vibrance를 게임 창이 포커스일 때만 적용.\
+  알트탭하면 원래 색상
 - Escape from Tarkov와 Arena 지원, Arena는 체크박스로 켜고 끔
-- 핫키 3종: 감마 두 값 전환, 게임 볼륨 두 값 전환, 게임 즉시 종료. 게임 포커스 중에만 동작
+- 핫키 3종: 감마 두 값 전환, 게임 볼륨 두 값 전환, 게임 즉시 종료.\
+  게임 포커스 중에만 동작
 - 게임 창이 있는 모니터 자동 추적
 - 윈도우 시작 시 실행, 트레이 최소화 시작
-- Servers 탭: 최근 72시간 레이드 목록. 시간, 맵, 지역, 서버 위치, 진입 대기 시간인 Wait, 핑. 진행 중 레이드는 LIVE 표시와 5초 간격 핑, 종료 후 게임이 기록한 평균 핑
-- Always on top: 창을 항상 위에 표시
+- Servers 탭: 최근 72시간 레이드 목록.\
+  시간, 맵, 지역, 서버 위치, 진입 시간인 Wait, 핑.\
+  진행 중 레이드는 LIVE 표시와 5초 간격 핑, 종료 후 게임이 기록한 평균 핑
 
 ## 사용법
 1. exe 다운로드 후 우클릭 > 속성 > 차단 해제, 실행
-2. 슬라이더로 색상 조절. Recommended는 추천값, Default는 윈도우 기본값, 라벨 더블클릭은 항목별 기본값
-3. Apply to Arena는 기본으로 켜짐. Arena를 빼려면 해제
-4. Hotkeys에서 값 두 개와 키 지정. Key 칸을 클릭하고 키 입력, Esc 취소, Backspace 해제. 기본 키는 Gamma PageUp, Game volume PageDown. Kill game은 Ctrl/Alt/Shift 조합만 가능하고 지정할 때 한 번 확인
-5. Start in tray는 기본으로 켜짐. 필요하면 Start with Windows 체크
-6. Servers 탭은 EFT 로그 폴더를 자동 탐지. 못 찾으면 `...` 버튼으로 게임 폴더 지정
-7. 왼쪽 아래 Always on top은 기본으로 켜짐. 끄려면 한 번 클릭
-8. 창을 닫으면 트레이로 숨음. 완전히 끄려면 트레이 아이콘 우클릭 > Exit
+2. 슬라이더로 색상 조절.\
+   Recommended는 추천값, Default는 윈도우 기본값, 라벨 더블클릭은 항목별 기본값
+3. Apply to Arena는 기본으로 켜짐.\
+   Arena를 빼려면 해제
+4. Hotkeys에서 값 두 개와 키 지정.\
+   Key 칸을 클릭하고 키 입력, Esc 취소, Backspace 해제.\
+   기본 키는 Gamma PageUp, Game volume PageDown.\
+   Kill game은 Ctrl/Alt/Shift 조합만 가능하고 지정할 때 한 번 확인
+5. Start in tray는 기본으로 켜짐.\
+   필요하면 Start with Windows 체크
+6. Servers 탭은 EFT 로그 폴더를 자동 탐지.\
+   못 찾으면 `...` 버튼으로 게임 폴더 지정
+7. 왼쪽 아래 Always on top은 기본으로 켜짐.\
+   끄려면 한 번 클릭
+8. 창을 닫으면 트레이로 숨음.\
+   완전히 끄려면 트레이 아이콘 우클릭 > Exit
 
 설정은 앱을 닫을 때 `%LOCALAPPDATA%\tarkov-settings\settings.json`에 저장됩니다.
 

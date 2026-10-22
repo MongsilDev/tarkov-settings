@@ -186,7 +186,7 @@ namespace tarkov_settings
                     using (var owner = new Form { TopMost = true, StartPosition = FormStartPosition.Manual, Bounds = screen.Bounds })
                     {
                         MessageBox.Show(owner,
-                            "Could not terminate " + name + ".exe (already exited or access denied).",
+                            "Could not end " + name + ".exe.\nIf the game is still running, run tarkov-settings as administrator.",
                             "Kill game",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
@@ -1096,12 +1096,12 @@ namespace tarkov_settings
                     : shown == 0
                     ? "No raids in the last 72 hours"
                     : "Raids (72h): " + shown + (unique < shown ? "   Servers: " + unique : ""))
-                    + (geoFailed ? "   (location lookup failed)" : "")
+                    + (geoFailed ? "   Location lookup failed. Press Refresh to retry" : "")
                     + (liveRaidItem != null ? "   Live raid" : "");
             }
             catch (Exception e)
             {
-                serverStatusLabel.Text = "Failed to read logs: " + e.Message;
+                serverStatusLabel.Text = "Failed to read logs: " + e.Message.TrimEnd('.') + ". Press Refresh to retry";
             }
             finally
             {

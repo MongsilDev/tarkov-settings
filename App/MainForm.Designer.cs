@@ -175,7 +175,6 @@
             this.topMostCheckBox.TabIndex = 2;
             this.topMostCheckBox.Text = "Always on top";
             this.topMostCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hintToolTip.SetToolTip(this.topMostCheckBox, "Keep this window above other windows");
             this.topMostCheckBox.UseVisualStyleBackColor = false;
             this.topMostCheckBox.CheckedChanged += new System.EventHandler(this.TopMostCheckBox_CheckedChanged);
             // 
@@ -385,7 +384,6 @@
             this.recommendButton.Size = new System.Drawing.Size(110, 25);
             this.recommendButton.TabIndex = 1;
             this.recommendButton.Text = "Recommended";
-            this.hintToolTip.SetToolTip(this.recommendButton, "Apply recommended color and DVL values");
             this.recommendButton.UseVisualStyleBackColor = true;
             this.recommendButton.Click += new System.EventHandler(this.RecommendButton_Click);
             // 

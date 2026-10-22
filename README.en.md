@@ -7,27 +7,38 @@
 
 ## [**DOWNLOAD Latest**](https://github.com/MongsilDev/tarkov-settings/releases/latest)
 
-Changes display colors only while Escape from Tarkov or Arena is focused.
+Changes display colors only while Escape from Tarkov or Arena is focused.\
 Fork of [incheon-kim/tarkov-settings](https://github.com/incheon-kim/tarkov-settings) with additional features and fixes.
 
 ## Features
-- Brightness, Contrast, Gamma and Digital Vibrance applied only while the game window is focused. Alt-tabbing out restores the normal colors
+- Brightness, Contrast, Gamma and Digital Vibrance applied only while the game window is focused.\
+  Alt-tabbing out restores the normal colors
 - Escape from Tarkov and Arena, with a checkbox for Arena
-- Three hotkeys: toggle gamma between two values, toggle game volume between two values, kill the game. Active only while the game is focused
+- Three hotkeys: toggle gamma between two values, toggle game volume between two values, kill the game.\
+  Active only while the game is focused
 - Follows the game window to whichever monitor it is on
 - Start with Windows, start in the tray
-- Servers tab: raids from the last 72 hours with time, map, region, server location, entry time (Wait) and ping. A raid in progress shows LIVE with a ping every 5 seconds, then the average ping the game logged once it ends
-- Always on top: keeps the window above other windows
+- Servers tab: raids from the last 72 hours with time, map, region, server location, entry time (Wait) and ping.\
+  A raid in progress shows LIVE with a ping every 5 seconds, then the average ping the game logged once it ends
 
 ## How to use
 1. Download the exe, right-click > Properties > Unblock, then run
-2. Set colors with the sliders. Recommended applies the suggested values, Default the Windows values, double-clicking a label resets that one
-3. Apply to Arena is on by default. Uncheck it to leave Arena out
-4. In Hotkeys, set the two values and a key. Click the Key box and press a key, Esc cancels, Backspace clears. Defaults: Gamma PageUp, Game volume PageDown. Kill game needs Ctrl/Alt/Shift and asks once when you bind it
-5. Start in tray is on by default. Check Start with Windows if you want it
-6. The Servers tab finds the EFT log folder on its own. If it cannot, pick the game folder with the `...` button
-7. Always on top at the bottom left is on by default. Click it to turn it off
-8. Closing the window hides it to the tray. To quit, right-click the tray icon > Exit
+2. Set colors with the sliders.\
+   Recommended applies the suggested values, Default the Windows values, double-clicking a label resets that one
+3. Apply to Arena is on by default.\
+   Uncheck it to leave Arena out
+4. In Hotkeys, set the two values and a key.\
+   Click the Key box and press a key, Esc cancels, Backspace clears.\
+   Defaults: Gamma PageUp, Game volume PageDown.\
+   Kill game needs Ctrl/Alt/Shift and asks once when you bind it
+5. Start in tray is on by default.\
+   Check Start with Windows if you want it
+6. The Servers tab finds the EFT log folder on its own.\
+   If it cannot, pick the game folder with the `...` button
+7. Always on top at the bottom left is on by default.\
+   Click it to turn it off
+8. Closing the window hides it to the tray.\
+   To quit, right-click the tray icon > Exit
 
 Settings file: `%LOCALAPPDATA%\tarkov-settings\settings.json`, saved when the app closes.
 

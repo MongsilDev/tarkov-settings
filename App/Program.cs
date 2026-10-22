@@ -45,7 +45,7 @@ namespace tarkov_settings
             {
                 System.Windows.Forms.MessageBox.Show(
                         "Intel and other GPUs are not supported.",
-                        "NVIDIA GPU not found",
+                        "Supported GPU not found",
                         System.Windows.Forms.MessageBoxButtons.OK,
                         System.Windows.Forms.MessageBoxIcon.Error
                     );
